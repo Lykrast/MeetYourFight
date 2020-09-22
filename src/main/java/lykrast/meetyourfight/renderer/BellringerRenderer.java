@@ -1,6 +1,7 @@
 package lykrast.meetyourfight.renderer;
 
 import lykrast.meetyourfight.entity.BellringerEntity;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -11,7 +12,7 @@ public class BellringerRenderer extends BipedRenderer<BellringerEntity, BipedMod
 	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/steve.png");
 
 	public BellringerRenderer(EntityRendererManager renderManagerIn) {
-	      super(renderManagerIn, new BipedModel<>(1), 0.5F);
+	      super(renderManagerIn, new BipedModel<>(RenderType::getEntityCutoutNoCull, 0, 0, 64, 64), 0.5F);
 	   }
 
 	@Override
