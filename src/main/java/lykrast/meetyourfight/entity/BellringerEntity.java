@@ -87,6 +87,13 @@ public class BellringerEntity extends BossEntity {
         playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
 	}
 	
+	private GhostLineEntity readyAttack() {
+		GhostLineEntity ghost = new GhostLineEntity(world, this, 0, 0, 0);
+		ghost.setShooter(this);
+		ghost.setPosition(getPosX() - 2 + rand.nextDouble() * 4, getPosY() - 2 + rand.nextDouble() * 4, getPosZ() - 2 + rand.nextDouble() * 4);
+		return ghost;
+	}
+	
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
@@ -139,7 +146,7 @@ public class BellringerEntity extends BossEntity {
 	private static class BurstAttack extends Goal {
 		private BellringerEntity ringer;
 		private LivingEntity target;
-		private int attackRemaining, attackDelay;
+		private int attackRemaining, attackDelay, chosenAttack;
 
 		public BurstAttack(BellringerEntity ringer) {
 			this.ringer = ringer;
@@ -155,6 +162,7 @@ public class BellringerEntity extends BossEntity {
 			attackDelay = 20;
 			attackRemaining = 3;
 			target = ringer.getAttackTarget();
+			chosenAttack = ringer.rand.nextInt(2);
 		}
 
 		@Override
@@ -166,32 +174,45 @@ public class BellringerEntity extends BossEntity {
 
 				ringer.dingDong();
 				
-				BlockPos self = ringer.getPosition();
-				double sx = self.getX();
-				double sy = self.getY();
-				double sz = self.getZ();
-				BlockPos tgt = target.getPosition();
-				double tx = tgt.getX();
-				double ty = tgt.getY() + 0.1;
-				double tz = tgt.getZ();
-				
-				Direction dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
-//				Direction dir = target.getAdjustedHorizontalFacing().getOpposite();
-//				int change = ringer.rand.nextInt(3);
-//				if (change == 1) dir = dir.rotateY();
-//				else if (change == 2) dir = dir.rotateYCCW();
-				double cx = dir.getXOffset();
-				double cz = dir.getZOffset();
-				
-				for (int i = -4; i <= 4; i++) {
-					GhostLineEntity ghost = new GhostLineEntity(ringer.world, ringer, 0, 0, 0);
-					ghost.setShooter(ringer);
-					ghost.setPosition(sx - 2 + ringer.rand.nextDouble() * 4, sy - 2 + ringer.rand.nextDouble() * 4, sz - 2 + ringer.rand.nextDouble() * 4);
-					ghost.setUp(20, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
-					ringer.world.addEntity(ghost);
-				}
+				performAttack();
 				
 				if (attackRemaining <= 0) resetTask();
+			}
+		}
+		
+		private void performAttack() {
+			BlockPos self = ringer.getPosition();
+			double sx = self.getX();
+			//double sy = self.getY();
+			double sz = self.getZ();
+			BlockPos tgt = target.getPosition();
+			double tx = tgt.getX();
+			double ty = tgt.getY() + 0.1;
+			double tz = tgt.getZ();
+			switch (chosenAttack) {
+				default:
+				case 0:
+					//Lines at target
+					Direction dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
+					double cx = dir.getXOffset();
+					double cz = dir.getZOffset();
+					
+					for (int i = -4; i <= 4; i++) {
+						GhostLineEntity ghost = ringer.readyAttack();
+						ghost.setUp(20, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
+						ringer.world.addEntity(ghost);
+					}
+					break;
+				case 1:
+					//Attacks from above
+					for (int x = -1; x <= 1; x++) {
+						for (int z = -1; z <= 1; z++) {
+							GhostLineEntity ghost = ringer.readyAttack();
+							ghost.setUp(20, 0, -1, 0, tx + x, ty + 7, tz + z);
+							ringer.world.addEntity(ghost);
+						}
+					}
+					break;
 			}
 		}
 
