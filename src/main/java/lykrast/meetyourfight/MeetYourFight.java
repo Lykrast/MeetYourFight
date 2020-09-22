@@ -13,7 +13,7 @@ public class MeetYourFight {
 	public static final Logger LOG = LogManager.getLogger();
 	
 	public MeetYourFight() {
-		LOG.info("Hi I have been constructed!");
+		//Configs one day?
 	}
 	
 	public static ResourceLocation rl(String name) {
