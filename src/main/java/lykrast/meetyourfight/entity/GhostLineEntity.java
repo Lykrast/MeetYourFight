@@ -1,6 +1,5 @@
 package lykrast.meetyourfight.entity;
 
-import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -70,7 +69,6 @@ public class GhostLineEntity extends DamagingProjectileEntity implements IRender
 	@SuppressWarnings("deprecation")
 	@Override
 	public void tick() {
-		//It's just randomly disappearing no idea where to even look fuck this
 		if (!world.isRemote) {
 			timer--;
 			if (timer <= 0) {
@@ -78,17 +76,16 @@ public class GhostLineEntity extends DamagingProjectileEntity implements IRender
 				else {
 					fired = true;
 					setMotion(new Vector3d(0, 0, 0));
-					timer = 60;
+					timer = 30;
 				}
 			}
-			MeetYourFight.LOG.info(world.isRemote + " - " + timer + " " + fired);
 			Vector3d motion = getMotion();
 			double d0 = getPosX();
 			double d1 = getPosY();
 			double d2 = getPosZ();
 
 			if (fired) {
-				if (motion.lengthSquared() <= 16) setMotion(motion.add(dirX * 0.5, dirY * 0.5, dirZ * 0.5));
+				if (motion.lengthSquared() <= 16) setMotion(motion.add(dirX * 0.1, dirY * 0.1, dirZ * 0.1));
 			}
 			else {
 				setMotion(new Vector3d(startX - d0, startY - d1, startZ - d2).scale(1.0 / timer));

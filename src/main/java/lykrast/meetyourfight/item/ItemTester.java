@@ -22,16 +22,18 @@ public class ItemTester extends Item {
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		world.playSound((PlayerEntity) null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-		if (!world.isRemote) {			
+		if (!world.isRemote) {
 			BlockPos pla = player.getPosition();
-			double d0 = pla.getX();
-			double d1 = pla.getY();
-			double d2 = pla.getZ();
-			GhostLineEntity ghost = new GhostLineEntity(world, player, 0, 0, 0);
-			ghost.setShooter(player);
-			ghost.setPosition(d0, d1, d2);
-			ghost.setUp(10, 1, 0, 0, d0 - 7, d1, d2);
-			world.addEntity(ghost);
+			double px = pla.getX();
+			double py = pla.getY();
+			double pz = pla.getZ();
+			for (int i = -4; i <= 4; i++) {
+				GhostLineEntity ghost = new GhostLineEntity(world, player, 0, 0, 0);
+				ghost.setShooter(player);
+				ghost.setPosition(px - 2 + random.nextDouble() * 4, py - 2 + random.nextDouble() * 4, pz - 2 + random.nextDouble() * 4);
+				ghost.setUp(20 + i, 1, 0, 0, px - 6, py - 3, pz + i);
+				world.addEntity(ghost);
+			}
 		}
 
 		return ActionResult.func_233538_a_(itemstack, world.isRemote());

@@ -13,7 +13,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModEntities {
 	public static final EntityType<GhostLineEntity> GHOST_LINE = EntityType.Builder
 			.<GhostLineEntity>create(GhostLineEntity::new, EntityClassification.MISC)
-			.size(0.3125f, 0.3125f).setUpdateInterval(10).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+			.size(0.3125f, 0.3125f).setUpdateInterval(2).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build(MeetYourFight.MODID + ":bullet");
 
 	@SubscribeEvent
