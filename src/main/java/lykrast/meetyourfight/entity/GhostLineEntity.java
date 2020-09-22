@@ -35,7 +35,7 @@ public class GhostLineEntity extends DamagingProjectileEntity {
 	@Override
 	protected void onEntityHit(EntityRayTraceResult raytrace) {
 		super.onEntityHit(raytrace);
-		if (!world.isRemote) {
+		if (!world.isRemote && fired) {
 			Entity hit = raytrace.getEntity();
 			Entity shooter = this.func_234616_v_();
 			boolean wasHit;
@@ -133,9 +133,6 @@ public class GhostLineEntity extends DamagingProjectileEntity {
 		compound.putBoolean("Fired", fired);
 	}
 
-	/**
-	 * (abstract) Protected helper method to read subclass entity data from NBT.
-	 */
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);

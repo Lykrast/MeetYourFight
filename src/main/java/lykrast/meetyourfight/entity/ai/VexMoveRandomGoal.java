@@ -11,7 +11,7 @@ public class VexMoveRandomGoal extends Goal {
 	private MobEntity mob;
 
     public VexMoveRandomGoal(MobEntity mob) {
-       this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+       setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
        this.mob = mob;
     }
 
@@ -32,9 +32,9 @@ public class VexMoveRandomGoal extends Goal {
        for(int i = 0; i < 3; ++i) {
           BlockPos blockpos1 = blockpos.add(mob.getRNG().nextInt(15) - 7, mob.getRNG().nextInt(11) - 5, mob.getRNG().nextInt(15) - 7);
           if (mob.world.isAirBlock(blockpos1)) {
-             mob.getMoveHelper().setMoveTo((double)blockpos1.getX() + 0.5D, (double)blockpos1.getY() + 0.5D, (double)blockpos1.getZ() + 0.5D, 0.25D);
+             mob.getMoveHelper().setMoveTo(blockpos1.getX() + 0.5, blockpos1.getY() + 0.5, blockpos1.getZ() + 0.5, 0.25);
              if (mob.getAttackTarget() == null) {
-                mob.getLookController().setLookPosition((double)blockpos1.getX() + 0.5D, (double)blockpos1.getY() + 0.5D, (double)blockpos1.getZ() + 0.5D, 180.0F, 20.0F);
+                mob.getLookController().setLookPosition(blockpos1.getX() + 0.5, blockpos1.getY() + 0.5, blockpos1.getZ() + 0.5, 180.0F, 20.0F);
              }
              break;
           }
