@@ -1,8 +1,8 @@
 package lykrast.meetyourfight;
 
 import lykrast.meetyourfight.registry.ModEntities;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.SpriteRenderer;
+import lykrast.meetyourfight.renderer.BellringerRenderer;
+import lykrast.meetyourfight.renderer.GhostRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -14,7 +14,8 @@ public class ClientStuff {
 
 	@SubscribeEvent
 	public static void clientStuff(final FMLClientSetupEvent event) {
-		RenderingRegistry.registerEntityRenderingHandler(ModEntities.GHOST_LINE, (manager) -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BELLRINGER, (manager) -> new BellringerRenderer(manager));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.GHOST_LINE, (manager) -> new GhostRenderer(manager));
 	}
 
 }

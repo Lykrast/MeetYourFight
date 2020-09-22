@@ -17,7 +17,6 @@ public class ItemTester extends Item {
 		super(properties);
 	}
 	
-
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);

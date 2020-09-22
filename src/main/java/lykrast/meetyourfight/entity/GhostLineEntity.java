@@ -3,12 +3,9 @@ package lykrast.meetyourfight.entity;
 import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
@@ -21,7 +18,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class GhostLineEntity extends DamagingProjectileEntity implements IRendersAsItem {
+public class GhostLineEntity extends DamagingProjectileEntity {
 	private double dirX, dirY, dirZ;
 	private double startX, startY, startZ;
 	private int timer;
@@ -175,12 +172,6 @@ public class GhostLineEntity extends DamagingProjectileEntity implements IRender
 	@Override
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public ItemStack getItem() {
-		// TODO Auto-generated method stub
-		return new ItemStack(Items.STICK);
 	}
 
 }
