@@ -84,7 +84,8 @@ public class BellringerEntity extends BossEntity {
 	
 	private void dingDong() {
 		swingArm(Hand.MAIN_HAND);
-        playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
+		//TODO I think it's gonna drive me crazy if I keep hearing it while testing so muting for now
+        //playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
 	}
 	
 	private GhostLineEntity readyAttack() {
