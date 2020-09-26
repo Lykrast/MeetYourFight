@@ -1,10 +1,13 @@
 package lykrast.meetyourfight.entity;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
+import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -18,6 +21,8 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -30,6 +35,7 @@ import net.minecraft.world.World;
 
 public class BellringerEntity extends BossEntity {
 	public int attackCooldown;
+	private int rageAttacks = 0;
 	
 	public BellringerEntity(EntityType<? extends BellringerEntity> type, World worldIn) {
 		super(type, worldIn);
@@ -56,6 +62,7 @@ public class BellringerEntity extends BossEntity {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new SwimGoal(this));
+		goalSelector.addGoal(1, new RageAttack(this));
 		goalSelector.addGoal(2, new BurstAttack(this));
 		goalSelector.addGoal(7, new MoveFrontOfTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
@@ -66,7 +73,7 @@ public class BellringerEntity extends BossEntity {
 	}
 	
 	public static AttributeModifierMap.MutableAttribute getAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 200).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
     }
 	
 	@Override
@@ -78,7 +85,7 @@ public class BellringerEntity extends BossEntity {
 	private void dingDong() {
 		swingArm(Hand.MAIN_HAND);
 		//TODO I think it's gonna drive me crazy if I keep hearing it while testing so muting for now
-        //playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
+        playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
 	}
 	
 	private GhostLineEntity readyAttack() {
@@ -94,6 +101,7 @@ public class BellringerEntity extends BossEntity {
 		if (compound.contains("AttackCooldown")) {
 			attackCooldown = compound.getInt("AttackCooldown");
 		}
+		rageAttacks = compound.getInt("Rage");
 
 	}
 
@@ -101,6 +109,12 @@ public class BellringerEntity extends BossEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putInt("AttackCooldown", attackCooldown);
+		compound.putInt("Rage", rageAttacks);
+	}
+
+	@Override
+	public CreatureAttribute getCreatureAttribute() {
+		return CreatureAttribute.UNDEAD;
 	}
 
 	@Override
@@ -128,6 +142,7 @@ public class BellringerEntity extends BossEntity {
 		return 1.0F;
 	}
 	
+	//The regular attacks
 	private static class BurstAttack extends Goal {
 		private BellringerEntity ringer;
 		private LivingEntity target;
@@ -144,14 +159,16 @@ public class BellringerEntity extends BossEntity {
 
 		@Override
 		public void startExecuting() {
+			ringer.attackCooldown = 2;
 			attackDelay = 20;
-			attackRemaining = 3;
+			attackRemaining = 3 + ringer.rageAttacks;
 			target = ringer.getAttackTarget();
 			chosenAttack = ringer.rand.nextInt(2);
 		}
 
 		@Override
 		public void tick() {
+			ringer.attackCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
 				attackDelay = 20;
@@ -173,6 +190,8 @@ public class BellringerEntity extends BossEntity {
 			BlockPos tgt = target.getPosition();
 			double tx = tgt.getX();
 			double ty = tgt.getY() + 0.1;
+			//Prevents lines being unjumpable if an attack is launched mid jump
+			if (!target.isOnGround() && !target.isInWater() && !ringer.world.getBlockState(tgt.down()).getMaterial().blocksMovement()) ty -= 1;
 			double tz = tgt.getZ();
 			switch (chosenAttack) {
 				default:
@@ -213,6 +232,92 @@ public class BellringerEntity extends BossEntity {
 		
 	}
 	
+	//Attacks that toggles rage mode
+	private static class RageAttack extends Goal {
+		private BellringerEntity ringer;
+		private LivingEntity target;
+		private int attackRemaining, attackDelay;
+		private Direction dir;
+
+		public RageAttack(BellringerEntity ringer) {
+			this.ringer = ringer;
+		}
+
+		@Override
+		public boolean shouldExecute() {
+			return ringer.attackCooldown <= 0 && ringer.rageAttacks == 0 && ringer.getHealth() <= ringer.getMaxHealth() / 2 && ringer.getAttackTarget() != null && ringer.getAttackTarget().isAlive();
+		}
+
+		@Override
+		public void startExecuting() {
+			ringer.attackCooldown = 2;
+			ringer.rageAttacks = 1;
+			attackDelay = 30;
+			attackRemaining = 20;
+			target = ringer.getAttackTarget();
+			
+			BlockPos self = ringer.getPosition();
+			double sx = self.getX();
+			double sz = self.getZ();
+			BlockPos tgt = target.getPosition();
+			double tx = tgt.getX();
+			double tz = tgt.getZ();
+			dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
+			
+			//Slowness
+			List<Entity> list = ringer.world.getEntitiesInAABBexcluding(ringer, ringer.getBoundingBox().grow(16), e -> e instanceof LivingEntity && e.isAlive() && e.isNonBoss());
+			list.add(target);
+			for (Entity e : list) {
+				//Duration should last through the whole attack
+				((LivingEntity)e).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 300, 1));
+			}
+			ringer.dingDong();
+			ringer.playSound(SoundEvents.BLOCK_BELL_RESONATE, 2, 1);
+		}
+
+		@Override
+		public void tick() {
+			ringer.attackCooldown = 2;
+			attackDelay--;
+			if (attackDelay <= 0) {
+				attackDelay = 12;
+				attackRemaining--;
+				ringer.dingDong();
+				
+				BlockPos tgt = target.getPosition();
+				double tx = tgt.getX();
+				double ty = tgt.getY() + 0.1;
+				//Prevents lines being unjumpable if an attack is launched mid jump
+				if (!target.isOnGround() && !target.isInWater() && !ringer.world.getBlockState(tgt.down()).getMaterial().blocksMovement()) ty -= 1;
+				double tz = tgt.getZ();
+
+				double cx = dir.getXOffset();
+				double cz = dir.getZOffset();
+				
+				int off = attackRemaining % 2 == 0 ? 1 : -1;
+				for (int i = -5; i <= 5; i++) {
+					GhostLineEntity ghost = ringer.readyAttack();
+					ghost.setUp(15 + off*i, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
+					ringer.world.addEntity(ghost);
+				}
+				
+				if (attackRemaining <= 0) resetTask();
+			}
+		}
+
+		@Override
+		public void resetTask() {
+			ringer.attackCooldown = 40 + ringer.rand.nextInt(21);
+		}
+
+		@Override
+		public boolean shouldContinueExecuting() {
+			return attackRemaining > 0 && target.isAlive();
+		}
+		
+	}
+	
+	//Stay in front of attack target
 	private static class MoveFrontOfTarget extends Goal {
 		private MobEntity mob;
 		private int moveCooldown;

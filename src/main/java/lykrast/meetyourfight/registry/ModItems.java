@@ -21,7 +21,7 @@ public class ModItems {
 		hauntedBell = initItem(reg, new SummonItem(defP().maxStackSize(1)), "haunted_bell");
 		phantoplasm = initItem(reg, new Item(defP()), "phantoplasm");
 		
-		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0xFFEEFF, 0xEEFFFF, defP()), "bellringer_spawn_egg");
+		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 	}
 
 	public static Item.Properties defP() {

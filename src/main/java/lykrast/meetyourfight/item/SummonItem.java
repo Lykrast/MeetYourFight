@@ -29,7 +29,7 @@ public class SummonItem extends Item {
 		if (!(entityLiving instanceof PlayerEntity)) return stack;
 		PlayerEntity player = (PlayerEntity)entityLiving;
 		if (!world.isRemote) {
-			if (!world.getLoadedEntitiesWithinAABB(MobEntity.class, entityLiving.getBoundingBox().grow(32, 32, 32), e -> !e.isNonBoss() && e.isAlive()).isEmpty()) {
+			if (!world.getLoadedEntitiesWithinAABB(MobEntity.class, entityLiving.getBoundingBox().grow(32), e -> !e.isNonBoss() && e.isAlive()).isEmpty()) {
 				player.sendStatusMessage(new TranslationTextComponent("status.meetyourfight.boss_nearby"), true);
 				return stack;
 			}
