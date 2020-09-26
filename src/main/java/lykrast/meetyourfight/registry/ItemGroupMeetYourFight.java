@@ -2,7 +2,6 @@ package lykrast.meetyourfight.registry;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
 public class ItemGroupMeetYourFight extends ItemGroup {
 	public static final ItemGroup INSTANCE = new ItemGroupMeetYourFight(ItemGroup.getGroupCountSafe(), "meetyourfight");
@@ -13,7 +12,7 @@ public class ItemGroupMeetYourFight extends ItemGroup {
 
 	@Override
 	public ItemStack createIcon() {
-		return new ItemStack(Items.STICK);
+		return new ItemStack(ModItems.hauntedBell);
 	}
 
 }

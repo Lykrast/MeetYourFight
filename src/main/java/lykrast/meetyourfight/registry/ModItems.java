@@ -10,13 +10,16 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModItems {
-	public static Item egg;
+	public static Item hauntedBell, phantoplasm;
+	public static Item eggBellringer;
 	
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> reg = event.getRegistry();
 		
-		egg = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0xFFEEFF, 0xEEFFFF, defP()), "bellringer_spawn_egg");
+		hauntedBell = initItem(reg, new Item(defP().maxStackSize(1)), "haunted_bell");
+		phantoplasm = initItem(reg, new Item(defP()), "phantoplasm");
+		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0xFFEEFF, 0xEEFFFF, defP()), "bellringer_spawn_egg");
 	}
 
 	public static Item.Properties defP() {

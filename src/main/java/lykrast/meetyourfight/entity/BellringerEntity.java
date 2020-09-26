@@ -2,6 +2,7 @@ package lykrast.meetyourfight.entity;
 
 import java.util.EnumSet;
 
+import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import net.minecraft.entity.EntityType;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -86,7 +88,6 @@ public class BellringerEntity extends BossEntity {
 		return ghost;
 	}
 	
-
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
@@ -115,6 +116,11 @@ public class BellringerEntity extends BossEntity {
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return SoundEvents.ENTITY_VEX_HURT;
+	}
+	
+	@Override
+	protected ResourceLocation getLootTable() {
+		return MeetYourFight.rl("bellringer");
 	}
 
 	@Override

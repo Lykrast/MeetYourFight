@@ -1,5 +1,10 @@
 {
+	"item.meetyourfight.haunted_bell": "Haunted Bell",
+	"item.meetyourfight.phantoplasm": "Phantoplasm",
+	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	
-	"entity.meetyourfight.bellringer": "Bellringer"
+	"entity.meetyourfight.bellringer": "Bellringer",
+	
+	"itemGroup.meetyourfight": "Meet Your Fight"
 }
