@@ -29,7 +29,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class BellringerEntity extends BossEntity {
-	private int attackCooldown;
+	public int attackCooldown;
 	
 	public BellringerEntity(EntityType<? extends BellringerEntity> type, World worldIn) {
 		super(type, worldIn);
@@ -61,12 +61,12 @@ public class BellringerEntity extends BossEntity {
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
 		goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
-		targetSelector.addGoal(1, new HurtByTargetGoal(this));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+		targetSelector.addGoal(2, new HurtByTargetGoal(this));
 	}
 	
 	public static AttributeModifierMap.MutableAttribute getAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20);
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
     }
 	
 	@Override

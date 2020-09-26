@@ -6,5 +6,7 @@
 	
 	"entity.meetyourfight.bellringer": "Bellringer",
 	
-	"itemGroup.meetyourfight": "Meet Your Fight"
+	"itemGroup.meetyourfight": "Meet Your Fight",
+	
+	"status.meetyourfight.boss_nearby": "Another boss is too close"
 }
