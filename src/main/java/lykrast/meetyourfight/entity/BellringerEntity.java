@@ -84,7 +84,6 @@ public class BellringerEntity extends BossEntity {
 	
 	private void dingDong() {
 		swingArm(Hand.MAIN_HAND);
-		//TODO I think it's gonna drive me crazy if I keep hearing it while testing so muting for now
         playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
 	}
 	
@@ -183,20 +182,20 @@ public class BellringerEntity extends BossEntity {
 		}
 		
 		private void performAttack() {
-			BlockPos self = ringer.getPosition();
-			double sx = self.getX();
-			//double sy = self.getY();
-			double sz = self.getZ();
+			//BlockPos rounds values so +0.5 for center of block
 			BlockPos tgt = target.getPosition();
-			double tx = tgt.getX();
+			double tx = tgt.getX() + 0.5;
+			double tz = tgt.getZ() + 0.5;
 			double ty = tgt.getY() + 0.1;
 			//Prevents lines being unjumpable if an attack is launched mid jump
 			if (!target.isOnGround() && !target.isInWater() && !ringer.world.getBlockState(tgt.down()).getMaterial().blocksMovement()) ty -= 1;
-			double tz = tgt.getZ();
 			switch (chosenAttack) {
 				default:
 				case 0:
 					//Lines at target
+					BlockPos self = ringer.getPosition();
+					double sx = self.getX();
+					double sz = self.getZ();
 					Direction dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
 					double cx = dir.getXOffset();
 					double cz = dir.getZOffset();
@@ -284,12 +283,13 @@ public class BellringerEntity extends BossEntity {
 				attackRemaining--;
 				ringer.dingDong();
 				
+				//BlockPos rounds values so +0.5 for center of block
 				BlockPos tgt = target.getPosition();
-				double tx = tgt.getX();
+				double tx = tgt.getX() + 0.5;
+				double tz = tgt.getZ() + 0.5;
 				double ty = tgt.getY() + 0.1;
 				//Prevents lines being unjumpable if an attack is launched mid jump
 				if (!target.isOnGround() && !target.isInWater() && !ringer.world.getBlockState(tgt.down()).getMaterial().blocksMovement()) ty -= 1;
-				double tz = tgt.getZ();
 
 				double cx = dir.getXOffset();
 				double cz = dir.getZOffset();
