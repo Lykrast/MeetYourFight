@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -41,7 +40,7 @@ public class GhostLineEntity extends DamagingProjectileEntity {
 			boolean wasHit;
 			if (shooter instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) shooter;
-				wasHit = hit.attackEntityFrom((new IndirectEntityDamageSource("ghost", this, livingentity)).setProjectile().setMagicDamage(), 8.0F);
+				wasHit = hit.attackEntityFrom(DamageSource.causeIndirectDamage(this, livingentity).setProjectile().setMagicDamage(), 8.0F);
 				if (wasHit) {
 					if (hit.isAlive()) applyEnchantments(livingentity, hit);
 				}
