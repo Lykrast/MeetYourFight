@@ -11,18 +11,24 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/meet-your-fight"
 credits=""
 authors="Lykrast"
 description='''
-Meet Your Fight adds several bosses to fight, each giving you access to unique goodies, such as weapons, armors or curios. Theses bosses won't come to you on their own though, to call them you need to craft the appropriate summoning item.
+Adds several bosses to fight, each giving you access to unique goodies, such as weapons, armors or curios. Theses bosses won't come to you on their own though, to call them you need to craft the appropriate summoning item.
 '''
 
-[[dependencies.turf]]
+[[dependencies.meetyourfight]]
     modId="forge"
     mandatory=true
     versionRange="[34,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.turf]]
+[[dependencies.meetyourfight]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.16.3,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.meetyourfight]]
+    modId="curios"
+    mandatory=true
+    versionRange="[1.16.3-4.0.1.0,)"
     ordering="NONE"
     side="BOTH"
