@@ -1,7 +1,10 @@
 package lykrast.meetyourfight.item;
 
+import java.util.List;
+
 import lykrast.meetyourfight.entity.BellringerEntity;
 import lykrast.meetyourfight.registry.ModEntities;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +18,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
@@ -67,6 +72,11 @@ public class SummonItem extends Item {
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BOW;
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
 	}
 
 }

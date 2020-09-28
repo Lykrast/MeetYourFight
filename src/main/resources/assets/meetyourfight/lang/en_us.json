@@ -1,7 +1,9 @@
 {
 	"item.meetyourfight.haunted_bell": "Haunted Bell",
+	"item.meetyourfight.haunted_bell.desc": "Summons Bellringer",
 	"item.meetyourfight.phantoplasm": "Phantoplasm",
-	"item.meetyourfight.trinket_of_passage": "Trinket of Passage",
+	"item.meetyourfight.passages_toll": "Passage's Toll",
+	"item.meetyourfight.passages_toll.desc": "Go up to 16 blocks through a wall",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	

@@ -11,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModItems {
-	public static Item hauntedBell, phantoplasm, trinketOfPassage;
+	public static Item hauntedBell, phantoplasm, passagesToll;
 	public static Item eggBellringer;
 	
 	@SubscribeEvent
@@ -20,7 +20,7 @@ public class ModItems {
 		
 		hauntedBell = initItem(reg, new SummonItem(defP().maxStackSize(1)), "haunted_bell");
 		phantoplasm = initItem(reg, new Item(defP()), "phantoplasm");
-		trinketOfPassage = initItem(reg, new TrinketPassageItem(defP().maxStackSize(1)), "trinket_of_passage");
+		passagesToll = initItem(reg, new PassagesToll(defP().maxStackSize(1)), "passages_toll");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 	}

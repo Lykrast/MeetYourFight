@@ -1,19 +1,26 @@
 package lykrast.meetyourfight.item;
 
+import java.util.List;
+
 import lykrast.meetyourfight.MeetYourFight;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class TrinketPassageItem extends Item {
+public class PassagesToll extends Item {
 
-	public TrinketPassageItem(Properties properties) {
+	public PassagesToll(Properties properties) {
 		super(properties);
 	}
 
@@ -60,6 +67,11 @@ public class TrinketPassageItem extends Item {
 			return ActionResultType.SUCCESS;
 		}
 
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
 	}
 
 }
