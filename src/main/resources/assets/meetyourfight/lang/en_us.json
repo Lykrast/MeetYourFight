@@ -4,6 +4,10 @@
 	"item.meetyourfight.phantoplasm": "Phantoplasm",
 	"item.meetyourfight.passages_toll": "Passage's Toll",
 	"item.meetyourfight.passages_toll.desc": "Go up to 16 blocks through a wall",
+	"item.meetyourfight.spectres_eye": "Spectre's Eye",
+	"item.meetyourfight.spectres_eye.desc": "Reveals nearby hostile mobs",
+	"item.meetyourfight.spectres_grasp": "Spectre's Grasp",
+	"item.meetyourfight.spectres_grasp.desc": "Does not stack with itself",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	
@@ -11,5 +15,8 @@
 	
 	"itemGroup.meetyourfight": "Meet Your Fight",
 	
-	"status.meetyourfight.boss_nearby": "Another boss is too close"
+	"status.meetyourfight.boss_nearby": "Another boss is too close",
+	
+	"_comment": "Forge issue #7372, here's a bandaid and hoping the issue won't get closed without fixing",
+	"generic.reachDistance": "Reach Distance"
 }
