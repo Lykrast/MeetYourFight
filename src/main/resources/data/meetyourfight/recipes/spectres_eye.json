@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"GGG",
+		" P ",
+		"GGG"
+	],
+	"key": {
+		"G": { "tag": "forge:ingots/gold" },
+		"P": { "item": "meetyourfight:phantoplasm" }
+	},
+	"result": { "item": "meetyourfight:spectres_eye" }
+}
