@@ -7,6 +7,7 @@ import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class SummonItem extends Item {
 
@@ -46,6 +48,7 @@ public class SummonItem extends Item {
 			if (!player.abilities.isCreativeMode) bellringer.setAttackTarget(entityLiving);
 			bellringer.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 100, 2));
 			
+			bellringer.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(bellringer.getPosition()), SpawnReason.EVENT, null, null);
 			world.addEntity(bellringer);
 			
 			if (!player.abilities.isCreativeMode) {
