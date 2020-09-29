@@ -1,5 +1,7 @@
 package lykrast.meetyourfight.entity;
 
+import javax.annotation.Nonnull;
+
 import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -165,6 +167,7 @@ public class GhostLineEntity extends DamagingProjectileEntity {
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);

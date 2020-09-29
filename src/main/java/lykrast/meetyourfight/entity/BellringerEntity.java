@@ -6,9 +6,7 @@ import java.util.List;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
-import lykrast.meetyourfight.misc.BossMusic;
 import lykrast.meetyourfight.registry.ModSounds;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -24,7 +22,6 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
@@ -36,11 +33,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class BellringerEntity extends BossEntity implements IEntityAdditionalSpawnData {
+public class BellringerEntity extends BossEntity {
 	public int attackCooldown;
 	private int rageAttacks = 0;
 	
@@ -137,6 +131,11 @@ public class BellringerEntity extends BossEntity implements IEntityAdditionalSpa
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return SoundEvents.ENTITY_VEX_HURT;
 	}
+
+	@Override
+	protected SoundEvent getMusic() {
+		return ModSounds.musicBellringer;
+	}
 	
 	@Override
 	protected ResourceLocation getLootTable() {
@@ -146,20 +145,6 @@ public class BellringerEntity extends BossEntity implements IEntityAdditionalSpa
 	@Override
 	public float getBrightness() {
 		return 1.0F;
-	}
-
-	//Bit to play music from Botania https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/entity/EntityDoppleganger.java#L992
-	//TODO NOT WORKING
-	@Override
-	public void writeSpawnData(PacketBuffer buffer) {
-		//MeetYourFight.LOG.info("hellooo???");
-	}
-	
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void readSpawnData(PacketBuffer additionalData) {
-		//MeetYourFight.LOG.info("is this even caled?");
-		Minecraft.getInstance().getSoundHandler().play(new BossMusic(this, ModSounds.musicBellringer));
 	}
 	
 	//The regular attacks
