@@ -43,7 +43,7 @@ public class SummonItem extends Item {
 
 			//TODO abstract to reuse for other bosses, for now just using that for bellringer
 			BellringerEntity bellringer = ModEntities.BELLRINGER.create(world);
-			bellringer.setLocationAndAngles(entityLiving.getPosX() + random.nextInt(15) - 7, entityLiving.getPosY() + random.nextInt(15) - 7, entityLiving.getPosZ() + random.nextInt(15) - 7, random.nextFloat() * 360 - 180, 0);
+			bellringer.setLocationAndAngles(entityLiving.getPosX() + random.nextInt(15) - 7, entityLiving.getPosY() + random.nextInt(9) - 1, entityLiving.getPosZ() + random.nextInt(15) - 7, random.nextFloat() * 360 - 180, 0);
 			bellringer.attackCooldown = 100;
 			if (!player.abilities.isCreativeMode) bellringer.setAttackTarget(entityLiving);
 			bellringer.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 100, 2));
