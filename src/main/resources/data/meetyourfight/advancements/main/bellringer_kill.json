@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/bellringer_summon",
+	"display": {
+		"icon": { "item": "meetyourfight:phantoplasm" },
+		"title": { "translate": "advancements.meetyourfight.bellringer_kill.title" },
+		"description": { "translate": "advancements.meetyourfight.bellringer_kill.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "item": "meetyourfight:phantoplasm" }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}

@@ -17,6 +17,13 @@
 	
 	"status.meetyourfight.boss_nearby": "Another boss is too close",
 	
+	"advancements.meetyourfight.root.title": "Meet Your Fight",
+	"advancements.meetyourfight.root.description": "Prepare for the coming challenges",
+	"advancements.meetyourfight.bellringer_summon.title": "Toll the Bell",
+	"advancements.meetyourfight.bellringer_summon.description": "Get a Haunted Bell to summon Bellringer",
+	"advancements.meetyourfight.bellringer_kill.title": "Immaterial and Missing Power",
+	"advancements.meetyourfight.bellringer_kill.description": "Defeat Bellringer to get Phantoplasm",
+	
 	"_comment": "Forge issue #7372, here's a bandaid and hoping the issue won't get closed without fixing",
 	"generic.reachDistance": "Reach Distance"
 }
