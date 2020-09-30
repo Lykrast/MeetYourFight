@@ -12,9 +12,11 @@ import net.minecraft.world.World;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 public class CurioBaseItem extends Item implements ICurio {
+	private boolean hasDescription;
 
-	public CurioBaseItem(Properties properties) {
+	public CurioBaseItem(Properties properties, boolean hasDescription) {
 		super(properties);
+		this.hasDescription = hasDescription;
 	}
 
 	@Override
@@ -24,7 +26,7 @@ public class CurioBaseItem extends Item implements ICurio {
 
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
+		if (hasDescription) tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
 	}
 
 }

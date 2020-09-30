@@ -13,7 +13,7 @@ public class SpectresGrasp extends CurioBaseItem {
 	private static final UUID AT_ID = UUID.fromString("930f68d4-3550-4dca-92c3-f1b20df720ff");
 
 	public SpectresGrasp(Properties properties) {
-		super(properties);
+		super(properties, false);
 	}
 
 	@Override

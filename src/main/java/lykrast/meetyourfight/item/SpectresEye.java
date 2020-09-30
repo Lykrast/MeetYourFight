@@ -11,7 +11,7 @@ import net.minecraft.potion.Effects;
 public class SpectresEye extends CurioBaseItem {
 
 	public SpectresEye(Properties properties) {
-		super(properties);
+		super(properties, true);
 	}
 	
 	@Override
