@@ -12,6 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModItems {
 	public static Item hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp;
+	public static Item devilsAnte, slicersDice;
 	public static Item eggBellringer;
 	
 	@SubscribeEvent
@@ -23,6 +24,10 @@ public class ModItems {
 		passagesToll = initItem(reg, new PassagesToll(noStack()), "passages_toll");
 		spectresEye = initItem(reg, new SpectresEye(noStack()), "spectres_eye");
 		spectresGrasp = initItem(reg, new SpectresGrasp(noStack()), "spectres_grasp");
+		
+		//TODO make it summon boss when it's there
+		devilsAnte = initItem(reg, new SummonItem(noStack()), "devils_ante");
+		slicersDice = initItem(reg, new LuckCurio(noStack()), "slicers_dice");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 	}
