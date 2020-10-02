@@ -98,9 +98,7 @@ public class BellringerEntity extends BossEntity {
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
-		if (compound.contains("AttackCooldown")) {
-			attackCooldown = compound.getInt("AttackCooldown");
-		}
+		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
 		rageAttacks = compound.getInt("Rage");
 
 	}
@@ -117,6 +115,7 @@ public class BellringerEntity extends BossEntity {
 		return CreatureAttribute.UNDEAD;
 	}
 
+	//TODO change sounds
 	@Override
 	protected SoundEvent getAmbientSound() {
 		return SoundEvents.ENTITY_VEX_AMBIENT;

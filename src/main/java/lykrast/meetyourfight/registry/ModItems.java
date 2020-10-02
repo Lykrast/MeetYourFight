@@ -13,7 +13,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModItems {
 	public static Item hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp;
 	public static Item devilsAnte, slicersDice;
-	public static Item eggBellringer;
+	public static Item eggBellringer, eggDameFortuna;
 	
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> event) {
@@ -30,6 +30,7 @@ public class ModItems {
 		slicersDice = initItem(reg, new LuckCurio(noStack()), "slicers_dice");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
+		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
 	}
 
 	public static Item.Properties defP() {

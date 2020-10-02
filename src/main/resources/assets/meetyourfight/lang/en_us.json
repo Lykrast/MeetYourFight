@@ -9,15 +9,17 @@
 	"item.meetyourfight.spectres_grasp": "Spectre's Grasp",
 	
 	"item.meetyourfight.devils_ante": "Devil's Ante",
-	"item.meetyourfight.devils_ante.desc": "Summons FILL THAT LATER",
+	"item.meetyourfight.devils_ante.desc": "Summons Dame Fortuna",
 	"item.meetyourfight.slicers_dice": "Slicer's Dice",
 	"item.meetyourfight.slicers_dice.desc": "Attacks sometimes do more damage",
 	
 	"item.meetyourfight.desc.luck": "Affected by luck",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
+	"item.meetyourfight.dame_fortuna_spawn_egg": "Dame Fortuna Spawn Egg",
 	
 	"entity.meetyourfight.bellringer": "Bellringer",
+	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
 	
 	"itemGroup.meetyourfight": "Meet Your Fight",
 	

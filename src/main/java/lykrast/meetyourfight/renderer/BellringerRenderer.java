@@ -12,8 +12,8 @@ public class BellringerRenderer extends BipedRenderer<BellringerEntity, BipedMod
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/bellringer.png");
 
 	public BellringerRenderer(EntityRendererManager renderManagerIn) {
-	      super(renderManagerIn, new BellringerModel(), 0.5F);
-	   }
+		super(renderManagerIn, new BellringerModel(), 0.5F);
+	}
 
 	@Override
 	protected int getBlockLight(BellringerEntity entityIn, BlockPos partialTicks) {

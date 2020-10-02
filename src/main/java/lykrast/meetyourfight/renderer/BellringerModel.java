@@ -13,7 +13,7 @@ public class BellringerModel extends BipedModel<BellringerEntity> {
 	private final ModelRenderer bell;
 
 	public BellringerModel() {
-		super(0.0F, 0.0F, 64, 64);
+		super(0, 0, 64, 64);
 		bipedLeftLeg.showModel = false;
 		bipedHeadwear.showModel = false;
 		bipedRightLeg = new ModelRenderer(this, 32, 0);

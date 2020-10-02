@@ -12,10 +12,17 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModEntities {
+	//Bosses
 	public static final EntityType<BellringerEntity> BELLRINGER = EntityType.Builder
 			.<BellringerEntity>create(BellringerEntity::new, EntityClassification.MONSTER)
 			.size(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
+	public static final EntityType<DameFortunaEntity> DAME_FORTUNA = EntityType.Builder
+			.<DameFortunaEntity>create(DameFortunaEntity::new, EntityClassification.MONSTER)
+			.size(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.build("");
+	
+	//Projectiles
 	public static final EntityType<GhostLineEntity> GHOST_LINE = EntityType.Builder
 			.<GhostLineEntity>create(GhostLineEntity::new, EntityClassification.MISC)
 			.size(0.3125f, 0.3125f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
@@ -27,8 +34,11 @@ public class ModEntities {
 		
 		BELLRINGER.setRegistryName(MeetYourFight.MODID, "bellringer");
 		reg.register(BELLRINGER);
+		DAME_FORTUNA.setRegistryName(MeetYourFight.MODID, "dame_fortuna");
+		reg.register(DAME_FORTUNA);
 		//I saw this from Waddles
 		GlobalEntityTypeAttributes.put(BELLRINGER, BellringerEntity.getAttributes().create());
+		GlobalEntityTypeAttributes.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
 		
 		GHOST_LINE.setRegistryName(MeetYourFight.MODID, "ghost_line");
 		reg.register(GHOST_LINE);
