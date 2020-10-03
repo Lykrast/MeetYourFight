@@ -4,11 +4,10 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.BellringerEntity;
 import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
-public class BellringerRenderer extends BipedRenderer<BellringerEntity, BipedModel<BellringerEntity>> {
+public class BellringerRenderer extends BipedRenderer<BellringerEntity, BellringerModel> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/bellringer.png");
 
 	public BellringerRenderer(EntityRendererManager renderManagerIn) {

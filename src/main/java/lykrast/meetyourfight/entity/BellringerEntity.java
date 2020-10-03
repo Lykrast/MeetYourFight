@@ -78,9 +78,9 @@ public class BellringerEntity extends BossEntity {
     }
 	
 	@Override
-	public void livingTick() {
+	public void updateAITasks() {
 		if (attackCooldown > 0) attackCooldown--;
-		super.livingTick();
+		super.updateAITasks();
 	}
 	
 	private void dingDong() {
