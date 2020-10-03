@@ -28,6 +28,9 @@
 	
 	"status.meetyourfight.boss_nearby": "Another boss is too close",
 	
+	"subtitles.meetyourfight.item.bonus_damage": "Damage amplified",
+	"subtitles.meetyourfight.item.damage_negated": "Damage negated",
+	
 	"advancements.meetyourfight.root.title": "Meet Your Fight",
 	"advancements.meetyourfight.root.description": "Prepare for the coming challenges",
 	"advancements.meetyourfight.bellringer_summon.title": "Toll the Bell",

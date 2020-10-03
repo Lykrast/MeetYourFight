@@ -2,6 +2,7 @@ package lykrast.meetyourfight.misc;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -10,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -38,7 +38,7 @@ public class EventHandler {
 				else chance = 1.0 / (10.0 - 5 * luck);
 				if (pattacked.getRNG().nextDouble() <= chance) {
 					event.setCanceled(true);
-					pattacked.world.playSound(null, attacked.getPosition(), SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS, 1, 1);
+					pattacked.world.playSound(null, attacked.getPosition(), ModSounds.aceOfIronProc, SoundCategory.PLAYERS, 1, 1);
 				}
 			}
 		}
@@ -58,7 +58,7 @@ public class EventHandler {
 				if (pattacker.getRNG().nextDouble() <= chance) {
 					event.setAmount(event.getAmount() * 2);
 					//TODO proper sound event
-					pattacker.world.playSound(null, attacked.getPosition(), SoundEvents.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, SoundCategory.PLAYERS, 1, 1);
+					pattacker.world.playSound(null, attacked.getPosition(), ModSounds.slicersDiceProc, SoundCategory.PLAYERS, 1, 1);
 					((ServerWorld)pattacker.world).spawnParticle(ParticleTypes.CRIT, attacked.getPosX(), attacked.getPosYEye(), attacked.getPosZ(), 15, 0.2, 0.2, 0.2, 0);
 				}
 			}

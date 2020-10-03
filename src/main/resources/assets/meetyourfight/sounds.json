@@ -1,3 +1,12 @@
 {
-	"music.bellringer": { "sounds": [{"name": "meetyourfight:music/bellringer", "stream": true}] }
+	"slicers_dice.proc": {
+		"subtitle": "subtitles.meetyourfight.item.bonus_damage",
+		"sounds": [ "minecraft:mob/zombie/woodbreak" ]
+	},
+	"ace_of_iron.proc": {
+		"subtitle": "subtitles.meetyourfight.item.damage_negated",
+		"sounds": [ "minecraft:random/anvil_land" ]
+	},
+	"music.bellringer": { "sounds": [{"name": "meetyourfight:music/bellringer", "stream": true}] },
+	"music.dame_fortuna": { "sounds": [{"name": "meetyourfight:music/dame_fortuna", "stream": true}] }
 }

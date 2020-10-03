@@ -10,13 +10,18 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModSounds {
-	public static SoundEvent musicBellringer;
+	public static SoundEvent slicersDiceProc, aceOfIronProc;
+	public static SoundEvent musicBellringer, musicDameFortuna;
 	
 	@SubscribeEvent
 	public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
 		IForgeRegistry<SoundEvent> reg = event.getRegistry();
+
+		slicersDiceProc = initSound(reg, "slicers_dice.proc");
+		aceOfIronProc = initSound(reg, "ace_of_iron.proc");
 		
 		musicBellringer = initSound(reg, "music.bellringer");
+		musicDameFortuna = initSound(reg, "music.dame_fortuna");
 	}
 
 	public static SoundEvent initSound(IForgeRegistry<SoundEvent> reg, String name) {
