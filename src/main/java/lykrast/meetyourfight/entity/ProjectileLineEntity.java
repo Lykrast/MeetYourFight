@@ -63,6 +63,12 @@ public class ProjectileLineEntity extends DamagingProjectileEntity {
 		this.startY = startY;
 		this.startZ = startZ;
 	}
+	
+	public void setUpTowards(int delay, double startX, double startY, double startZ, double endX, double endY, double endZ) {
+		Vector3d vec = new Vector3d(endX - startX, endY - startY, endZ - startZ);
+		vec = vec.normalize();
+		setUp(delay, vec.x, vec.y, vec.z, startX, startY, startZ);
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override

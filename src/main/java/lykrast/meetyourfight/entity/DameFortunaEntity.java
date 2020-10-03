@@ -29,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -94,6 +95,13 @@ public class DameFortunaEntity extends BossEntity {
 		super.updateAITasks();
 	}
 	
+	private ProjectileLineEntity readyLine() {
+		ProjectileLineEntity proj = new ProjectileLineEntity(world, this, 0, 0, 0);
+		proj.setShooter(this);
+		proj.setPosition(getPosX(), getPosYEye() + 1, getPosZ());
+		return proj;
+	}
+	
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
@@ -133,6 +141,7 @@ public class DameFortunaEntity extends BossEntity {
 	}
 	
 	//The regular attacks
+	//It's horribly ad hoc but it'll do "for now"
 	private static class RegularAttack extends Goal {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
@@ -151,11 +160,21 @@ public class DameFortunaEntity extends BossEntity {
 		@Override
 		public void startExecuting() {
 			dame.attackCooldown = 2;
-			attackDelay = 20;
-			attackRemaining = 2;
 			target = dame.getAttackTarget();
-			chosenAttack = 0;
 			dame.setAttack(SMALL_ATTACK);
+			chosenAttack = 1;
+			attackDelay = 20;
+			attackRemaining = getAttackCount();
+		}
+
+		//Horrible horrible ad hoc n°1
+		private int getAttackCount() {
+			switch (chosenAttack) {
+				case 1:
+					return 16;
+				default:
+					return 3;
+			}
 		}
 
 		@Override
@@ -163,31 +182,38 @@ public class DameFortunaEntity extends BossEntity {
 			dame.attackCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
-				attackDelay = 20;
 				attackRemaining--;
-
 				performAttack();
-
 				if (attackRemaining <= 0) resetTask();
 			}
 		}
 
+		//Horrible horrible ad hoc n°2
 		private void performAttack() {
 			switch (chosenAttack) {
 				default:
 				case 0:
+					//Vex attack, copied from Evoker
+					attackDelay = 10;
 					ServerWorld serverworld = (ServerWorld) dame.world;
-					for (int i = 0; i < 3; ++i) {
-						BlockPos blockpos = dame.getPosition().add(-2 + dame.rand.nextInt(5), 1, -2 + dame.rand.nextInt(5));
-						VexEntity vexentity = EntityType.VEX.create(dame.world);
-						vexentity.moveToBlockPosAndAngles(blockpos, 0.0F, 0.0F);
-						vexentity.onInitialSpawn(serverworld, dame.world.getDifficultyForLocation(blockpos), SpawnReason.MOB_SUMMONED, null, null);
-						vexentity.setOwner(dame);
-						vexentity.setBoundOrigin(blockpos);
-						vexentity.setLimitedLife(20 * (10 + dame.rand.nextInt(21)));
-						vexentity.setAttackTarget(target);
-						serverworld.func_242417_l(vexentity);
-					}
+					BlockPos blockpos = dame.getPosition().add(-2 + dame.rand.nextInt(5), 1, -2 + dame.rand.nextInt(5));
+					VexEntity vexentity = EntityType.VEX.create(dame.world);
+					vexentity.moveToBlockPosAndAngles(blockpos, 0.0F, 0.0F);
+					vexentity.onInitialSpawn(serverworld, dame.world.getDifficultyForLocation(blockpos), SpawnReason.MOB_SUMMONED, null, null);
+					vexentity.setOwner(dame);
+					vexentity.setBoundOrigin(blockpos);
+					vexentity.setLimitedLife(20 * (10 + dame.rand.nextInt(21)));
+					vexentity.setAttackTarget(target);
+					serverworld.func_242417_l(vexentity);
+					break;
+				case 1:
+					//Circular lines
+					attackDelay = 4;
+					float angle = MathHelper.wrapDegrees(attackRemaining * 45F) * ((float)Math.PI / 180F);
+					ProjectileLineEntity proj = dame.readyLine();
+					proj.setUpTowards(16, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, target.getPosX(), target.getPosY(), target.getPosZ());
+					dame.world.addEntity(proj);
+					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 			}
 		}
