@@ -1,6 +1,7 @@
 package lykrast.meetyourfight.entity;
 
 import java.util.EnumSet;
+import java.util.Random;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
@@ -64,6 +65,7 @@ public class DameFortunaEntity extends BossEntity {
 		super.registerGoals();
 		goalSelector.addGoal(0, new SwimGoal(this));
 		goalSelector.addGoal(2, new RegularAttack(this));
+		goalSelector.addGoal(7, new MoveAroundTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
 		goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
@@ -208,10 +210,10 @@ public class DameFortunaEntity extends BossEntity {
 					break;
 				case 1:
 					//Circular lines
-					attackDelay = 4;
+					attackDelay = 3;
 					float angle = MathHelper.wrapDegrees(attackRemaining * 45F) * ((float)Math.PI / 180F);
 					ProjectileLineEntity proj = dame.readyLine();
-					proj.setUpTowards(16, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, target.getPosX(), target.getPosY(), target.getPosZ());
+					proj.setUpTowards(12, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, target.getPosX(), target.getPosY(), target.getPosZ());
 					dame.world.addEntity(proj);
 					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
@@ -227,6 +229,43 @@ public class DameFortunaEntity extends BossEntity {
 		@Override
 		public boolean shouldContinueExecuting() {
 			return attackRemaining > 0 && target.isAlive();
+		}
+
+	}
+	
+	//Stay in front of attack target
+	private static class MoveAroundTarget extends Goal {
+		private MobEntity mob;
+
+		public MoveAroundTarget(MobEntity mob) {
+			setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+			this.mob = mob;
+		}
+
+		@Override
+		public boolean shouldExecute() {
+			return mob.getAttackTarget() != null && !mob.getMoveHelper().isUpdating();
+		}
+
+		@Override
+		public void startExecuting() {			
+			LivingEntity target = mob.getAttackTarget();
+			Random rand = mob.getRNG();
+			float angle = (rand.nextInt(6) + 1) * 10f;
+			if (rand.nextBoolean()) angle *= -1;
+			Vector3d offset = new Vector3d(mob.getPosX() - target.getPosX(), 0, mob.getPosZ() - target.getPosZ()).normalize().rotateYaw(angle);
+			double distance = rand.nextDouble() * 2 + 4;
+
+			mob.getMoveHelper().setMoveTo(
+					target.getPosX() + offset.x * distance, 
+					target.getPosY() + 2 + rand.nextDouble() * 2, 
+					target.getPosZ() + offset.z * distance,
+					1);
+		}
+
+		@Override
+		public boolean shouldContinueExecuting() {
+			return false;
 		}
 
 	}
