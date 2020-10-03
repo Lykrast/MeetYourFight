@@ -19,18 +19,18 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class GhostLineEntity extends DamagingProjectileEntity {
+public class ProjectileLineEntity extends DamagingProjectileEntity {
 	private double dirX, dirY, dirZ;
 	private double startX, startY, startZ;
 	private int timer;
 	private boolean fired;
 
-	public GhostLineEntity(EntityType<? extends GhostLineEntity> type, World world) {
+	public ProjectileLineEntity(EntityType<? extends ProjectileLineEntity> type, World world) {
 		super(type, world);
 	}
 
-	public GhostLineEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ModEntities.GHOST_LINE, shooter, accelX, accelY, accelZ, worldIn);
+	public ProjectileLineEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
+		super(ModEntities.PROJECTILE_LINE, shooter, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override

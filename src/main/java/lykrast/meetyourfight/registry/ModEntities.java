@@ -23,8 +23,8 @@ public class ModEntities {
 			.build("");
 	
 	//Projectiles
-	public static final EntityType<GhostLineEntity> GHOST_LINE = EntityType.Builder
-			.<GhostLineEntity>create(GhostLineEntity::new, EntityClassification.MISC)
+	public static final EntityType<ProjectileLineEntity> PROJECTILE_LINE = EntityType.Builder
+			.<ProjectileLineEntity>create(ProjectileLineEntity::new, EntityClassification.MISC)
 			.size(0.3125f, 0.3125f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build("");
 
@@ -40,7 +40,7 @@ public class ModEntities {
 		GlobalEntityTypeAttributes.put(BELLRINGER, BellringerEntity.getAttributes().create());
 		GlobalEntityTypeAttributes.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
 		
-		GHOST_LINE.setRegistryName(MeetYourFight.MODID, "ghost_line");
-		reg.register(GHOST_LINE);
+		PROJECTILE_LINE.setRegistryName(MeetYourFight.MODID, "projectile_line");
+		reg.register(PROJECTILE_LINE);
 	}
 }

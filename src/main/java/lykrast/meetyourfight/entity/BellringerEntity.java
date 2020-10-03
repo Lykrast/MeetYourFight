@@ -88,8 +88,8 @@ public class BellringerEntity extends BossEntity {
         playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
 	}
 	
-	private GhostLineEntity readyAttack() {
-		GhostLineEntity ghost = new GhostLineEntity(world, this, 0, 0, 0);
+	private ProjectileLineEntity readyAttack() {
+		ProjectileLineEntity ghost = new ProjectileLineEntity(world, this, 0, 0, 0);
 		ghost.setShooter(this);
 		ghost.setPosition(getPosX() - 2 + rand.nextDouble() * 4, getPosY() - 2 + rand.nextDouble() * 4, getPosZ() - 2 + rand.nextDouble() * 4);
 		return ghost;
@@ -206,7 +206,7 @@ public class BellringerEntity extends BossEntity {
 					double cz = dir.getZOffset();
 					
 					for (int i = -4; i <= 4; i++) {
-						GhostLineEntity ghost = ringer.readyAttack();
+						ProjectileLineEntity ghost = ringer.readyAttack();
 						ghost.setUp(20, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
 						ringer.world.addEntity(ghost);
 					}
@@ -215,7 +215,7 @@ public class BellringerEntity extends BossEntity {
 					//Attacks from above
 					for (int x = -1; x <= 1; x++) {
 						for (int z = -1; z <= 1; z++) {
-							GhostLineEntity ghost = ringer.readyAttack();
+							ProjectileLineEntity ghost = ringer.readyAttack();
 							ghost.setUp(20, 0, -1, 0, tx + x, ty + 7, tz + z);
 							ringer.world.addEntity(ghost);
 						}
@@ -301,7 +301,7 @@ public class BellringerEntity extends BossEntity {
 				
 				int off = attackRemaining % 2 == 0 ? 1 : -1;
 				for (int i = -5; i <= 5; i++) {
-					GhostLineEntity ghost = ringer.readyAttack();
+					ProjectileLineEntity ghost = ringer.readyAttack();
 					ghost.setUp(15 + off*i, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
 					ringer.world.addEntity(ghost);
 				}

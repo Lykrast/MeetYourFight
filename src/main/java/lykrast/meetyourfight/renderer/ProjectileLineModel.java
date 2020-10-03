@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class GhostLineModel<T extends Entity> extends EntityModel<T> {
+public class ProjectileLineModel<T extends Entity> extends EntityModel<T> {
 	// This is mostly the shulker bullet but copy pasted then inlined
 	private final ModelRenderer renderer;
 
-	public GhostLineModel() {
+	public ProjectileLineModel() {
 		super(RenderType::getEntityCutoutNoCull);
 		textureWidth = 64;
 		textureHeight = 32;
