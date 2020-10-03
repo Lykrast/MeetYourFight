@@ -27,16 +27,34 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 public class EventHandler {	
 	@SubscribeEvent
 	public static void entityDamage(final LivingHurtEvent event) {
-		Entity attacker = event.getSource().getTrueSource();
 		LivingEntity attacked = event.getEntityLiving();
-		if (attacker != null && attacked != null && attacker instanceof PlayerEntity) {
+		if (attacked instanceof PlayerEntity) {
+			PlayerEntity pattacked = (PlayerEntity)attacked;
+			//Ace of Iron
+			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.aceOfIron, pattacked).isPresent()) {
+				double luck = pattacked.getAttributeValue(Attributes.LUCK);
+				double chance = 0.1;
+				if (luck >= 0) chance = (1.0 + luck) / (10.0 + 2 * luck);
+				else chance = 1.0 / (10.0 - 5 * luck);
+				if (pattacked.getRNG().nextDouble() <= chance) {
+					event.setCanceled(true);
+					pattacked.world.playSound(null, attacked.getPosition(), SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS, 1, 1);
+				}
+			}
+		}
+		
+		//No need to roll for bonus damage if the damage is cancelled
+		if (event.isCanceled()) return;
+		
+		Entity attacker = event.getSource().getTrueSource();
+		if (attacker != null && attacker instanceof PlayerEntity) {
 			PlayerEntity pattacker = (PlayerEntity)attacker;
 			//Slicer's Dice
 			if (CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.slicersDice, pattacker).isPresent()) {
 				double luck = pattacker.getAttributeValue(Attributes.LUCK);
 				double chance = 0.1;
-				if (luck >= 0) chance = (2.0 + luck) / (20.0 + luck);
-				else chance = 1.0 / (10.0 - 4 * luck);
+				if (luck >= 0) chance = (1.0 + luck) / (10.0 + luck);
+				else chance = 1.0 / (10.0 - 5 * luck);
 				if (pattacker.getRNG().nextDouble() <= chance) {
 					event.setAmount(event.getAmount() * 2);
 					//TODO proper sound event

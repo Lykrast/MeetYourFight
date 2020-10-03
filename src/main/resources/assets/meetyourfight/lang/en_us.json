@@ -10,8 +10,11 @@
 	
 	"item.meetyourfight.devils_ante": "Devil's Ante",
 	"item.meetyourfight.devils_ante.desc": "Summons Dame Fortuna",
+	"item.meetyourfight.fortunes_favor": "Fortune's Favor",
 	"item.meetyourfight.slicers_dice": "Slicer's Dice",
 	"item.meetyourfight.slicers_dice.desc": "Attacks sometimes do more damage",
+	"item.meetyourfight.ace_of_iron": "Ace of Iron",
+	"item.meetyourfight.ace_of_iron.desc": "Sometimes negates incoming attacks",
 	
 	"item.meetyourfight.desc.luck": "Affected by luck",
 	

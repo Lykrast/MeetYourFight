@@ -2,12 +2,12 @@
 	"type": "minecraft:entity",
 	"pools": [
 		{
-			"name": "phantoplasm",
+			"name": "fortunes_favor",
 			"rolls": 1,
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "meetyourfight:phantoplasm",
+					"name": "meetyourfight:fortunes_favor",
 					"weight": 1
 				}
 			]
