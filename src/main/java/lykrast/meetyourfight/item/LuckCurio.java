@@ -10,6 +10,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class LuckCurio extends CurioBaseItem {
+	public static final String TOOLTIP_LUCK = "item.meetyourfight.desc.luck";
+	
 	public LuckCurio(Properties properties) {
 		super(properties, true);
 	}
@@ -17,7 +19,7 @@ public class LuckCurio extends CurioBaseItem {
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		super.addInformation(stack, worldIn, tooltip, flagIn);
-		tooltip.add(new TranslationTextComponent("item.meetyourfight.desc.luck").mergeStyle(TextFormatting.GRAY));
+		tooltip.add(new TranslationTextComponent(TOOLTIP_LUCK).mergeStyle(TextFormatting.GRAY));
 	}
 
 }

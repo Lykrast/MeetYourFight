@@ -1,9 +1,14 @@
 package lykrast.meetyourfight;
 
 import lykrast.meetyourfight.registry.ModEntities;
+import lykrast.meetyourfight.registry.ModItems;
 import lykrast.meetyourfight.renderer.BellringerRenderer;
 import lykrast.meetyourfight.renderer.DameFortunaRenderer;
 import lykrast.meetyourfight.renderer.ProjectileLineRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -15,6 +20,11 @@ public class ClientStuff {
 
 	@SubscribeEvent
 	public static void clientStuff(final FMLClientSetupEvent event) {
+		//Items
+		ItemColors icol = Minecraft.getInstance().getItemColors();
+		icol.register((s, t) -> t == 1 ? MathHelper.hsvToRGB(((Util.milliTime() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass);
+		
+		//Entities
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BELLRINGER, (manager) -> new BellringerRenderer(manager));
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.DAME_FORTUNA, (manager) -> new DameFortunaRenderer(manager));
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE_LINE, (manager) -> new ProjectileLineRenderer(manager));
