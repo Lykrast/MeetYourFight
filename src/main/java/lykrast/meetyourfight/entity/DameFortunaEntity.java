@@ -9,7 +9,6 @@ import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -22,7 +21,6 @@ import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.monster.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.EvokerFangsEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -194,7 +192,6 @@ public class DameFortunaEntity extends BossEntity {
 	//The regular attacks
 	//It's horribly ad hoc but it'll do "for now"
 	private static class RegularAttack extends Goal {
-		private static final EntityPredicate VEX_TARGETING = (new EntityPredicate()).setDistance(16).allowInvulnerable().allowFriendlyFire();
 		private DameFortunaEntity dame;
 		private LivingEntity target;
 		private int attackRemaining, attackDelay, chosenAttack;
@@ -214,11 +211,7 @@ public class DameFortunaEntity extends BossEntity {
 			dame.attackCooldown = 2;
 			target = dame.getAttackTarget();
 			dame.setAttack(SMALL_ATTACK);
-			chosenAttack = dame.rand.nextInt(5);
-			//Check to prevent swarms of Vexes
-			if (chosenAttack == 0) {
-	            if (dame.world.getTargettableEntitiesWithinAABB(VexEntity.class, VEX_TARGETING, dame, dame.getBoundingBox().grow(16)).size() >= 3) chosenAttack = 1 + dame.rand.nextInt(4);
-			}
+			chosenAttack = dame.rand.nextInt(4);
 			attackDelay = 20;
 			attackRemaining = getAttackCount();
 		}
@@ -226,11 +219,11 @@ public class DameFortunaEntity extends BossEntity {
 		//Horrible horrible ad hoc n°1
 		private int getAttackCount() {
 			switch (chosenAttack) {
-				case 1:
+				case 0:
 					return 16;
-				case 3:
+				case 2:
 					return 8;
-				case 4:
+				case 3:
 					return 4;
 				default:
 					return 3;
@@ -253,20 +246,6 @@ public class DameFortunaEntity extends BossEntity {
 			switch (chosenAttack) {
 				default:
 				case 0:
-					//Vex attack, copied from Evoker
-					attackDelay = 10;
-					ServerWorld serverworld = (ServerWorld) dame.world;
-					BlockPos blockpos = dame.getPosition().add(-2 + dame.rand.nextInt(5), 1, -2 + dame.rand.nextInt(5));
-					VexEntity vexentity = EntityType.VEX.create(dame.world);
-					vexentity.moveToBlockPosAndAngles(blockpos, 0.0F, 0.0F);
-					vexentity.onInitialSpawn(serverworld, dame.world.getDifficultyForLocation(blockpos), SpawnReason.MOB_SUMMONED, null, null);
-					vexentity.setOwner(dame);
-					vexentity.setBoundOrigin(blockpos);
-					vexentity.setLimitedLife(20 * (5 + dame.rand.nextInt(11)));
-					vexentity.setAttackTarget(target);
-					serverworld.func_242417_l(vexentity);
-					break;
-				case 1:
 					//Circular lines
 					attackDelay = 3;
 					float angle = MathHelper.wrapDegrees(attackRemaining * 45F) * ((float)Math.PI / 180F);
@@ -275,7 +254,7 @@ public class DameFortunaEntity extends BossEntity {
 					dame.world.addEntity(proj);
 					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
-				case 2:
+				case 1:
 					//Evoker lines
 					attackDelay = 20;
 					double minY = Math.min(target.getPosY(), dame.getPosY());
@@ -286,7 +265,7 @@ public class DameFortunaEntity extends BossEntity {
 						dame.spawnFangs(dame.getPosX() + MathHelper.cos(angle) * dist, dame.getPosZ() + MathHelper.sin(angle) * dist, minY, maxY, angle, i);
 					}
 					break;
-				case 3:
+				case 2:
 					//Harvester style Evoker jaws
 					attackDelay = 10;
 					minY = Math.min(target.getPosY(), dame.getPosY());
@@ -294,7 +273,7 @@ public class DameFortunaEntity extends BossEntity {
 					angle = (float) MathHelper.atan2(target.getPosZ() - dame.getPosZ(), target.getPosX() - dame.getPosX());
 					dame.spawnFangs(target.getPosX(), target.getPosZ(), minY, maxY, angle, 0);
 					break;
-				case 4:
+				case 3:
 					//Grid above
 					attackDelay = 20;
 					for (int x = -3; x <= 3; x++) {
