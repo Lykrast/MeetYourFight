@@ -1,6 +1,7 @@
 package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.MeetYourFight;
+import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
@@ -19,7 +20,7 @@ public class ModItems {
 	public static void registerItems(final RegistryEvent.Register<Item> event) {
 		IForgeRegistry<Item> reg = event.getRegistry();
 		
-		hauntedBell = initItem(reg, new SummonItem(noStack()), "haunted_bell");
+		hauntedBell = initItem(reg, new SummonItem(noStack(), BellringerEntity::spawn), "haunted_bell");
 		phantoplasm = initItem(reg, new Item(defP()), "phantoplasm");
 		passagesToll = initItem(reg, new PassagesToll(noStack()), "passages_toll");
 		spectresEye = initItem(reg, new SpectresEye(noStack()), "spectres_eye");
@@ -27,7 +28,7 @@ public class ModItems {
 		cocktailCutlass = initItem(reg, new CocktailCutlass(noStack()), "cocktail_cutlass");
 		
 		//TODO make it summon boss when it's there
-		devilsAnte = initItem(reg, new SummonItem(noStack()), "devils_ante");
+		devilsAnte = initItem(reg, new SummonItem(noStack(), DameFortunaEntity::spawn), "devils_ante");
 		fortunesFavor = initItem(reg, new Item(defP()), "fortunes_favor");
 		slicersDice = initItem(reg, new LuckCurio(noStack()), "slicers_dice");
 		aceOfIron = initItem(reg, new LuckCurio(noStack()), "ace_of_iron");

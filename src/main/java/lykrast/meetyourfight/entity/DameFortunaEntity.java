@@ -6,6 +6,7 @@ import java.util.Random;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
+import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityPredicate;
@@ -28,6 +29,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -81,6 +84,18 @@ public class DameFortunaEntity extends BossEntity {
 	public static AttributeModifierMap.MutableAttribute getAttributes() {
         return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 300).createMutableAttribute(Attributes.ARMOR, 5).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
     }
+	
+	public static void spawn(PlayerEntity player, World world) {
+		Random rand = player.getRNG();
+		DameFortunaEntity dame = ModEntities.DAME_FORTUNA.create(world);
+		dame.setLocationAndAngles(player.getPosX() + rand.nextInt(5) - 2, player.getPosY() + rand.nextInt(3) + 3, player.getPosZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
+		dame.attackCooldown = 100;
+		if (!player.abilities.isCreativeMode) dame.setAttackTarget(player);
+		dame.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 100, 2));
+
+		dame.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(dame.getPosition()), SpawnReason.EVENT, null, null);
+		world.addEntity(dame);
+	}
 
 	@Override
 	protected void registerData() {

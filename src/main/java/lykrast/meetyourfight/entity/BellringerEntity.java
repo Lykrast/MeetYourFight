@@ -2,10 +2,12 @@ package lykrast.meetyourfight.entity;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
+import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
@@ -13,6 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
@@ -28,11 +31,13 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class BellringerEntity extends BossEntity {
 	public int attackCooldown;
@@ -56,7 +61,6 @@ public class BellringerEntity extends BossEntity {
 		super.tick();
 		noClip = false;
 		setNoGravity(true);
-
 	}
 
 	@Override
@@ -76,6 +80,19 @@ public class BellringerEntity extends BossEntity {
 	public static AttributeModifierMap.MutableAttribute getAttributes() {
         return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 200).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
     }
+	
+	public static void spawn(PlayerEntity player, World world) {
+		Random rand = player.getRNG();
+		BellringerEntity bellringer = ModEntities.BELLRINGER.create(world);
+		bellringer.setLocationAndAngles(player.getPosX() + rand.nextInt(15) - 7, player.getPosY() + rand.nextInt(9) - 1, player.getPosZ() + rand.nextInt(15) - 7, rand.nextFloat() * 360 - 180, 0);
+		bellringer.attackCooldown = 100;
+		if (!player.abilities.isCreativeMode) bellringer.setAttackTarget(player);
+		bellringer.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 100, 2));
+
+		bellringer.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(bellringer.getPosition()), SpawnReason.EVENT, null, null);
+		world.addEntity(bellringer);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS, 2, 1);
+	}
 	
 	@Override
 	public void updateAITasks() {
