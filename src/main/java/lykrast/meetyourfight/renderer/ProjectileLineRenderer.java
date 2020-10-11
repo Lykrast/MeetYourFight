@@ -16,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity> {
 	//Right now it's just the shulker bullet render copy pasted
-	private static final ResourceLocation SHULKER_SPARK_TEXTURE = MeetYourFight.rl("textures/entity/ghost.png");
+	private static final ResourceLocation SHULKER_SPARK_TEXTURE = MeetYourFight.rl("textures/entity/projectile_line.png");
 	private static final RenderType field_229123_e_ = RenderType.getEntityTranslucent(SHULKER_SPARK_TEXTURE);
 	private final ProjectileLineModel<ProjectileLineEntity> model = new ProjectileLineModel<>();
 

@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
 public class DameFortunaRenderer extends BipedRenderer<DameFortunaEntity, DameFortunaModel> {
-	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/bellringer.png");
+	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png");
 
 	public DameFortunaRenderer(EntityRendererManager renderManagerIn) {
 		super(renderManagerIn, new DameFortunaModel(), 0.5F);
