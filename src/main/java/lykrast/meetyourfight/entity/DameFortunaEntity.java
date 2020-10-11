@@ -252,6 +252,7 @@ public class DameFortunaEntity extends BossEntity {
 					ProjectileLineEntity proj = dame.readyLine();
 					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, target.getPosX(), target.getPosY(), target.getPosZ());
 					dame.world.addEntity(proj);
+					//TODO proper sound event
 					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
@@ -284,6 +285,7 @@ public class DameFortunaEntity extends BossEntity {
 							dame.world.addEntity(proj);
 						}
 					}
+					//TODO proper sound event
 					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 			}
