@@ -27,7 +27,6 @@ public class ModItems {
 		spectresGrasp = initItem(reg, new SpectresGrasp(noStack()), "spectres_grasp");
 		cocktailCutlass = initItem(reg, new CocktailCutlass(noStack()), "cocktail_cutlass");
 		
-		//TODO make it summon boss when it's there
 		devilsAnte = initItem(reg, new SummonItem(noStack(), DameFortunaEntity::spawn), "devils_ante");
 		fortunesFavor = initItem(reg, new Item(defP()), "fortunes_favor");
 		slicersDice = initItem(reg, new LuckCurio(noStack()), "slicers_dice");
