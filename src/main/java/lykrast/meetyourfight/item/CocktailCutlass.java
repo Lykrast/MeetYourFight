@@ -52,9 +52,9 @@ public class CocktailCutlass extends SwordItem {
 		if (target != null && attacker instanceof PlayerEntity) {
 			Random rand = attacker.getRNG();
 			double luck = attacker.getAttributeValue(Attributes.LUCK);
-			double chance = 0.25;
-			if (luck >= 0) chance = (2.0 + luck) / (8.0 + luck);
-			else chance = 1.0 / (4.0 - luck);
+			double chance = 1.0 / 6.0;
+			if (luck >= 0) chance = (2.0 + luck) / (12.0 + luck);
+			else chance = 1.0 / (6.0 - luck);
 			int effectLevel = -1;
 			if (rand.nextDouble() <= chance) {
 				effectLevel = 0;
@@ -71,7 +71,7 @@ public class CocktailCutlass extends SwordItem {
 				//If the effect doesn't scale with potency, increase duration instead
 				int duration = triple.getRight() ? triple.getMiddle() * (1 + effectLevel) : triple.getMiddle();
 				int potency = triple.getRight() ? 0 : effectLevel;
-				attacker.addPotionEffect(new EffectInstance(triple.getLeft(), duration, potency, false, false));
+				attacker.addPotionEffect(new EffectInstance(triple.getLeft(), duration, potency, false, false, true));
 				attacker.world.playSound(null, attacker.getPosition(), SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 1, 1);
 			}
 		}
