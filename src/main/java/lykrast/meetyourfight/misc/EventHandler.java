@@ -5,7 +5,6 @@ import lykrast.meetyourfight.registry.ModItems;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -32,7 +31,7 @@ public class EventHandler {
 			PlayerEntity pattacked = (PlayerEntity)attacked;
 			//Ace of Iron
 			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.aceOfIron, pattacked).isPresent()) {
-				double luck = pattacked.getAttributeValue(Attributes.LUCK);
+				double luck = pattacked.getLuck();
 				double chance = 0.125;
 				if (luck >= 0) chance = (1.0 + luck) / (8.0 + 2 * luck);
 				else chance = 1.0 / (8.0 - 4 * luck);
@@ -51,7 +50,7 @@ public class EventHandler {
 			PlayerEntity pattacker = (PlayerEntity)attacker;
 			//Slicer's Dice
 			if (CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.slicersDice, pattacker).isPresent()) {
-				double luck = pattacker.getAttributeValue(Attributes.LUCK);
+				double luck = pattacker.getLuck();
 				double chance = 0.125;
 				if (luck >= 0) chance = (1.0 + luck) / (8.0 + luck);
 				else chance = 1.0 / (8.0 - 4 * luck);

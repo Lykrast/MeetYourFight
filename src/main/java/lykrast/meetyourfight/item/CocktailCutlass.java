@@ -9,7 +9,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import lykrast.meetyourfight.registry.ModItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
@@ -51,7 +50,7 @@ public class CocktailCutlass extends SwordItem {
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target != null && attacker instanceof PlayerEntity) {
 			Random rand = attacker.getRNG();
-			double luck = attacker.getAttributeValue(Attributes.LUCK);
+			double luck = ((PlayerEntity)attacker).getLuck();
 			double chance = 1.0 / 6.0;
 			if (luck >= 0) chance = (2.0 + luck) / (12.0 + luck);
 			else chance = 1.0 / (6.0 - luck);
