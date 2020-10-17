@@ -44,12 +44,15 @@ import net.minecraft.world.server.ServerWorld;
 public class DameFortunaEntity extends BossEntity {
 	private static final DataParameter<Byte> ATTACK = EntityDataManager.createKey(DameFortunaEntity.class, DataSerializers.BYTE);
 	public static final int NO_ATTACK = 0, SMALL_ATTACK = 1, BIG_ATTACK = 2;
+	private static final int NB_RAGE_ATTACKS = 2;
 	public int attackCooldown;
+	private int rageProgress, rageAttackDone;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, World worldIn) {
 		super(type, worldIn);
 		moveController = new VexMovementController(this);
 		experienceValue = 100;
+		rageAttackDone = -1;
 	}
 
 	@Override
@@ -70,6 +73,7 @@ public class DameFortunaEntity extends BossEntity {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new SwimGoal(this));
+		goalSelector.addGoal(1, new RageAttack(this));
 		goalSelector.addGoal(2, new RegularAttack(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
@@ -107,6 +111,15 @@ public class DameFortunaEntity extends BossEntity {
 	
 	public void setAttack(int attack) {
 		dataManager.set(ATTACK, (byte)attack);
+	}
+	
+	private int getTargetRage() {
+		//+1 rage every 1/3 of life lost
+		float health = getHealth();
+		float third = getMaxHealth() / 3f;
+		if (health <= third) return 2;
+		else if (health >= third * 2) return 0;
+		else return 1;
 	}
 	
 	@Override
@@ -155,12 +168,16 @@ public class DameFortunaEntity extends BossEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
+		rageProgress = compound.getInt("Rage");
+		rageAttackDone = compound.contains("RageDone") ? MathHelper.clamp(compound.getInt("RageDone"), 0, NB_RAGE_ATTACKS-1) : -1;
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putInt("AttackCooldown", attackCooldown);
+		compound.putInt("Rage", rageProgress);
+		if (rageAttackDone > 0) compound.putInt("RageDone", rageAttackDone);
 	}
 	
 	//TODO change sounds
@@ -221,12 +238,13 @@ public class DameFortunaEntity extends BossEntity {
 			switch (chosenAttack) {
 				case 0:
 					return 16;
+				default:
+				case 1:
+					return 3;
 				case 2:
 					return 8;
 				case 3:
 					return 4;
-				default:
-					return 3;
 			}
 		}
 
@@ -281,6 +299,92 @@ public class DameFortunaEntity extends BossEntity {
 						for (int z = -3; z <= 3; z++) {
 							if ((x + z + 6) % 2 != attackRemaining % 2) continue;
 							proj = dame.readyLine();
+							proj.setUp(15, 0, -1, 0, target.getPosX() + x * 1.5, target.getPosY() + 7, target.getPosZ() + z * 1.5);
+							dame.world.addEntity(proj);
+						}
+					}
+					//TODO proper sound event
+					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
+					break;
+			}
+		}
+
+		@Override
+		public void resetTask() {
+			dame.attackCooldown = 40 + dame.rand.nextInt(21);
+			dame.setAttack(NO_ATTACK);
+		}
+
+		@Override
+		public boolean shouldContinueExecuting() {
+			return attackRemaining > 0 && target.isAlive();
+		}
+
+	}
+	
+	//The attack that progress rage
+	private static class RageAttack extends Goal {
+		private DameFortunaEntity dame;
+		private LivingEntity target;
+		private int attackRemaining, attackDelay, chosenAttack;
+
+		public RageAttack(DameFortunaEntity dame) {
+			setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+			this.dame = dame;
+		}
+
+		@Override
+		public boolean shouldExecute() {
+			return dame.attackCooldown <= 0 && dame.rageProgress < dame.getTargetRage() && dame.getAttackTarget() != null && dame.getAttackTarget().isAlive();
+		}
+
+		@Override
+		public void startExecuting() {
+			dame.attackCooldown = 2;
+			target = dame.getAttackTarget();
+			dame.setAttack(BIG_ATTACK);
+			chosenAttack = dame.rand.nextInt(NB_RAGE_ATTACKS);
+			chosenAttack = 0;
+			attackDelay = 20;
+			attackRemaining = getAttackCount();
+			
+			dame.rageProgress++;
+			dame.rageAttackDone = chosenAttack;
+		}
+
+		//Horrible horrible ad hoc n°3
+		private int getAttackCount() {
+			switch (chosenAttack) {
+				default:
+				case 0:
+					return 16;
+				case 1:
+					return 3;
+			}
+		}
+
+		@Override
+		public void tick() {
+			dame.attackCooldown = 2;
+			attackDelay--;
+			if (attackDelay <= 0) {
+				attackRemaining--;
+				performAttack();
+				if (attackRemaining <= 0) resetTask();
+			}
+		}
+
+		//Horrible horrible ad hoc n°4
+		private void performAttack() {
+			switch (chosenAttack) {
+				default:
+				case 0:
+					//Not happy with this attack but it's the one I'm the least not happy about from those I tested
+					attackDelay = 10;
+					for (int x = -3; x <= 3; x++) {
+						for (int z = -3; z <= 3; z++) {
+							if ((x + z + 6) % 4 != attackRemaining % 4) continue;
+							ProjectileLineEntity proj = dame.readyLine();
 							proj.setUp(15, 0, -1, 0, target.getPosX() + x * 1.5, target.getPosY() + 7, target.getPosZ() + z * 1.5);
 							dame.world.addEntity(proj);
 						}
