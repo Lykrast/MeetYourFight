@@ -25,12 +25,12 @@ public class ModItems {
 		passagesToll = initItem(reg, new PassagesToll(noStack()), "passages_toll");
 		spectresEye = initItem(reg, new SpectresEye(noStack()), "spectres_eye");
 		spectresGrasp = initItem(reg, new SpectresGrasp(noStack()), "spectres_grasp");
-		cocktailCutlass = initItem(reg, new CocktailCutlass(noStack()), "cocktail_cutlass");
 		
 		devilsAnte = initItem(reg, new SummonItem(noStack(), DameFortunaEntity::spawn), "devils_ante");
 		fortunesFavor = initItem(reg, new Item(defP()), "fortunes_favor");
 		slicersDice = initItem(reg, new LuckCurio(noStack()), "slicers_dice");
 		aceOfIron = initItem(reg, new LuckCurio(noStack()), "ace_of_iron");
+		cocktailCutlass = initItem(reg, new CocktailCutlass(noStack()), "cocktail_cutlass");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
