@@ -44,15 +44,12 @@ import net.minecraft.world.server.ServerWorld;
 public class DameFortunaEntity extends BossEntity {
 	private static final DataParameter<Byte> ATTACK = EntityDataManager.createKey(DameFortunaEntity.class, DataSerializers.BYTE);
 	public static final int NO_ATTACK = 0, SMALL_ATTACK = 1, BIG_ATTACK = 2;
-	private static final int NB_RAGE_ATTACKS = 2;
 	public int attackCooldown;
-	private int rageProgress, rageAttackDone;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, World worldIn) {
 		super(type, worldIn);
 		moveController = new VexMovementController(this);
 		experienceValue = 100;
-		rageAttackDone = -1;
 	}
 
 	@Override
@@ -73,7 +70,6 @@ public class DameFortunaEntity extends BossEntity {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new SwimGoal(this));
-		goalSelector.addGoal(1, new RageAttack(this));
 		goalSelector.addGoal(2, new RegularAttack(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
@@ -113,7 +109,7 @@ public class DameFortunaEntity extends BossEntity {
 		dataManager.set(ATTACK, (byte)attack);
 	}
 	
-	private int getTargetRage() {
+	private int getRage() {
 		//+1 rage every 1/3 of life lost
 		float health = getHealth();
 		float third = getMaxHealth() / 3f;
@@ -168,16 +164,12 @@ public class DameFortunaEntity extends BossEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
-		rageProgress = compound.getInt("Rage");
-		rageAttackDone = compound.contains("RageDone") ? MathHelper.clamp(compound.getInt("RageDone"), 0, NB_RAGE_ATTACKS-1) : -1;
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putInt("AttackCooldown", attackCooldown);
-		compound.putInt("Rage", rageProgress);
-		if (rageAttackDone > 0) compound.putInt("RageDone", rageAttackDone);
 	}
 	
 	//TODO change sounds
@@ -229,7 +221,7 @@ public class DameFortunaEntity extends BossEntity {
 			target = dame.getAttackTarget();
 			dame.setAttack(SMALL_ATTACK);
 			chosenAttack = dame.rand.nextInt(4);
-			attackDelay = 20;
+			attackDelay = 30;
 			attackRemaining = getAttackCount();
 		}
 
@@ -237,14 +229,21 @@ public class DameFortunaEntity extends BossEntity {
 		private int getAttackCount() {
 			switch (chosenAttack) {
 				case 0:
-					return 16;
+					return dame.getRage() >= 1 ? 24 : 16;
 				default:
 				case 1:
-					return 3;
+					switch (dame.getRage()) {
+						case 1:
+							return 4;
+						case 2:
+							return 8;
+						default:
+							return 3;
+					}
 				case 2:
-					return 8;
+					return 8 + dame.getRage();
 				case 3:
-					return 4;
+					return 4 + dame.getRage();
 			}
 		}
 
@@ -261,6 +260,9 @@ public class DameFortunaEntity extends BossEntity {
 
 		//Horrible horrible ad hoc n°2
 		private void performAttack() {
+			double tx = target.getPosX();
+			double ty = target.getPosY();
+			double tz = target.getPosZ();
 			switch (chosenAttack) {
 				default:
 				case 0:
@@ -268,17 +270,17 @@ public class DameFortunaEntity extends BossEntity {
 					attackDelay = 3;
 					float angle = MathHelper.wrapDegrees(attackRemaining * 45F) * ((float)Math.PI / 180F);
 					ProjectileLineEntity proj = dame.readyLine();
-					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, target.getPosX(), target.getPosY() + 1, target.getPosZ(), 2);
+					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, tx + dame.rand.nextInt(3) - 1, ty + 1, tz + dame.rand.nextInt(3) - 1, dame.getRage() >= 2 ? 3 : 2);
 					dame.world.addEntity(proj);
 					//TODO proper sound event
 					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
 					//Evoker lines
-					attackDelay = 20;
-					double minY = Math.min(target.getPosY(), dame.getPosY());
-					double maxY = Math.max(target.getPosY(), dame.getPosY()) + 1;
-					angle = (float) MathHelper.atan2(target.getPosZ() - dame.getPosZ(), target.getPosX() - dame.getPosX());
+					attackDelay = dame.getRage() >= 2 ? 10 : 20;
+					double minY = Math.min(ty, dame.getPosY());
+					double maxY = Math.max(ty, dame.getPosY()) + 1;
+					angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
 					for (int i = 0; i < 16; ++i) {
 						double dist = 1.25 * (i + 1);
 						dame.spawnFangs(dame.getPosX() + MathHelper.cos(angle) * dist, dame.getPosZ() + MathHelper.sin(angle) * dist, minY, maxY, angle, i);
@@ -287,10 +289,10 @@ public class DameFortunaEntity extends BossEntity {
 				case 2:
 					//Harvester style Evoker jaws
 					attackDelay = 10;
-					minY = Math.min(target.getPosY(), dame.getPosY());
-					maxY = Math.max(target.getPosY(), dame.getPosY()) + 1;
-					angle = (float) MathHelper.atan2(target.getPosZ() - dame.getPosZ(), target.getPosX() - dame.getPosX());
-					dame.spawnFangs(target.getPosX(), target.getPosZ(), minY, maxY, angle, 0);
+					minY = Math.min(ty, dame.getPosY());
+					maxY = Math.max(ty, dame.getPosY()) + 1;
+					angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
+					dame.spawnFangs(tx, tz, minY, maxY, angle, 0);
 					break;
 				case 3:
 					//Grid above
@@ -299,93 +301,7 @@ public class DameFortunaEntity extends BossEntity {
 						for (int z = -3; z <= 3; z++) {
 							if ((x + z + 6) % 2 != attackRemaining % 2) continue;
 							proj = dame.readyLine();
-							proj.setUp(15, 0, -1, 0, target.getPosX() + x * 1.5, target.getPosY() + 7, target.getPosZ() + z * 1.5);
-							dame.world.addEntity(proj);
-						}
-					}
-					//TODO proper sound event
-					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
-					break;
-			}
-		}
-
-		@Override
-		public void resetTask() {
-			dame.attackCooldown = 40 + dame.rand.nextInt(21);
-			dame.setAttack(NO_ATTACK);
-		}
-
-		@Override
-		public boolean shouldContinueExecuting() {
-			return attackRemaining > 0 && target.isAlive();
-		}
-
-	}
-	
-	//The attack that progress rage
-	private static class RageAttack extends Goal {
-		private DameFortunaEntity dame;
-		private LivingEntity target;
-		private int attackRemaining, attackDelay, chosenAttack;
-
-		public RageAttack(DameFortunaEntity dame) {
-			setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
-			this.dame = dame;
-		}
-
-		@Override
-		public boolean shouldExecute() {
-			return dame.attackCooldown <= 0 && dame.rageProgress < dame.getTargetRage() && dame.getAttackTarget() != null && dame.getAttackTarget().isAlive();
-		}
-
-		@Override
-		public void startExecuting() {
-			dame.attackCooldown = 2;
-			target = dame.getAttackTarget();
-			dame.setAttack(BIG_ATTACK);
-			chosenAttack = dame.rand.nextInt(NB_RAGE_ATTACKS);
-			chosenAttack = 0;
-			attackDelay = 20;
-			attackRemaining = getAttackCount();
-			
-			dame.rageProgress++;
-			dame.rageAttackDone = chosenAttack;
-		}
-
-		//Horrible horrible ad hoc n°3
-		private int getAttackCount() {
-			switch (chosenAttack) {
-				default:
-				case 0:
-					return 16;
-				case 1:
-					return 3;
-			}
-		}
-
-		@Override
-		public void tick() {
-			dame.attackCooldown = 2;
-			attackDelay--;
-			if (attackDelay <= 0) {
-				attackRemaining--;
-				performAttack();
-				if (attackRemaining <= 0) resetTask();
-			}
-		}
-
-		//Horrible horrible ad hoc n°4
-		private void performAttack() {
-			switch (chosenAttack) {
-				default:
-				case 0:
-					//Not happy with this attack but it's the one I'm the least not happy about from those I tested
-					attackDelay = 10;
-					for (int x = -3; x <= 3; x++) {
-						for (int z = -3; z <= 3; z++) {
-							if ((x + z + 6) % 4 != attackRemaining % 4) continue;
-							ProjectileLineEntity proj = dame.readyLine();
-							proj.setUp(15, 0, -1, 0, target.getPosX() + x * 1.5, target.getPosY() + 7, target.getPosZ() + z * 1.5);
+							proj.setUp(15, 0, -1, 0, tx + x * 1.5, ty + 7, tz + z * 1.5);
 							dame.world.addEntity(proj);
 						}
 					}
@@ -426,7 +342,7 @@ public class DameFortunaEntity extends BossEntity {
 		public void startExecuting() {			
 			LivingEntity target = mob.getAttackTarget();
 			Random rand = mob.getRNG();
-			float angle = (rand.nextInt(6) + 1) * 10f;
+			float angle = (rand.nextInt(5) + 2) * 10f * ((float)Math.PI / 180F);
 			if (rand.nextBoolean()) angle *= -1;
 			Vector3d offset = new Vector3d(mob.getPosX() - target.getPosX(), 0, mob.getPosZ() - target.getPosZ()).normalize().rotateYaw(angle);
 			double distance = rand.nextDouble() * 2 + 4;
