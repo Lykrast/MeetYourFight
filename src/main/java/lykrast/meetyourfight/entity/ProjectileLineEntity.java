@@ -46,6 +46,7 @@ public class ProjectileLineEntity extends DamagingProjectileEntity {
 				if (wasHit) {
 					if (hit.isAlive()) applyEnchantments(livingentity, hit);
 				}
+				remove();
 			}
 			else {
 				wasHit = hit.attackEntityFrom(DamageSource.MAGIC, 5.0F);
