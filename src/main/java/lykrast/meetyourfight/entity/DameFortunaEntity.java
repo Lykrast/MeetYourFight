@@ -43,7 +43,7 @@ import net.minecraft.world.server.ServerWorld;
 
 public class DameFortunaEntity extends BossEntity {
 	private static final DataParameter<Byte> ATTACK = EntityDataManager.createKey(DameFortunaEntity.class, DataSerializers.BYTE);
-	public static final int NO_ATTACK = 0, SMALL_ATTACK = 1, BIG_ATTACK = 2;
+	public static final int NO_ATTACK = 0, PROJ_ATTACK = 1, CLAW_ATTACK = 2;
 	public int attackCooldown;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, World worldIn) {
@@ -219,13 +219,15 @@ public class DameFortunaEntity extends BossEntity {
 		public void startExecuting() {
 			dame.attackCooldown = 2;
 			target = dame.getAttackTarget();
-			dame.setAttack(SMALL_ATTACK);
 			chosenAttack = dame.rand.nextInt(4);
+			//Choose animation depending on the attack
+			//Horrible ad hoc n°1
+			dame.setAttack(chosenAttack == 1 || chosenAttack == 2 ? CLAW_ATTACK : PROJ_ATTACK);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 		}
 
-		//Horrible horrible ad hoc n°1
+		//Horrible horrible ad hoc n°2
 		private int getAttackCount() {
 			switch (chosenAttack) {
 				case 0:
@@ -258,7 +260,7 @@ public class DameFortunaEntity extends BossEntity {
 			}
 		}
 
-		//Horrible horrible ad hoc n°2
+		//Horrible horrible ad hoc n°3
 		private void performAttack() {
 			double tx = target.getPosX();
 			double ty = target.getPosY();

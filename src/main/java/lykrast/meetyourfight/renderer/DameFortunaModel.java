@@ -15,14 +15,14 @@ public class DameFortunaModel extends BipedModel<DameFortunaEntity> {
 		int attack = entityIn.getAttack();
 		//Same pose as Illagers casting spells
 		//1 is normal attack, 2 is big attack
-		if (attack == DameFortunaEntity.SMALL_ATTACK) {
+		if (attack == DameFortunaEntity.PROJ_ATTACK) {
 			bipedLeftArm.rotationPointZ = 0.0F;
 			bipedLeftArm.rotationPointX = 5.0F;
 			bipedLeftArm.rotateAngleX = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
 			bipedLeftArm.rotateAngleZ = -2.3561945F;
 			bipedLeftArm.rotateAngleY = 0.0F;
 		}
-		else if (attack == DameFortunaEntity.BIG_ATTACK) {
+		else if (attack == DameFortunaEntity.CLAW_ATTACK) {
 			bipedRightArm.rotationPointZ = 0.0F;
 			bipedRightArm.rotationPointX = -5.0F;
 			bipedRightArm.rotateAngleX = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
