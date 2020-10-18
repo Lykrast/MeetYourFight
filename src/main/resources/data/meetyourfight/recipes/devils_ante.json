@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"RIR",
+		"IDI",
+		"RIR"
+	],
+	"key": {
+		"D": { "tag": "forge:gems/diamond" },
+		"I": { "tag": "forge:ingots/gold" },
+		"R": { "tag": "forge:dyes/red" }
+	},
+	"result": { "item": "meetyourfight:devils_ante" }
+}

@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/root",
+	"display": {
+		"icon": { "item": "meetyourfight:devils_ante" },
+		"title": { "translate": "advancements.meetyourfight.dame_fortuna_summon.title" },
+		"description": { "translate": "advancements.meetyourfight.dame_fortuna_summon.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "item": "meetyourfight:devils_ante" }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}

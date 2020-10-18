@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"I I",
+		"IFI",
+		"I I"
+	],
+	"key": {
+		"I": { "tag": "forge:ingots/iron" },
+		"F": { "item": "meetyourfight:fortunes_favor" }
+	},
+	"result": { "item": "meetyourfight:ace_of_iron" }
+}

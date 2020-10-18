@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/dame_fortuna_summon",
+	"display": {
+		"icon": { "item": "meetyourfight:fortunes_favor" },
+		"title": { "translate": "advancements.meetyourfight.dame_fortuna_kill.title" },
+		"description": { "translate": "advancements.meetyourfight.dame_fortuna_kill.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "item": "meetyourfight:fortunes_favor" }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}

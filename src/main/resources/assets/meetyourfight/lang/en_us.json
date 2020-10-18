@@ -39,6 +39,10 @@
 	"advancements.meetyourfight.bellringer_summon.description": "Get a Haunted Bell to summon Bellringer",
 	"advancements.meetyourfight.bellringer_kill.title": "Immaterial and Missing Power",
 	"advancements.meetyourfight.bellringer_kill.description": "Defeat Bellringer to get Phantoplasm",
+	"advancements.meetyourfight.dame_fortuna_summon.title": "The Devil has its Price",
+	"advancements.meetyourfight.dame_fortuna_summon.description": "Get the Devil's Ante to summon Dame Fortuna",
+	"advancements.meetyourfight.dame_fortuna_kill.title": "Jackpot",
+	"advancements.meetyourfight.dame_fortuna_kill.description": "Defeat Dame Fortuna to get a Fortune's Favor",
 	
 	"_comment": "Forge issue #7372, here's a bandaid and hoping the issue won't get closed without fixing",
 	"generic.reachDistance": "Reach Distance"
