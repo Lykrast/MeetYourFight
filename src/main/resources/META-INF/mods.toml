@@ -8,7 +8,7 @@ modId="meetyourfight"
 version="${version}"
 displayName="Meet Your Fight"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/meet-your-fight"
-credits=""
+credits="KitsuneAlex for the music, JTK22 for the Haunted Bell texture"
 authors="Lykrast"
 description='''
 Adds several bosses to fight, each giving you access to unique goodies, such as weapons, armors or curios. Theses bosses won't come to you on their own though, to call them you need to craft the appropriate summoning item.
