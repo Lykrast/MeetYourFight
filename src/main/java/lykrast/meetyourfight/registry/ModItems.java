@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -34,6 +35,8 @@ public class ModItems {
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
+		
+		if (ModList.get().isLoaded("gunswithoutroses")) CompatGWRItems.registerItems(reg);
 	}
 
 	public static Item.Properties defP() {
