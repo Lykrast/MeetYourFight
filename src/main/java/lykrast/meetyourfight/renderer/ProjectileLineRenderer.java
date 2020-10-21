@@ -15,9 +15,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity> {
-	//Right now it's just the shulker bullet render copy pasted
-	private static final ResourceLocation SHULKER_SPARK_TEXTURE = MeetYourFight.rl("textures/entity/projectile_line.png");
-	private static final RenderType field_229123_e_ = RenderType.getEntityTranslucent(SHULKER_SPARK_TEXTURE);
+	private static final ResourceLocation[] TEXTURES = {
+			MeetYourFight.rl("textures/entity/projectile_bellringer.png"),
+			MeetYourFight.rl("textures/entity/projectile_dame_fortuna.png")
+			};
+	private static final RenderType[] OVERLAYS;
+	static {
+		OVERLAYS = new RenderType[TEXTURES.length];
+		for (int i = 0; i < OVERLAYS.length; i++) OVERLAYS[i] = RenderType.getEntityTranslucent(TEXTURES[i]);
+	}
 	private final ProjectileLineModel<ProjectileLineEntity> model = new ProjectileLineModel<>();
 
 	public ProjectileLineRenderer(EntityRendererManager renderManager) {
@@ -32,15 +38,16 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 	@Override
 	public void render(ProjectileLineEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		//TODO great it's backwards when facing any axis except one of the horizontal ones
+		//So I just made the texture not have any direction
 		matrixStackIn.push();
 		float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw);
 		float f1 = MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch);
 		matrixStackIn.translate(0, 0.15, 0);
 		model.setRotationAngles(entityIn, 0, 0, 0, f, f1);
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(model.getRenderType(SHULKER_SPARK_TEXTURE));
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(model.getRenderType(TEXTURES[clampVariant(entityIn)]));
 		model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		matrixStackIn.scale(1.5F, 1.5F, 1.5F);
-		IVertexBuilder ivertexbuilder1 = bufferIn.getBuffer(field_229123_e_);
+		IVertexBuilder ivertexbuilder1 = bufferIn.getBuffer(OVERLAYS[clampVariant(entityIn)]);
 		model.render(matrixStackIn, ivertexbuilder1, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.15F);
 		matrixStackIn.pop();
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
@@ -48,7 +55,11 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 
 	@Override
 	public ResourceLocation getEntityTexture(ProjectileLineEntity entity) {
-		return SHULKER_SPARK_TEXTURE;
+		return TEXTURES[clampVariant(entity)];
+	}
+	
+	private int clampVariant(ProjectileLineEntity entity) {
+		return MathHelper.clamp(entity.getVariant(), 0, TEXTURES.length);
 	}
 
 }

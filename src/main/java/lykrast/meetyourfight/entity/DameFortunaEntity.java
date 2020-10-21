@@ -128,10 +128,10 @@ public class DameFortunaEntity extends BossEntity {
 		ProjectileLineEntity proj = new ProjectileLineEntity(world, this, 0, 0, 0);
 		proj.setShooter(this);
 		proj.setPosition(getPosX(), getPosYEye() + 1, getPosZ());
+		proj.setVariant(ProjectileLineEntity.VAR_DAME_FORTUNA);
 		return proj;
 	}
 	
-
 	//Copied from Evoker
 	private void spawnFangs(double posX, double posZ, double minY, double minZ, float rotationRad, int delay) {
 		BlockPos blockpos = new BlockPos(posX, minZ, posZ);

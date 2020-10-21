@@ -10,6 +10,9 @@ import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
@@ -20,17 +23,27 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ProjectileLineEntity extends DamagingProjectileEntity {
+	//Projectile goes to a point over a set duration, then activates and accelerates in a given straight line
+	private static final DataParameter<Integer> PROJECTILE_VARIANT = EntityDataManager.createKey(ProjectileLineEntity.class, DataSerializers.VARINT);
+	public static final int VAR_BELLRINGER = 0, VAR_DAME_FORTUNA = 1;
+	
 	private double dirX, dirY, dirZ;
 	private double startX, startY, startZ;
 	private int timer;
 	private boolean fired;
-
+	
 	public ProjectileLineEntity(EntityType<? extends ProjectileLineEntity> type, World world) {
 		super(type, world);
 	}
 
 	public ProjectileLineEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
 		super(ModEntities.PROJECTILE_LINE, shooter, accelX, accelY, accelZ, worldIn);
+	}
+	
+	@Override
+	protected void registerData() {
+		super.registerData();
+		dataManager.register(PROJECTILE_VARIANT, 0);
 	}
 
 	@Override
@@ -127,6 +140,14 @@ public class ProjectileLineEntity extends DamagingProjectileEntity {
 	      baseTick();
 	}
 
+	public void setVariant(int variant) {
+		dataManager.set(PROJECTILE_VARIANT, variant);
+	}
+
+	public int getVariant() {
+		return dataManager.get(PROJECTILE_VARIANT);
+	}
+
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
@@ -138,6 +159,7 @@ public class ProjectileLineEntity extends DamagingProjectileEntity {
 		compound.putDouble("SZ", startZ);
 		compound.putInt("Timer", timer);
 		compound.putBoolean("Fired", fired);
+		compound.putInt("Variant", getVariant());
 	}
 
 	@Override
@@ -151,6 +173,7 @@ public class ProjectileLineEntity extends DamagingProjectileEntity {
 		startZ = compound.getDouble("SZ");
 		timer = compound.getInt("Timer");
 		fired = compound.getBoolean("Fired");
+		setVariant(compound.getInt("Variant"));
 	}
 
 	@Override
