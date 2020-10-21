@@ -19,6 +19,8 @@
 	"item.meetyourfight.ace_of_iron.desc": "Sometimes negates incoming attacks",
 	"item.meetyourfight.cocktail_cutlass": "Cocktail Cutlass",
 	"item.meetyourfight.cocktail_cutlass.desc": "Attacks sometimes give potion effects",
+	"item.meetyourfight.cocktail_shotgun": "Jägershot",
+	"item.meetyourfight.cocktail_shotgun.desc": "Sometimes fires negative splash potions",
 	
 	"item.meetyourfight.desc.luck": "Affected by luck",
 	

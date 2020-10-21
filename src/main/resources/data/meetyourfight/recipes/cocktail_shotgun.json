@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"D  ",
+		"GFI",
+		" SL"
+	],
+	"key": {
+		"F": { "item": "meetyourfight:fortunes_favor" },
+		"D": { "tag": "forge:gems/diamond" },
+		"G": { "tag": "forge:glass" },
+		"I": { "item": "minecraft:flint" },
+		"S": { "tag": "forge:rods/wooden" },
+		"L": { "tag": "minecraft:logs" }
+	},
+	"result": { "item": "meetyourfight:cocktail_shotgun" },
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }]
+}

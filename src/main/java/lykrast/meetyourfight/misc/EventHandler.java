@@ -31,7 +31,7 @@ public class EventHandler {
 			PlayerEntity pattacked = (PlayerEntity)attacked;
 			//Ace of Iron
 			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.aceOfIron, pattacked).isPresent()) {
-				double luck = pattacked.getLuck();
+				float luck = pattacked.getLuck();
 				double chance = 0.125;
 				if (luck >= 0) chance = (1.0 + luck) / (8.0 + 2 * luck);
 				else chance = 1.0 / (8.0 - 4 * luck);
@@ -50,7 +50,7 @@ public class EventHandler {
 			PlayerEntity pattacker = (PlayerEntity)attacker;
 			//Slicer's Dice
 			if (CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.slicersDice, pattacker).isPresent()) {
-				double luck = pattacker.getLuck();
+				float luck = pattacker.getLuck();
 				double chance = 0.125;
 				if (luck >= 0) chance = (1.0 + luck) / (8.0 + luck);
 				else chance = 1.0 / (8.0 - 4 * luck);

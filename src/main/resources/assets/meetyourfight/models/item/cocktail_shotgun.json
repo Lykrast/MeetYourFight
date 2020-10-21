@@ -1,0 +1,7 @@
+{
+	"parent": "gunswithoutroses:item/base_gun",
+	"textures": {
+		"layer0": "meetyourfight:item/cocktail_shotgun",
+		"layer1": "meetyourfight:item/cocktail_shotgun_overlay"
+	}
+}

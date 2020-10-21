@@ -1,5 +1,6 @@
 package lykrast.meetyourfight;
 
+import lykrast.meetyourfight.registry.CompatGWRItems;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModItems;
 import lykrast.meetyourfight.renderer.BellringerRenderer;
@@ -23,6 +24,7 @@ public class ClientStuff {
 		//Items
 		ItemColors icol = Minecraft.getInstance().getItemColors();
 		icol.register((s, t) -> t == 1 ? MathHelper.hsvToRGB(((Util.milliTime() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass);
+		if (MeetYourFight.loadedGunsWithoutRoses()) icol.register((s, t) -> t == 1 ? MathHelper.hsvToRGB(((Util.milliTime() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun);
 		
 		//Entities
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BELLRINGER, (manager) -> new BellringerRenderer(manager));

@@ -2,7 +2,6 @@ package lykrast.meetyourfight.item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -49,24 +48,24 @@ public class CocktailCutlass extends SwordItem {
 	@Override
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target != null && attacker instanceof PlayerEntity) {
-			Random rand = attacker.getRNG();
-			double luck = ((PlayerEntity)attacker).getLuck();
+			float luck = ((PlayerEntity)attacker).getLuck();
 			double chance = 1.0 / 6.0;
 			if (luck >= 0) chance = (2.0 + luck) / (12.0 + luck);
 			else chance = 1.0 / (6.0 - luck);
 			int effectLevel = -1;
-			if (rand.nextDouble() <= chance) {
+			//Using the Item random cause it seems like that's what vanilla item uses (and at least for bonemeal it's used a different amount of times in client)
+			if (random.nextDouble() <= chance) {
 				effectLevel = 0;
 				//Roll for extra strength
 				for (int i = 0; i < 2; i++) {
 					chance *= 0.5;
-					if (rand.nextDouble() <= chance) effectLevel++;
+					if (random.nextDouble() <= chance) effectLevel++;
 					else break;
 				}
 			}
 			if (effectLevel >= 0) {
 				//Choose effect
-				Triple<Effect, Integer, Boolean> triple = EFFECTS.get(rand.nextInt(EFFECTS.size()));
+				Triple<Effect, Integer, Boolean> triple = EFFECTS.get(random.nextInt(EFFECTS.size()));
 				//If the effect doesn't scale with potency, increase duration instead
 				int duration = triple.getRight() ? triple.getMiddle() * (1 + effectLevel) : triple.getMiddle();
 				int potency = triple.getRight() ? 0 : effectLevel;
