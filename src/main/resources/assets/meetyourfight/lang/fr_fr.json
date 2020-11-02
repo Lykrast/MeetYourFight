@@ -1,0 +1,50 @@
+{
+	"item.meetyourfight.haunted_bell": "Cloche hantée",
+	"item.meetyourfight.haunted_bell.desc": "Invoque Sonneur",
+	"item.meetyourfight.phantoplasm": "Phantoplasme",
+	"item.meetyourfight.passages_toll": "Tribut du passage",
+	"item.meetyourfight.passages_toll.desc": "Traverse jusqu'à 16 blocs à travers un mur",
+	"item.meetyourfight.spectres_eye": "Oeuil du spectre",
+	"item.meetyourfight.spectres_eye.desc": "Dévoile les monstres hostiles proches",
+	"item.meetyourfight.spectres_grasp": "Poigne du spectre",
+	"item.meetyourfight.phantasmal_rifle": "Fusil fantasmal",
+	"item.meetyourfight.phantasmal_rifle.desc": "Les projectiles traversent les blocs",
+	
+	"item.meetyourfight.devils_ante": "Ante du diable",
+	"item.meetyourfight.devils_ante.desc": "Invoque Dame Fortuna",
+	"item.meetyourfight.fortunes_favor": "Faveur de la fortune",
+	"item.meetyourfight.slicers_dice": "Dé du découpeur",
+	"item.meetyourfight.slicers_dice.desc": "Les attaques font parfois plus de dégâts",
+	"item.meetyourfight.ace_of_iron": "As de fer",
+	"item.meetyourfight.ace_of_iron.desc": "Annule parfois les attaques reçues",
+	"item.meetyourfight.cocktail_cutlass": "Sabre à cocktail",
+	"item.meetyourfight.cocktail_cutlass.desc": "Les attaques donnent parfois des effets de potion",
+	"item.meetyourfight.cocktail_shotgun": "Jägershot",
+	"item.meetyourfight.cocktail_shotgun.desc": "Tire parfois des potions jetables néfastes",
+	
+	"item.meetyourfight.desc.luck": "Affecté par la chance",
+	
+	"item.meetyourfight.bellringer_spawn_egg": "Oeuf d'apparition de Sonneur",
+	"item.meetyourfight.dame_fortuna_spawn_egg": "Oeuf d'apparition de Dame Fortuna",
+	
+	"entity.meetyourfight.bellringer": "Sonneur",
+	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
+	
+	"itemGroup.meetyourfight": "Meet Your Fight",
+	
+	"status.meetyourfight.boss_nearby": "Un autre boss est trop proche",
+	
+	"subtitles.meetyourfight.item.bonus_damage": "Dégâts amplifiés",
+	"subtitles.meetyourfight.item.damage_negated": "Dégâts annulés",
+	
+	"advancements.meetyourfight.root.title": "Meet Your Fight",
+	"advancements.meetyourfight.root.description": "Préparez vous pour les défis à venir.",
+	"advancements.meetyourfight.bellringer_summon.title": "Sonner le glas",
+	"advancements.meetyourfight.bellringer_summon.description": "Obtenez une cloche hantée pour invoquer Sonneur.",
+	"advancements.meetyourfight.bellringer_kill.title": "Pouvoir immatériel",
+	"advancements.meetyourfight.bellringer_kill.description": "Vainquez Sonneur pour obtenir du phantoplasme.",
+	"advancements.meetyourfight.dame_fortuna_summon.title": "Le diable a son prix",
+	"advancements.meetyourfight.dame_fortuna_summon.description": "Obtenez l'ante du diable pour invoquer Dame Fortuna.",
+	"advancements.meetyourfight.dame_fortuna_kill.title": "Jackpot",
+	"advancements.meetyourfight.dame_fortuna_kill.description": "Vainquez Dame Fortuna pour obtenir une faveur de la fortune."
+}
