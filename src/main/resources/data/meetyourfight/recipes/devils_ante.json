@@ -1,14 +1,14 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		"RIR",
+		"NIN",
 		"IDI",
-		"RIR"
+		"NIN"
 	],
 	"key": {
 		"D": { "tag": "forge:gems/diamond" },
 		"I": { "tag": "forge:ingots/gold" },
-		"R": { "tag": "forge:dyes/red" }
+		"N": { "tag": "forge:netherrack" }
 	},
 	"result": { "item": "meetyourfight:devils_ante" }
 }
