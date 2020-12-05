@@ -32,9 +32,9 @@ public class EventHandler {
 			//Ace of Iron
 			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.aceOfIron, pattacked).isPresent()) {
 				float luck = pattacked.getLuck();
-				double chance = 0.125;
-				if (luck >= 0) chance = (1.0 + luck) / (8.0 + 2 * luck);
-				else chance = 1.0 / (8.0 - 4 * luck);
+				double chance = 1.0 / 6.0;
+				if (luck >= 0) chance = (1.0 + luck) / (6.0 + 2 * luck);
+				else chance = 1.0 / (6.0 - 3 * luck);
 				if (pattacked.getRNG().nextDouble() <= chance) {
 					event.setCanceled(true);
 					pattacked.world.playSound(null, attacked.getPosition(), ModSounds.aceOfIronProc, SoundCategory.PLAYERS, 1, 1);
@@ -51,9 +51,9 @@ public class EventHandler {
 			//Slicer's Dice
 			if (CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.slicersDice, pattacker).isPresent()) {
 				float luck = pattacker.getLuck();
-				double chance = 0.125;
-				if (luck >= 0) chance = (1.0 + luck) / (8.0 + luck);
-				else chance = 1.0 / (8.0 - 4 * luck);
+				double chance = 0.2;
+				if (luck >= 0) chance = (1.0 + luck) / (5.0 + luck);
+				else chance = 1.0 / (5.0 - 3 * luck);
 				if (pattacker.getRNG().nextDouble() <= chance) {
 					event.setAmount(event.getAmount() * 2);
 					pattacker.world.playSound(null, attacked.getPosition(), ModSounds.slicersDiceProc, SoundCategory.PLAYERS, 1, 1);

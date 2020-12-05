@@ -49,9 +49,9 @@ public class CocktailCutlass extends SwordItem {
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target != null && attacker instanceof PlayerEntity) {
 			float luck = ((PlayerEntity)attacker).getLuck();
-			double chance = 1.0 / 6.0;
-			if (luck >= 0) chance = (2.0 + luck) / (12.0 + luck);
-			else chance = 1.0 / (6.0 - luck);
+			double chance = 1.0 / 5.0;
+			if (luck >= 0) chance = (2.0 + luck) / (10.0 + luck);
+			else chance = 1.0 / (5.0 - luck);
 			int effectLevel = -1;
 			//Using the Item random cause it seems like that's what vanilla item uses (and at least for bonemeal it's used a different amount of times in client)
 			if (random.nextDouble() <= chance) {
