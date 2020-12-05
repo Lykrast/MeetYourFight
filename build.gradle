@@ -103,5 +103,5 @@ dependencies {
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}")
-    compile fg.deobf("curse.maven:gunswithoutroses:${project.gwr_file}")
+    compile fg.deobf("curse.maven:gunswithoutroses-405077:${project.gwr_file}")
 }
