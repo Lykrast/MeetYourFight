@@ -23,7 +23,7 @@ public class ModEntities {
 			.build("");
 	public static final EntityType<SwampjawEntity> SWAMPJAW = EntityType.Builder
 			.<SwampjawEntity>create(SwampjawEntity::new, EntityClassification.MONSTER)
-			.size(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.size(1.1f, 0.6f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	
 	//Projectiles
@@ -33,7 +33,7 @@ public class ModEntities {
 			.build("");
 	public static final EntityType<SwampMineEntity> SWAMP_MINE = EntityType.Builder
 			.<SwampMineEntity>create(SwampMineEntity::new, EntityClassification.MISC)
-			.size(1f, 1f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+			.size(1, 1).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build("");
 
 	@SubscribeEvent

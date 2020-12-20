@@ -204,13 +204,13 @@ public class SwampjawEntity extends BossFlyingEntity {
 		
 		@Override
 		public boolean shouldExecute() {
-			return swampjaw.getAttackTarget() == null || swampjaw.behavior == CIRCLE || swampjaw.behavior == BOMB;
+			return swampjaw.getAttackTarget() == null || swampjaw.behavior == CIRCLE;
 		}
 
 		@Override
 		public void startExecuting() {
 			radius = 6 + swampjaw.rand.nextFloat() * 6;
-			height = -4.0F + swampjaw.rand.nextFloat() * 9.0F;
+			height = -4.0F + swampjaw.rand.nextFloat() * 6.0F;
 			direction = swampjaw.rand.nextBoolean() ? 1.0F : -1.0F;
 			updateOffset();
 		}
@@ -218,7 +218,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		@Override
 		public void tick() {
 			if (swampjaw.rand.nextInt(350) == 0) {
-				height = -4.0F + swampjaw.rand.nextFloat() * 9.0F;
+				height = -4.0F + swampjaw.rand.nextFloat() * 6.0F;
 			}
 
 			if (swampjaw.rand.nextInt(250) == 0) {
@@ -284,7 +284,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 				double difX = target.getPosX() - swampjaw.orbitOffset.x;
 				double difZ = target.getPosZ() - swampjaw.orbitOffset.z;
 				Vector3d overshoot = new Vector3d(difX, 0, difZ).normalize();
-				swampjaw.orbitOffset = Vector3d.copy(swampjaw.orbitPosition).add(difX + overshoot.x * 3, -4, difZ + overshoot.z * 3);
+				swampjaw.orbitOffset = Vector3d.copy(swampjaw.orbitPosition).add(difX + overshoot.x * 2, -4, difZ + overshoot.z * 2);
 			}
 		}
 	}
@@ -365,15 +365,19 @@ public class SwampjawEntity extends BossFlyingEntity {
 						bombLeft = 3;
 						swampjaw.behavior = SWOOP;
 						updateOrbit();
-						tickDelay = (5 + swampjaw.rand.nextInt(4)) * 20;
+						tickDelay = (4 + swampjaw.rand.nextInt(4)) * 20;
 						swampjaw.playSound(SoundEvents.ENTITY_PHANTOM_SWOOP, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
+					}
+					//Switch to bomb mode
+					else if (swampjaw.behavior == CIRCLE) {
+						swampjaw.behavior = BOMB;
+						tickDelay = 20;
 					}
 					//Bomb ready, wait for target near or for some extra time
 					else if (tickDelay <= -40 || isTargetClose()) {
-						swampjaw.behavior = BOMB;
 						bombLeft--;
 						if (bombLeft <= 0) tickDelay = 30 + swampjaw.rand.nextInt(30);
-						else tickDelay = 30;
+						else tickDelay = 20;
 						updateOrbit();
 						swampjaw.playSound(SoundEvents.ENTITY_TNT_PRIMED, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
 						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.world, swampjaw.getPosX() + 0.5, swampjaw.getPosY(), swampjaw.getPosZ() + 0.5, swampjaw);
@@ -387,13 +391,13 @@ public class SwampjawEntity extends BossFlyingEntity {
 		private boolean isTargetClose() {
 			LivingEntity target = swampjaw.getAttackTarget();
 			if (target == null) return false;
-			double dx = target.getPosX() - swampjaw.getPosX();
-			double dz = target.getPosZ() - swampjaw.getPosZ();
+			double dx = target.getPosX() - (swampjaw.getPosX() + swampjaw.getMotion().x);
+			double dz = target.getPosZ() - (swampjaw.getPosZ() + swampjaw.getMotion().z);
 			return (dx * dx + dz * dz) < 9;
 		}
 
 		private void updateOrbit() {
-			swampjaw.orbitPosition = swampjaw.getAttackTarget().getPosition().up(16 + swampjaw.rand.nextInt(8));
+			swampjaw.orbitPosition = swampjaw.getAttackTarget().getPosition().up(14 + swampjaw.rand.nextInt(6));
 		}
 	}
 

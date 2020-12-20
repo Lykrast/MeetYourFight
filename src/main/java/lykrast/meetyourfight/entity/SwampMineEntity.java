@@ -12,6 +12,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -30,7 +31,12 @@ public class SwampMineEntity extends Entity {
 		this(ModEntities.SWAMP_MINE, worldIn);
 		this.setPosition(x, y, z);
 		double angle = worldIn.rand.nextDouble() * Math.PI * 2;
-		setMotion(-Math.sin(angle) * 0.04, 0.2, -Math.cos(angle) * 0.04);
+		setMotion(-Math.sin(angle) * 0.06, 0.2, -Math.cos(angle) * 0.06);
+		//This one is ellpeck's idea
+		if (igniter != null) {
+			Vector3d motion = igniter.getMotion();
+			setMotion(getMotion().add(motion.x * 0.5, 0, motion.z * 0.5));
+		}
 		fuse = 200;
 		prevPosX = x;
 		prevPosY = y;
@@ -56,8 +62,9 @@ public class SwampMineEntity extends Entity {
 		}
 
 		move(MoverType.SELF, getMotion());
-		if (getMotion().y < 0) setMotion(getMotion().mul(0.98, 0.8, 0.98));
-		else setMotion(getMotion().scale(0.98));
+		//if (getMotion().y < 0) setMotion(getMotion().mul(0.98, 0.8, 0.98));
+		//else setMotion(getMotion().scale(0.98));
+		setMotion(getMotion().scale(0.98));
 		
 		if (onGround) fuse = 0;
 		else --fuse;
