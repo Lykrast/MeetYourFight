@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/root",
+	"display": {
+		"icon": { "item": "meetyourfight:fossil_bait" },
+		"title": { "translate": "advancements.meetyourfight.swampjaw_summon.title" },
+		"description": { "translate": "advancements.meetyourfight.swampjaw_summon.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "item": "meetyourfight:fossil_bait" }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}

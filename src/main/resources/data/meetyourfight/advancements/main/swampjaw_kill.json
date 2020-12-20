@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/swampjaw_summon",
+	"display": {
+		"icon": { "item": "meetyourfight:mossy_tooth" },
+		"title": { "translate": "advancements.meetyourfight.swampjaw_kill.title" },
+		"description": { "translate": "advancements.meetyourfight.swampjaw_kill.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "item": "meetyourfight:mossy_tooth" }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}
