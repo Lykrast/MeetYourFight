@@ -2,12 +2,7 @@ package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.*;
-import lykrast.meetyourfight.item.CocktailCutlass;
-import lykrast.meetyourfight.item.LuckCurio;
-import lykrast.meetyourfight.item.PassagesToll;
-import lykrast.meetyourfight.item.SpectresEye;
-import lykrast.meetyourfight.item.SpectresGrasp;
-import lykrast.meetyourfight.item.SummonItem;
+import lykrast.meetyourfight.item.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,7 +14,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModItems {
 	public static Item hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp;
 	public static Item devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass;
-	public static Item fossilBait, mossyTooth;
+	public static Item fossilBait, mossyTooth, boneRaker;
 	public static Item eggBellringer, eggDameFortuna, eggSwampjaw;
 	
 	@SubscribeEvent
@@ -40,6 +35,7 @@ public class ModItems {
 		
 		fossilBait = initItem(reg, new SummonItem(noStack(), SwampjawEntity::spawn), "fossil_bait");
 		mossyTooth = initItem(reg, new Item(defP()), "mossy_tooth");
+		boneRaker = initItem(reg, new BoneRaker(noStack()), "bone_raker");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
