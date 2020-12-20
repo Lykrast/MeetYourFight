@@ -30,8 +30,6 @@
 	"entity.meetyourfight.bellringer": "Sonneur",
 	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
 	
-	"itemGroup.meetyourfight": "Meet Your Fight",
-	
 	"status.meetyourfight.boss_nearby": "Un autre boss est trop proche",
 	
 	"subtitles.meetyourfight.item.bonus_damage": "Dégâts amplifiés",
@@ -46,5 +44,7 @@
 	"advancements.meetyourfight.dame_fortuna_summon.title": "Le diable a son prix",
 	"advancements.meetyourfight.dame_fortuna_summon.description": "Obtenez l'ante du diable pour invoquer Dame Fortuna.",
 	"advancements.meetyourfight.dame_fortuna_kill.title": "Jackpot",
-	"advancements.meetyourfight.dame_fortuna_kill.description": "Vainquez Dame Fortuna pour obtenir une faveur de la fortune."
+	"advancements.meetyourfight.dame_fortuna_kill.description": "Vainquez Dame Fortuna pour obtenir une faveur de la fortune.",
+	
+	"itemGroup.meetyourfight": "Meet Your Fight"
 }

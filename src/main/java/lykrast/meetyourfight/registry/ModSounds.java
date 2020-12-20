@@ -11,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModSounds {
 	public static SoundEvent slicersDiceProc, aceOfIronProc;
-	public static SoundEvent musicBellringer, musicDameFortuna;
+	public static SoundEvent musicBellringer, musicDameFortuna, musicSwampjaw;
 	
 	@SubscribeEvent
 	public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
@@ -22,6 +22,7 @@ public class ModSounds {
 		
 		musicBellringer = initSound(reg, "music.bellringer");
 		musicDameFortuna = initSound(reg, "music.dame_fortuna");
+		musicSwampjaw = initSound(reg, "music.swampjaw");
 	}
 
 	public static SoundEvent initSound(IForgeRegistry<SoundEvent> reg, String name) {

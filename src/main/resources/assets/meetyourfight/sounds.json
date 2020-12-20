@@ -8,5 +8,6 @@
 		"sounds": [ "minecraft:random/anvil_land" ]
 	},
 	"music.bellringer": { "sounds": [{"name": "meetyourfight:music/bellringer", "stream": true}] },
-	"music.dame_fortuna": { "sounds": [{"name": "meetyourfight:music/dame_fortuna", "stream": true}] }
+	"music.dame_fortuna": { "sounds": [{"name": "meetyourfight:music/dame_fortuna", "stream": true}] },
+	"music.swampjaw": { "sounds": [{"name": "meetyourfight:music/swampjaw", "stream": true}] }
 }

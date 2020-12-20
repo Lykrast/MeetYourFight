@@ -3,9 +3,7 @@ package lykrast.meetyourfight;
 import lykrast.meetyourfight.registry.CompatGWRItems;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModItems;
-import lykrast.meetyourfight.renderer.BellringerRenderer;
-import lykrast.meetyourfight.renderer.DameFortunaRenderer;
-import lykrast.meetyourfight.renderer.ProjectileLineRenderer;
+import lykrast.meetyourfight.renderer.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.util.Util;
@@ -29,7 +27,10 @@ public class ClientStuff {
 		//Entities
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BELLRINGER, (manager) -> new BellringerRenderer(manager));
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.DAME_FORTUNA, (manager) -> new DameFortunaRenderer(manager));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.SWAMPJAW, (manager) -> new SwampjawRenderer(manager));
+		
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE_LINE, (manager) -> new ProjectileLineRenderer(manager));
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.SWAMP_MINE, (manager) -> new SwampMineRenderer(manager));
 	}
 
 }

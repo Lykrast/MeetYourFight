@@ -1,8 +1,7 @@
 package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.MeetYourFight;
-import lykrast.meetyourfight.entity.BellringerEntity;
-import lykrast.meetyourfight.entity.DameFortunaEntity;
+import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.CocktailCutlass;
 import lykrast.meetyourfight.item.LuckCurio;
 import lykrast.meetyourfight.item.PassagesToll;
@@ -20,7 +19,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModItems {
 	public static Item hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp;
 	public static Item devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass;
-	public static Item eggBellringer, eggDameFortuna;
+	public static Item fossilBait, mossyTooth;
+	public static Item eggBellringer, eggDameFortuna, eggSwampjaw;
 	
 	@SubscribeEvent
 	public static void registerItems(final RegistryEvent.Register<Item> event) {
@@ -38,8 +38,12 @@ public class ModItems {
 		aceOfIron = initItem(reg, new LuckCurio(noStack()), "ace_of_iron");
 		cocktailCutlass = initItem(reg, new CocktailCutlass(noStack()), "cocktail_cutlass");
 		
+		fossilBait = initItem(reg, new SummonItem(noStack(), SwampjawEntity::spawn), "fossil_bait");
+		mossyTooth = initItem(reg, new Item(defP()), "mossy_tooth");
+		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
+		eggSwampjaw = initItem(reg, new SpawnEggItem(ModEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()), "swampjaw_spawn_egg");
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems(reg);
 	}

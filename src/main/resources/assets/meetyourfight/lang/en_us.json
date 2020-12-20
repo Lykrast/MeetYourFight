@@ -24,13 +24,17 @@
 	
 	"item.meetyourfight.desc.luck": "Affected by luck",
 	
+	"item.meetyourfight.fossil_bait": "Fossil Bait",
+	"item.meetyourfight.fossil_bait.desc": "Summons Swampjaw",
+	"item.meetyourfight.mossy_tooth": "Mossy Tooth",
+	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Dame Fortuna Spawn Egg",
+	"item.meetyourfight.swampjaw_spawn_egg": "Swampjaw Spawn Egg",
 	
 	"entity.meetyourfight.bellringer": "Bellringer",
 	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
-	
-	"itemGroup.meetyourfight": "Meet Your Fight",
+	"entity.meetyourfight.swampjaw": "Swampjaw",
 	
 	"status.meetyourfight.boss_nearby": "Another boss is too close",
 	
@@ -46,5 +50,11 @@
 	"advancements.meetyourfight.dame_fortuna_summon.title": "The Devil has its Price",
 	"advancements.meetyourfight.dame_fortuna_summon.description": "Get the Devil's Ante to summon Dame Fortuna",
 	"advancements.meetyourfight.dame_fortuna_kill.title": "Jackpot",
-	"advancements.meetyourfight.dame_fortuna_kill.description": "Defeat Dame Fortuna to get a Fortune's Favor"
+	"advancements.meetyourfight.dame_fortuna_kill.description": "Defeat Dame Fortuna to get a Fortune's Favor",
+	"advancements.meetyourfight.swampjaw_summon.title": "The Mire's Maw",
+	"advancements.meetyourfight.swampjaw_summon.description": "Get a Fossil Bait to summon Swampjaw",
+	"advancements.meetyourfight.swampjaw_kill.title": "Bog Champion",
+	"advancements.meetyourfight.swampjaw_kill.description": "Defeat Swampjaw to get a Mossy Tooth",
+	
+	"itemGroup.meetyourfight": "Meet Your Fight"
 }
