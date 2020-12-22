@@ -20,6 +20,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
@@ -42,11 +43,16 @@ public class SwampjawEntity extends BossFlyingEntity {
 	//A lot of similarity with Phantoms
 	private Vector3d orbitOffset = Vector3d.ZERO;
 	private BlockPos orbitPosition = BlockPos.ZERO;
+	
+	//For rotating the tail
+	public float tailYaw, tailPitch;
 
 	public SwampjawEntity(EntityType<? extends SwampjawEntity> type, World worldIn) {
 		super(type, worldIn);
 		experienceValue = 30;
 		moveController = new MoveHelperController(this);
+		tailYaw = rotationYaw;
+		tailPitch = rotationPitch;
 	}
 
 	public static AttributeModifierMap.MutableAttribute getAttributes() {
@@ -78,6 +84,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		goalSelector.addGoal(2, new SweepAttackGoal(this));
 		goalSelector.addGoal(3, new BombMovementGoal(this));
 		goalSelector.addGoal(4, new OrbitPointGoal(this));
+		goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 16));
 		targetSelector.addGoal(1, new PhantomAttackPlayer(this));
 	}
 
@@ -85,6 +92,23 @@ public class SwampjawEntity extends BossFlyingEntity {
 	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		orbitPosition = this.getPosition().up(5);
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	}
+	
+	public float getTailYaw(float partialTick) {
+		return MathHelper.approachDegrees(tailYaw, rotationYaw, 6 * partialTick);
+	}
+	
+	public float getTailPitch(float partialTick) {
+		return MathHelper.approachDegrees(tailPitch, rotationPitch, 2 * partialTick);
+	}
+
+	@Override
+	public void livingTick() {
+		super.livingTick();
+		if (world.isRemote) {
+			tailYaw = MathHelper.approachDegrees(tailYaw, rotationYaw, 6);
+			tailPitch = MathHelper.approachDegrees(tailPitch, rotationPitch, 2);
+		}
 	}
 
 	@Override
@@ -168,7 +192,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 			//else speedFactor = MathHelper.approach(this.speedFactor, 0.2F, 0.025F);
 			else speedFactor = MathHelper.approach(this.speedFactor, 0.3F, 0.05F);
 
-			float finalPitch = (float) (-(MathHelper.atan2((double) (-targetY), horizontalDist) * (double) (180F / (float) Math.PI)));
+			float finalPitch = (float) (-(MathHelper.atan2(-targetY, horizontalDist) * (180F / (float) Math.PI)));
 			swampjaw.rotationPitch = finalPitch;
 			float f8 = swampjaw.rotationYaw + 90.0F;
 			double finalX = (double) (speedFactor * MathHelper.cos(f8 * ((float) Math.PI / 180F))) * Math.abs((double) targetX / d2);
