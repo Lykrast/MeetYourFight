@@ -82,7 +82,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	protected void explode() {
-		world.createExplosion(bomber == null ? bomber : this, getPosX(), getPosYHeight(0.0625D), getPosZ(), 2, Explosion.Mode.NONE);
+		world.createExplosion(bomber != null ? bomber : this, getPosX(), getPosYHeight(0.0625D), getPosZ(), 2, Explosion.Mode.NONE);
 	}
 
 	@Override
