@@ -11,8 +11,10 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class PhantomAttackPlayer extends Goal {
-	//Phantom's targeting	
-	private final EntityPredicate predicate = (new EntityPredicate()).setDistance(64.0D);
+	//Phantom's targeting except I make it see through walls
+	//setLineOfSiteRequired is backwards btw, it should be like "ignoreLineOfSight"
+	private final EntityPredicate predicate = (new EntityPredicate()).setDistance(64.0D).setLineOfSiteRequired();
+	public static final EntityPredicate DEFAULT_BUT_THROUGH_WALLS = (new EntityPredicate()).setLineOfSiteRequired();
 	private int tickDelay = 20;
 	private MobEntity entity;
 
@@ -28,12 +30,12 @@ public class PhantomAttackPlayer extends Goal {
 		}
 		else {
 			this.tickDelay = 60;
-			List<PlayerEntity> list = entity.world.getTargettablePlayersWithinAABB(this.predicate, entity, entity.getBoundingBox().grow(16.0D, 64.0D, 16.0D));
+			List<PlayerEntity> list = entity.world.getTargettablePlayersWithinAABB(predicate, entity, entity.getBoundingBox().grow(16.0D, 64.0D, 16.0D));
 			if (!list.isEmpty()) {
 				list.sort(Comparator.<Entity, Double>comparing(Entity::getPosY).reversed());
 
 				for (PlayerEntity playerentity : list) {
-					if (entity.canAttack(playerentity, EntityPredicate.DEFAULT)) {
+					if (entity.canAttack(playerentity, DEFAULT_BUT_THROUGH_WALLS)) {
 						entity.setAttackTarget(playerentity);
 						return true;
 					}
@@ -47,7 +49,7 @@ public class PhantomAttackPlayer extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		LivingEntity livingentity = entity.getAttackTarget();
-		return livingentity != null ? entity.canAttack(livingentity, EntityPredicate.DEFAULT) : false;
+		return livingentity != null ? entity.canAttack(livingentity, DEFAULT_BUT_THROUGH_WALLS) : false;
 	}
 
 }

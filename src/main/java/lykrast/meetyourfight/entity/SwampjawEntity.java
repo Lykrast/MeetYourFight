@@ -10,7 +10,6 @@ import lykrast.meetyourfight.entity.ai.PhantomAttackPlayer;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
@@ -92,6 +91,12 @@ public class SwampjawEntity extends BossFlyingEntity {
 	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		orbitPosition = this.getPosition().up(5);
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	}
+
+	//Phantoms do that so uuuuuh... guess I'll do it too
+	@Override
+	public boolean canAttack(EntityType<?> typeIn) {
+		return true;
 	}
 	
 	public float getTailYaw(float partialTick) {
@@ -363,7 +368,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 		@Override
 		public boolean shouldExecute() {
 			LivingEntity livingentity = swampjaw.getAttackTarget();
-			return livingentity != null ? swampjaw.canAttack(swampjaw.getAttackTarget(), EntityPredicate.DEFAULT) : false;
+			//Thanks debugger for letting me find a los check here
+			return livingentity != null ? swampjaw.canAttack(swampjaw.getAttackTarget(), PhantomAttackPlayer.DEFAULT_BUT_THROUGH_WALLS) : false;
 		}
 
 		@Override
