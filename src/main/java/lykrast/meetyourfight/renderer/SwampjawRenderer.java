@@ -22,6 +22,13 @@ public class SwampjawRenderer extends MobRenderer<SwampjawEntity, SwampjawModel>
 	}
 
 	@Override
+	protected void preRenderCallback(SwampjawEntity entitylivingbaseIn, MatrixStack matrixStackIn, float partialTickTime) {
+		//Vinny's idea to make him bigger, and he do be lookin better
+		matrixStackIn.scale(2, 2, 2);
+		//matrixStackIn.translate(0.0D, 1.3125D, 0.1875D);
+	}
+
+	@Override
 	protected void applyRotations(SwampjawEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
 		super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
 		matrixStackIn.rotate(Vector3f.XP.rotationDegrees(entityLiving.rotationPitch));

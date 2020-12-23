@@ -23,7 +23,7 @@ public class ModEntities {
 			.build("");
 	public static final EntityType<SwampjawEntity> SWAMPJAW = EntityType.Builder
 			.<SwampjawEntity>create(SwampjawEntity::new, EntityClassification.MONSTER)
-			.size(1.3f, 0.8f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.size(2.6f, 1.6f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	
 	//Projectiles
