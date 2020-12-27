@@ -2,7 +2,6 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import lykrast.meetyourfight.MeetYourFight;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
