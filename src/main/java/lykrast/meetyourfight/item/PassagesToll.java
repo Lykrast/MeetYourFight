@@ -40,7 +40,6 @@ public class PassagesToll extends Item {
 		boolean found = false;
 		for (int i = 0; i < 16; i++) {
 			mut.move(dir);
-			MeetYourFight.LOG.info(mut);
 			//Prevent players getting in the void
 			if (mut.getY() <= 0) break;
 			if (!world.getBlockState(mut).getMaterial().blocksMovement()) {
