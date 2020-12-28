@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" I ",
+		"ITI",
+		" B "
+	],
+	"key": {
+		"B": { "tag": "forge:bones" },
+		"I": { "tag": "forge:ingots/iron" },
+		"T": { "item": "meetyourfight:mossy_tooth" }
+	},
+	"result": { "item": "meetyourfight:depth_star" }
+}

@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/handheld",
+	"textures": {
+		"layer0": "meetyourfight:item/depth_star_charge_1"
+	}
+}

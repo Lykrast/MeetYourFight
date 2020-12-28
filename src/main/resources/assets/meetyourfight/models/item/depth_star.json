@@ -1,0 +1,20 @@
+{
+	"parent": "minecraft:item/handheld",
+	"textures": {
+		"layer0": "meetyourfight:item/depth_star"
+	},
+	"overrides": [
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.35 },
+			"model": "meetyourfight:item/depth_star_charge_1"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.6 },
+			"model": "meetyourfight:item/depth_star_charge_2"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.95 },
+			"model": "meetyourfight:item/depth_star_charge_3"
+		}
+	]
+}
