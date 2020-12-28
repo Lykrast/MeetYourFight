@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{ "item": "minecraft:cooked_beef" },
+		{ "item": "meetyourfight:mossy_tooth" },
+		{ "item": "minecraft:vine" },
+		{ "tag": "forge:mushrooms" },
+		{ "tag": "forge:mushrooms" },
+		{ "tag": "forge:mushrooms" }
+	],
+	"result": { "item": "meetyourfight:marshy_delight" }
+}
