@@ -9,6 +9,7 @@
 	"item.meetyourfight.spectres_grasp": "Spectre's Grasp",
 	"item.meetyourfight.phantasmal_rifle": "Phantasmal Rifle",
 	"item.meetyourfight.phantasmal_rifle.desc": "Projectiles go through blocks",
+	"item.meetyourfight.aether_glazed_cupcake": "Aether-Glazed Cupcake",
 	
 	"item.meetyourfight.devils_ante": "Devil's Ante",
 	"item.meetyourfight.devils_ante.desc": "Summons Dame Fortuna",
@@ -21,6 +22,7 @@
 	"item.meetyourfight.cocktail_cutlass.desc": "Attacks sometimes give potion effects",
 	"item.meetyourfight.cocktail_shotgun": "Jägershot",
 	"item.meetyourfight.cocktail_shotgun.desc": "Sometimes fires negative splash potions",
+	"item.meetyourfight.velvet_fortune": "Velvet Fortune",
 	
 	"item.meetyourfight.desc.luck": "Affected by luck",
 	

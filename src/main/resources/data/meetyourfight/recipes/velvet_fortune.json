@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"WFW"
+	],
+	"key": {
+		"W": { "item": "minecraft:wheat" },
+		"F": { "item": "meetyourfight:fortunes_favor" }
+	},
+	"result": { "item": "meetyourfight:velvet_fortune", "count": 8 }
+}

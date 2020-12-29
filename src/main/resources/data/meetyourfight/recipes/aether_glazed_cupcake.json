@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{ "item": "meetyourfight:phantoplasm" },
+		{ "item": "minecraft:milk_bucket" },
+		{ "item": "minecraft:sugar" },
+		{ "tag": "forge:eggs" },
+		{ "item": "minecraft:wheat" },
+		{ "item": "minecraft:wheat" }
+	],
+	"result": { "item": "meetyourfight:aether_glazed_cupcake", "count": 4 }
+}
