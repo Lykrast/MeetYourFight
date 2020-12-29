@@ -1,7 +1,7 @@
 {
 	"type": "minecraft:crafting_shapeless",
 	"ingredients": [
-		{ "item": "minecraft:cooked_beef" },
+		{ "item": "minecraft:cooked_mutton" },
 		{ "item": "meetyourfight:mossy_tooth" },
 		{ "item": "minecraft:vine" },
 		{ "tag": "forge:mushrooms" },

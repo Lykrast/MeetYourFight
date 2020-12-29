@@ -38,7 +38,7 @@ public class ModItems {
 		mossyTooth = initItem(reg, new Item(defP()), "mossy_tooth");
 		boneRaker = initItem(reg, new BoneRaker(noStack()), "bone_raker");
 		depthStar = initItem(reg, new DepthStar(noStack()), "depth_star");
-		marshyDelight = initItem(reg, new Item(defP().food((new Food.Builder().hunger(16).saturation(0.9f).meat().build()))), "marshy_delight");
+		marshyDelight = initItem(reg, new Item(defP().food((new Food.Builder().hunger(14).saturation(0.9f).meat().build()))), "marshy_delight");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
