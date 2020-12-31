@@ -26,6 +26,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 public class EventHandler {	
 	@SubscribeEvent
 	public static void entityDamage(final LivingHurtEvent event) {
+		//Full damage prevention
 		LivingEntity attacked = event.getEntityLiving();
 		if (attacked instanceof PlayerEntity) {
 			PlayerEntity pattacked = (PlayerEntity)attacked;
@@ -42,9 +43,10 @@ public class EventHandler {
 			}
 		}
 		
-		//No need to roll for bonus damage if the damage is cancelled
+		//No need to further modify damage if the damage is cancelled
 		if (event.isCanceled()) return;
 		
+		//Damage increases
 		Entity attacker = event.getSource().getTrueSource();
 		if (attacker != null && attacker instanceof PlayerEntity) {
 			PlayerEntity pattacker = (PlayerEntity)attacker;
@@ -58,6 +60,19 @@ public class EventHandler {
 					event.setAmount(event.getAmount() * 2);
 					pattacker.world.playSound(null, attacked.getPosition(), ModSounds.slicersDiceProc, SoundCategory.PLAYERS, 1, 1);
 					((ServerWorld)pattacker.world).spawnParticle(ParticleTypes.CRIT, attacked.getPosX(), attacked.getPosYEye(), attacked.getPosZ(), 15, 0.2, 0.2, 0.2, 0);
+				}
+			}
+		}
+		
+		//Damage decreases
+		if (attacked instanceof PlayerEntity) {
+			PlayerEntity pattacked = (PlayerEntity)attacked;
+			//Caged Heart
+			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.cagedHeart, pattacked).isPresent()) {
+				float treshold = pattacked.getMaxHealth() / 4.0f;
+				if (event.getAmount() > treshold) {
+					event.setAmount((event.getAmount() - treshold) * 0.5f + treshold);
+					//TODO sound
 				}
 			}
 		}

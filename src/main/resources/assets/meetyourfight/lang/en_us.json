@@ -32,6 +32,8 @@
 	"item.meetyourfight.bone_raker": "Bone Raker",
 	"item.meetyourfight.depth_star": "Depth Star",
 	"item.meetyourfight.depth_star.desc": "Can charge a short range shockwave",
+	"item.meetyourfight.caged_heart": "Caged Heart",
+	"item.meetyourfight.caged_heart.desc": "Reduces damage that exceeds 1/4 of max health",
 	"item.meetyourfight.marshy_delight": "Marshy Delight",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",

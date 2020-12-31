@@ -17,7 +17,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModItems {
 	public static Item hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static Item devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
-	public static Item fossilBait, mossyTooth, boneRaker, depthStar, marshyDelight;
+	public static Item fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static Item eggBellringer, eggDameFortuna, eggSwampjaw;
 	
 	@SubscribeEvent
@@ -42,6 +42,7 @@ public class ModItems {
 		mossyTooth = initItem(reg, new Item(defP()), "mossy_tooth");
 		boneRaker = initItem(reg, new BoneRaker(noStack()), "bone_raker");
 		depthStar = initItem(reg, new DepthStar(noStack()), "depth_star");
+		cagedHeart = initItem(reg, new CurioBaseItem(noStack(), true), "caged_heart");
 		marshyDelight = initItem(reg, new Item(defP().food((new Food.Builder().hunger(14).saturation(0.9f).meat().build()))), "marshy_delight");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
