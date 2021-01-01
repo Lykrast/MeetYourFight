@@ -223,6 +223,7 @@ public class DameFortunaEntity extends BossEntity {
 			dame.setAttack(chosenAttack == 1 || chosenAttack == 2 ? CLAW_ATTACK : PROJ_ATTACK);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
+			dame.playSound(ModSounds.dameFortunaAttack, dame.getSoundVolume(), dame.getSoundPitch());
 		}
 
 		//Horrible horrible ad hoc n°2

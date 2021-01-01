@@ -11,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModSounds {
 	public static SoundEvent bellringerIdle, bellringerHurt, bellringerDeath;
-	public static SoundEvent dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaShoot;
+	public static SoundEvent dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
 	public static SoundEvent swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
 	public static SoundEvent slicersDiceProc, aceOfIronProc, cagedHeartProc;
 	public static SoundEvent musicBellringer, musicDameFortuna, musicSwampjaw;
@@ -26,6 +26,7 @@ public class ModSounds {
 		dameFortunaIdle = initSound(reg, "entity.dame_fortuna.idle");
 		dameFortunaHurt = initSound(reg, "entity.dame_fortuna.hurt");
 		dameFortunaDeath = initSound(reg, "entity.dame_fortuna.death");
+		dameFortunaAttack = initSound(reg, "entity.dame_fortuna.attack");
 		dameFortunaShoot = initSound(reg, "entity.dame_fortuna.shoot");
 		
 		swampjawIdle = initSound(reg, "entity.swampjaw.idle");

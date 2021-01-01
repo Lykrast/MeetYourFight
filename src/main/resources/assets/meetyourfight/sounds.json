@@ -25,11 +25,10 @@
 	"entity.dame_fortuna.idle": {
 		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.idle",
 		"sounds": [
-			"mob/witch/ambient1",
-			"mob/witch/ambient2",
-			"mob/witch/ambient3",
-			"mob/witch/ambient4",
-			"mob/witch/ambient5"
+			"mob/vex/idle1",
+			"mob/vex/idle2",
+			"mob/vex/idle3",
+			"mob/vex/idle4"
 		]
 	},
 	"entity.dame_fortuna.hurt": {
@@ -44,6 +43,16 @@
 		"sounds": [
 			"mob/vex/death1",
 			"mob/vex/death2"
+		]
+	},
+	"entity.dame_fortuna.attack": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.attack",
+		"sounds": [
+			"entity/witch/ambient1",
+			"entity/witch/ambient2",
+			"entity/witch/ambient3",
+			"entity/witch/ambient4",
+			"entity/witch/ambient5"
 		]
 	},
 	"entity.dame_fortuna.shoot": {
