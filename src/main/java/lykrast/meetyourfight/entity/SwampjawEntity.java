@@ -27,7 +27,6 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -130,20 +129,19 @@ public class SwampjawEntity extends BossFlyingEntity {
 		compound.putInt("AZ", orbitPosition.getZ());
 	}
 
-	//TODO change sounds
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_PHANTOM_AMBIENT;
+		return ModSounds.swampjawIdle;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.ENTITY_PHANTOM_HURT;
+		return ModSounds.swampjawHurt;
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_PHANTOM_DEATH;
+		return ModSounds.swampjawDeath;
 	}
 
 	@Override
@@ -396,7 +394,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 						swampjaw.behavior = SWOOP;
 						updateOrbit();
 						tickDelay = (4 + swampjaw.rand.nextInt(4)) * 20;
-						swampjaw.playSound(SoundEvents.ENTITY_PHANTOM_SWOOP, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
+						swampjaw.playSound(ModSounds.swampjawCharge, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
 					}
 					//Switch to bomb mode
 					else if (swampjaw.behavior == CIRCLE) {
@@ -409,7 +407,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 						if (bombLeft <= 0) tickDelay = 30 + swampjaw.rand.nextInt(30);
 						else tickDelay = 20;
 						updateOrbit();
-						swampjaw.playSound(SoundEvents.ENTITY_TNT_PRIMED, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
+						swampjaw.playSound(ModSounds.swampjawBomb, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
 						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.world, swampjaw.getPosX() + 0.5, swampjaw.getPosY(), swampjaw.getPosZ() + 0.5, swampjaw);
 						swampjaw.world.addEntity(tntentity);
 					}

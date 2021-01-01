@@ -1,12 +1,119 @@
 {
-	"slicers_dice.proc": {
+	"entity.bellringer.idle": {
+		"subtitle": "subtitles.meetyourfight.entity.bellringer.idle",
+		"sounds": [
+			"mob/vex/idle1",
+			"mob/vex/idle2",
+			"mob/vex/idle3",
+			"mob/vex/idle4"
+		]
+	},
+	"entity.bellringer.hurt": {
+		"subtitle": "subtitles.meetyourfight.entity.bellringer.hurt",
+		"sounds": [
+			"mob/vex/hurt1",
+			"mob/vex/hurt2"
+		]
+	},
+	"entity.bellringer.death": {
+		"subtitle": "subtitles.meetyourfight.entity.bellringer.death",
+		"sounds": [
+			"mob/vex/death1",
+			"mob/vex/death2"
+		]
+	},
+	"entity.dame_fortuna.idle": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.idle",
+		"sounds": [
+			"mob/witch/ambient1",
+			"mob/witch/ambient2",
+			"mob/witch/ambient3",
+			"mob/witch/ambient4",
+			"mob/witch/ambient5"
+		]
+	},
+	"entity.dame_fortuna.hurt": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.hurt",
+		"sounds": [
+			"mob/vex/hurt1",
+			"mob/vex/hurt2"
+		]
+	},
+	"entity.dame_fortuna.death": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.death",
+		"sounds": [
+			"mob/vex/death1",
+			"mob/vex/death2"
+		]
+	},
+	"entity.dame_fortuna.shoot": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.shoot",
+		"sounds": [
+			"entity/shulker/shoot1",
+			"entity/shulker/shoot2",
+			"entity/shulker/shoot3",
+			"entity/shulker/shoot4"
+		]
+	},
+	"entity.swampjaw.idle": {
+		"subtitle": "subtitles.meetyourfight.entity.swampjaw.idle",
+		"sounds": [
+			{ "name": "mob/phantom/idle1", "pitch": 0.7 },
+			{ "name": "mob/phantom/idle2", "pitch": 0.7 },
+			{ "name": "mob/phantom/idle3", "pitch": 0.7 },
+			{ "name": "mob/phantom/idle4", "pitch": 0.7 },
+			{ "name": "mob/phantom/idle5", "pitch": 0.7 }
+		]
+	},
+	"entity.swampjaw.hurt": {
+		"subtitle": "subtitles.meetyourfight.entity.swampjaw.hurt",
+		"sounds": [
+			{ "name": "mob/skeleton/hurt1", "pitch": 0.6 },
+			{ "name": "mob/skeleton/hurt2", "pitch": 0.6 },
+			{ "name": "mob/skeleton/hurt3", "pitch": 0.6 },
+			{ "name": "mob/skeleton/hurt4", "pitch": 0.6 }
+		]
+	},
+	"entity.swampjaw.death": {
+		"subtitle": "subtitles.meetyourfight.entity.swampjaw.death",
+		"sounds": [
+			{ "name": "mob/skeleton/death", "pitch": 0.6 }
+		]
+	},
+	"entity.swampjaw.charge": {
+		"subtitle": "subtitles.meetyourfight.entity.swampjaw.charge",
+		"sounds": [
+			{ "name": "mob/phantom/swoop1", "pitch": 0.7 },
+			{ "name": "mob/phantom/swoop2", "pitch": 0.7 },
+			{ "name": "mob/phantom/swoop3", "pitch": 0.7 },
+			{ "name": "mob/phantom/swoop4", "pitch": 0.7 }
+		]
+	},
+	"entity.swampjaw.bomb": {
+		"subtitle": "subtitles.meetyourfight.entity.swampjaw.bomb",
+		"sounds": [
+			"random/fuse"
+		]
+	},
+	
+	"item.proc.slicers_dice": {
 		"subtitle": "subtitles.meetyourfight.item.bonus_damage",
 		"sounds": [ "minecraft:mob/zombie/woodbreak" ]
 	},
-	"ace_of_iron.proc": {
+	"item.proc.ace_of_iron": {
 		"subtitle": "subtitles.meetyourfight.item.damage_negated",
 		"sounds": [ "minecraft:random/anvil_land" ]
 	},
+	"item.proc.caged_heart": {
+		"subtitle": "subtitles.meetyourfight.item.damage_reduced",
+		"sounds": [
+			{ "name": "mob/skeleton/hurt1", "volume": 0.5, "pitch": 0.6 },
+			{ "name": "mob/skeleton/hurt2", "volume": 0.5, "pitch": 0.6 },
+			{ "name": "mob/skeleton/hurt3", "volume": 0.5, "pitch": 0.6 },
+			{ "name": "mob/skeleton/hurt4", "volume": 0.5, "pitch": 0.6 }
+		]
+	},
+	
 	"music.bellringer": { "sounds": [{"name": "meetyourfight:music/bellringer", "stream": true}] },
 	"music.dame_fortuna": { "sounds": [{"name": "meetyourfight:music/dame_fortuna", "stream": true}] },
 	"music.swampjaw": { "sounds": [{"name": "meetyourfight:music/swampjaw", "stream": true}] }

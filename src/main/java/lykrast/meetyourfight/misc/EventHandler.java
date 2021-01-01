@@ -72,7 +72,7 @@ public class EventHandler {
 				float treshold = pattacked.getMaxHealth() / 4.0f;
 				if (event.getAmount() > treshold) {
 					event.setAmount((event.getAmount() - treshold) * 0.5f + treshold);
-					//TODO sound
+					pattacked.world.playSound(null, attacked.getPosition(), ModSounds.cagedHeartProc, SoundCategory.PLAYERS, 1, 1);
 				}
 			}
 		}

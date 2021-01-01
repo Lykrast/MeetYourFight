@@ -133,20 +133,19 @@ public class BellringerEntity extends BossEntity {
 		return CreatureAttribute.UNDEAD;
 	}
 
-	//TODO change sounds
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_VEX_AMBIENT;
-	}
-
-	@Override
-	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_VEX_DEATH;
+		return ModSounds.bellringerIdle;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.ENTITY_VEX_HURT;
+		return ModSounds.bellringerHurt;
+	}
+
+	@Override
+	protected SoundEvent getDeathSound() {
+		return ModSounds.bellringerDeath;
 	}
 
 	@Override

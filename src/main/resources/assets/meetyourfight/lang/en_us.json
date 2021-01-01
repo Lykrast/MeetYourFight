@@ -46,8 +46,22 @@
 	
 	"status.meetyourfight.boss_nearby": "Another boss is too close",
 	
+	"subtitles.meetyourfight.entity.bellringer.idle": "Bellringer wails",
+	"subtitles.meetyourfight.entity.bellringer.hurt": "Bellringer hurt",
+	"subtitles.meetyourfight.entity.bellringer.death": "Bellringer dies",
+	"subtitles.meetyourfight.entity.dame_fortuna.idle": "Dame Fortuna laughs",
+	"subtitles.meetyourfight.entity.dame_fortuna.hurt": "Dame Fortuna hurt",
+	"subtitles.meetyourfight.entity.dame_fortuna.death": "Dame Fortuna dies",
+	"subtitles.meetyourfight.entity.dame_fortuna.shoot": "Dame Fortuna shoots",
+	"subtitles.meetyourfight.entity.swampjaw.idle": "Swampjaw growls",
+	"subtitles.meetyourfight.entity.swampjaw.hurt": "Swampjaw hurt",
+	"subtitles.meetyourfight.entity.swampjaw.death": "Swampjaw dies",
+	"subtitles.meetyourfight.entity.swampjaw.charge": "Swampjaw charges",
+	"subtitles.meetyourfight.entity.swampjaw.bomb": "Bomb dropped",
+	
 	"subtitles.meetyourfight.item.bonus_damage": "Damage amplified",
 	"subtitles.meetyourfight.item.damage_negated": "Damage negated",
+	"subtitles.meetyourfight.item.damage_reduced": "Damage reduced",
 	
 	"advancements.meetyourfight.root.title": "Meet Your Fight",
 	"advancements.meetyourfight.root.description": "Prepare for the coming challenges",

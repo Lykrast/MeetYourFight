@@ -33,7 +33,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -172,20 +171,19 @@ public class DameFortunaEntity extends BossEntity {
 		compound.putInt("AttackCooldown", attackCooldown);
 	}
 	
-	//TODO change sounds
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_VEX_AMBIENT;
-	}
-
-	@Override
-	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_VEX_DEATH;
+		return ModSounds.dameFortunaIdle;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.ENTITY_VEX_HURT;
+		return ModSounds.dameFortunaHurt;
+	}
+
+	@Override
+	protected SoundEvent getDeathSound() {
+		return ModSounds.dameFortunaDeath;
 	}
 
 	@Override
@@ -274,8 +272,7 @@ public class DameFortunaEntity extends BossEntity {
 					ProjectileLineEntity proj = dame.readyLine();
 					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, tx + dame.rand.nextInt(3) - 1, ty + 1, tz + dame.rand.nextInt(3) - 1, dame.getRage() >= 2 ? 3 : 2);
 					dame.world.addEntity(proj);
-					//TODO proper sound event
-					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
+					dame.playSound(ModSounds.dameFortunaShoot, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
 					//Evoker lines
@@ -307,8 +304,7 @@ public class DameFortunaEntity extends BossEntity {
 							dame.world.addEntity(proj);
 						}
 					}
-					//TODO proper sound event
-					dame.playSound(SoundEvents.ENTITY_SHULKER_SHOOT, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
+					dame.playSound(ModSounds.dameFortunaShoot, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 			}
 		}
