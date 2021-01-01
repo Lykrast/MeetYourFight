@@ -9,6 +9,7 @@
 	"item.meetyourfight.spectres_grasp": "Poigne du spectre",
 	"item.meetyourfight.phantasmal_rifle": "Fusil fantasmal",
 	"item.meetyourfight.phantasmal_rifle.desc": "Les projectiles traversent les blocs",
+	"item.meetyourfight.aether_glazed_cupcake": "Cupcake glacé d'éther",
 	
 	"item.meetyourfight.devils_ante": "Ante du diable",
 	"item.meetyourfight.devils_ante.desc": "Invoque Dame Fortuna",
@@ -21,19 +22,47 @@
 	"item.meetyourfight.cocktail_cutlass.desc": "Les attaques donnent parfois des effets de potion",
 	"item.meetyourfight.cocktail_shotgun": "Jägershot",
 	"item.meetyourfight.cocktail_shotgun.desc": "Tire parfois des potions jetables néfastes",
+	"item.meetyourfight.velvet_fortune": "Fortune de velours",
 	
 	"item.meetyourfight.desc.luck": "Affecté par la chance",
 	
+	"item.meetyourfight.fossil_bait": "Appât fossile",
+	"item.meetyourfight.fossil_bait.desc": "Invoque Gueule-des-marais",
+	"item.meetyourfight.mossy_tooth": "Dent moussue",
+	"item.meetyourfight.bone_raker": "Ratisseur d'os",
+	"item.meetyourfight.depth_star": "Étoile des profondeurs",
+	"item.meetyourfight.depth_star.desc": "Peut charger une onde de choc à courte portée",
+	"item.meetyourfight.caged_heart": "Coeur en cage",
+	"item.meetyourfight.caged_heart.desc": "Réduit les dégâts qui dépassent 1/4 de la vie max",
+	"item.meetyourfight.marshy_delight": "Délice des marais",
+	
 	"item.meetyourfight.bellringer_spawn_egg": "Oeuf d'apparition de Sonneur",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Oeuf d'apparition de Dame Fortuna",
+	"item.meetyourfight.swampjaw_spawn_egg": "Oeuf d'apparition de Gueule-des-marais",
 	
 	"entity.meetyourfight.bellringer": "Sonneur",
 	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
+	"entity.meetyourfight.swampjaw": "Gueule-des-marais",
 	
 	"status.meetyourfight.boss_nearby": "Un autre boss est trop proche",
 	
+	"subtitles.meetyourfight.entity.bellringer.idle": "Sonneur gémit",
+	"subtitles.meetyourfight.entity.bellringer.hurt": "Sonneur blessé",
+	"subtitles.meetyourfight.entity.bellringer.death": "Sonneur meurt",
+	"subtitles.meetyourfight.entity.dame_fortuna.idle": "Dame Fortuna respire",
+	"subtitles.meetyourfight.entity.dame_fortuna.hurt": "Dame Fortuna blessée",
+	"subtitles.meetyourfight.entity.dame_fortuna.death": "Dame Fortuna meurt",
+	"subtitles.meetyourfight.entity.dame_fortuna.attack": "Dame Fortuna rit",
+	"subtitles.meetyourfight.entity.dame_fortuna.shoot": "Dame Fortuna tire",
+	"subtitles.meetyourfight.entity.swampjaw.idle": "Gueule-des-marais grogne",
+	"subtitles.meetyourfight.entity.swampjaw.hurt": "Gueule-des-marais blessé",
+	"subtitles.meetyourfight.entity.swampjaw.death": "Gueule-des-marais meurt",
+	"subtitles.meetyourfight.entity.swampjaw.charge": "Gueule-des-marais charge",
+	"subtitles.meetyourfight.entity.swampjaw.bomb": "Bombe larguée",
+	
 	"subtitles.meetyourfight.item.bonus_damage": "Dégâts amplifiés",
 	"subtitles.meetyourfight.item.damage_negated": "Dégâts annulés",
+	"subtitles.meetyourfight.item.damage_reduced": "Dégâts réduits",
 	
 	"advancements.meetyourfight.root.title": "Meet Your Fight",
 	"advancements.meetyourfight.root.description": "Préparez vous pour les défis à venir.",
@@ -45,6 +74,10 @@
 	"advancements.meetyourfight.dame_fortuna_summon.description": "Obtenez l'ante du diable pour invoquer Dame Fortuna.",
 	"advancements.meetyourfight.dame_fortuna_kill.title": "Jackpot",
 	"advancements.meetyourfight.dame_fortuna_kill.description": "Vainquez Dame Fortuna pour obtenir une faveur de la fortune.",
+	"advancements.meetyourfight.swampjaw_summon.title": "La mâchoire des tourbières",
+	"advancements.meetyourfight.swampjaw_summon.description": "Obtenez un appât fossile pour invoquer Gueule-des-marais.",
+	"advancements.meetyourfight.swampjaw_kill.title": "Champion du bourbier",
+	"advancements.meetyourfight.swampjaw_kill.description": "Vainquez Gueule-des-marais pour obtenir une dent moussue.",
 	
 	"itemGroup.meetyourfight": "Meet Your Fight"
 }
