@@ -175,11 +175,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 			float targetY = (float) (swampjaw.orbitOffset.y - swampjaw.getPosY());
 			float targetZ = (float) (swampjaw.orbitOffset.z - swampjaw.getPosZ());
 			double horizontalDist = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ);
-			double d1 = 1.0D - (double) MathHelper.abs(targetY * 0.7F) / horizontalDist;
-			targetX = (float) ((double) targetX * d1);
-			targetZ = (float) ((double) targetZ * d1);
+			double verticalAdjust = 1.0D - (double) MathHelper.abs(targetY * 0.7F) / horizontalDist;
+			targetX = (float) ((double) targetX * verticalAdjust);
+			targetZ = (float) ((double) targetZ * verticalAdjust);
 			horizontalDist = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ);
-			double d2 = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ + targetY * targetY);
+			double totalDist = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ + targetY * targetY);
 			float prevYaw = swampjaw.rotationYaw;
 			float targetYaw = (float) MathHelper.atan2((double) targetZ, (double) targetX);
 			float startYaw = MathHelper.wrapDegrees(swampjaw.rotationYaw + 90.0F);
@@ -188,19 +188,19 @@ public class SwampjawEntity extends BossFlyingEntity {
 			swampjaw.rotationYaw = MathHelper.approachDegrees(startYaw, targetYaw, 10) - 90.0F;
 			swampjaw.renderYawOffset = swampjaw.rotationYaw;
 			if (MathHelper.degreesDifferenceAbs(prevYaw, swampjaw.rotationYaw) < 3.0F) {
-				float maxSpeed = swampjaw.behavior == BOMB ? 3F : 1.2F;
+				float maxSpeed = swampjaw.behavior != CIRCLE ? 3F : 1.2F;
 				float multiplier = speedFactor > maxSpeed ? 10 : maxSpeed / speedFactor;
 				speedFactor = MathHelper.approach(speedFactor, maxSpeed, 0.005F * multiplier);
 			}
 			//else speedFactor = MathHelper.approach(this.speedFactor, 0.2F, 0.025F);
-			else speedFactor = MathHelper.approach(this.speedFactor, 0.3F, 0.05F);
+			else speedFactor = MathHelper.approach(speedFactor, swampjaw.behavior == BOMB ? 0.7F : 0.4F, 0.05F);
 
 			float finalPitch = (float) (-(MathHelper.atan2(-targetY, horizontalDist) * (180F / (float) Math.PI)));
 			swampjaw.rotationPitch = finalPitch;
-			float f8 = swampjaw.rotationYaw + 90.0F;
-			double finalX = (double) (speedFactor * MathHelper.cos(f8 * ((float) Math.PI / 180F))) * Math.abs((double) targetX / d2);
-			double finalZ = (double) (speedFactor * MathHelper.sin(f8 * ((float) Math.PI / 180F))) * Math.abs((double) targetZ / d2);
-			double finalY = (double) (speedFactor * MathHelper.sin(finalPitch * ((float) Math.PI / 180F))) * Math.abs((double) targetY / d2);
+			float adjustedYaw = swampjaw.rotationYaw + 90.0F;
+			double finalX = (double) (speedFactor * MathHelper.cos(adjustedYaw * ((float) Math.PI / 180F))) * Math.abs((double) targetX / totalDist);
+			double finalZ = (double) (speedFactor * MathHelper.sin(adjustedYaw * ((float) Math.PI / 180F))) * Math.abs((double) targetZ / totalDist);
+			double finalY = (double) (speedFactor * MathHelper.sin(finalPitch * ((float) Math.PI / 180F))) * Math.abs((double) targetY / totalDist);
 			Vector3d vector3d = swampjaw.getMotion();
 			swampjaw.setMotion(vector3d.add((new Vector3d(finalX, finalY, finalZ)).subtract(vector3d).scale(0.2)));
 		}
@@ -215,7 +215,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		}
 
 		protected boolean isCloseToOffset() {
-			return swampjaw.orbitOffset.squareDistanceTo(swampjaw.getPosX(), swampjaw.getPosY(), swampjaw.getPosZ()) < 4.0D;
+			return swampjaw.orbitOffset.squareDistanceTo(swampjaw.getPosX(), swampjaw.getPosY(), swampjaw.getPosZ()) < 4;
 		}
 	}
 
@@ -311,7 +311,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 				double difX = target.getPosX() - swampjaw.orbitOffset.x;
 				double difZ = target.getPosZ() - swampjaw.orbitOffset.z;
 				Vector3d overshoot = new Vector3d(difX, 0, difZ).normalize();
-				swampjaw.orbitOffset = Vector3d.copy(swampjaw.orbitPosition).add(difX + overshoot.x * 2, -4, difZ + overshoot.z * 2);
+				Vector3d vec = target.getPositionVec();
+				swampjaw.orbitOffset = new Vector3d(vec.x + overshoot.x * 7, swampjaw.orbitPosition.getY() - 4, vec.z + overshoot.z * 7);
 			}
 		}
 	}
@@ -402,13 +403,16 @@ public class SwampjawEntity extends BossFlyingEntity {
 						tickDelay = 20;
 					}
 					//Bomb ready, wait for target near or for some extra time
-					else if (tickDelay <= -40 || isTargetClose()) {
+					else if (tickDelay <= -120 || isTargetClose()) {
 						bombLeft--;
 						if (bombLeft <= 0) tickDelay = 30 + swampjaw.rand.nextInt(30);
 						else tickDelay = 20;
 						updateOrbit();
 						swampjaw.playSound(ModSounds.swampjawBomb, 10.0F, 0.95F + swampjaw.rand.nextFloat() * 0.1F);
 						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.world, swampjaw.getPosX() + 0.5, swampjaw.getPosY(), swampjaw.getPosZ() + 0.5, swampjaw);
+						//The ellpeck idea
+						Vector3d motion = swampjaw.getMotion();
+						tntentity.setMotion(tntentity.getMotion().add(motion.x * 0.5, 0, motion.z * 0.5));
 						swampjaw.world.addEntity(tntentity);
 					}
 				}
@@ -421,7 +425,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 			if (target == null) return false;
 			double dx = target.getPosX() - (swampjaw.getPosX() + swampjaw.getMotion().x);
 			double dz = target.getPosZ() - (swampjaw.getPosZ() + swampjaw.getMotion().z);
-			return (dx * dx + dz * dz) < 9;
+			return (dx * dx + dz * dz) < 12;
 		}
 
 		private void updateOrbit() {
