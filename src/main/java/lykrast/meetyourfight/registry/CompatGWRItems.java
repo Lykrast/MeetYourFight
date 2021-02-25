@@ -16,7 +16,7 @@ public class CompatGWRItems {
 				.repair(() -> Ingredient.fromItems(ModItems.phantoplasm)), 
 				"phantasmal_rifle");
 		cocktailShotgun = ModItems.initItem(reg, 
-				new CocktailShotgun(ModItems.noStack().maxDamage(3473), 0, 0.3, 16, 5, 14, 7).ignoreInvulnerability(true)
+				new CocktailShotgun(ModItems.noStack().maxDamage(3473), 0, 0.45, 16, 5, 14, 6).ignoreInvulnerability(true)
 				.fireSound(lykrast.gunswithoutroses.registry.ModSounds.shotgun)
 				.repair(() -> Ingredient.fromItems(ModItems.fortunesFavor)), 
 				"cocktail_shotgun");
