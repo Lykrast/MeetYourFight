@@ -1,11 +1,15 @@
 package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.MeetYourFight;
-import lykrast.meetyourfight.entity.*;
+import lykrast.meetyourfight.entity.BellringerEntity;
+import lykrast.meetyourfight.entity.DameFortunaEntity;
+import lykrast.meetyourfight.entity.ProjectileLineEntity;
+import lykrast.meetyourfight.entity.SwampMineEntity;
+import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -46,14 +50,17 @@ public class ModEntities {
 		reg.register(DAME_FORTUNA);
 		SWAMPJAW.setRegistryName(MeetYourFight.MODID, "swampjaw");
 		reg.register(SWAMPJAW);
-		//I saw this from Waddles
-		GlobalEntityTypeAttributes.put(BELLRINGER, BellringerEntity.getAttributes().create());
-		GlobalEntityTypeAttributes.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
-		GlobalEntityTypeAttributes.put(SWAMPJAW, SwampjawEntity.getAttributes().create());
 		
 		PROJECTILE_LINE.setRegistryName(MeetYourFight.MODID, "projectile_line");
 		reg.register(PROJECTILE_LINE);
 		SWAMP_MINE.setRegistryName(MeetYourFight.MODID, "swamp_mine");
 		reg.register(SWAMP_MINE);
+	}
+	
+	//Ooh they made a new event for that
+	public static void registerEntityAttributes(final EntityAttributeCreationEvent event) {
+		event.put(BELLRINGER, BellringerEntity.getAttributes().create());
+		event.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
+		event.put(SWAMPJAW, SwampjawEntity.getAttributes().create());
 	}
 }
