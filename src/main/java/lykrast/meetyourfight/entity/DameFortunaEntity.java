@@ -81,14 +81,14 @@ public class DameFortunaEntity extends BossEntity {
 		if (world.isRemote) {
 			headRotationTimer--;
 			if (headRotationTimer <= 0) {
-				headRotationTimer = 30;
+				headRotationTimer = 30 + rand.nextInt(11);
 				rotateHead();
 				headRotationProgress = 0;
 				headRotationProgressLast = 0;
 			}
 			else {
 				headRotationProgressLast = headRotationProgress;
-				headRotationProgress = Math.min(1, headRotationProgress + 0.08f);
+				headRotationProgress = Math.min(1, headRotationProgress + 0.06f);
 			}
 		}
 	}
