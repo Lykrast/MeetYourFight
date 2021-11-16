@@ -106,21 +106,21 @@ public class DameFortunaEntity extends BossEntity {
 					if (headTargetPitch <= 0) headTargetPitch = 3;
 					else headTargetPitch--;
 				}
-				else headTargetPitch++;
+				else headTargetPitch = (headTargetPitch + 1) % 4;
 				break;
 			case 1:
 				if (reverse) {
 					if (headTargetYaw <= 0) headTargetYaw = 3;
 					else headTargetYaw--;
 				}
-				else headTargetYaw++;
+				else headTargetYaw = (headTargetYaw + 1) % 4;
 				break;
 			case 2:
 				if (reverse) {
 					if (headTargetRoll <= 0) headTargetRoll = 3;
 					else headTargetRoll--;
 				}
-				else headTargetRoll++;
+				else headTargetRoll = (headTargetRoll + 1) % 4;
 				break;
 		}
 	}
