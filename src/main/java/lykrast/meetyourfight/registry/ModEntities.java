@@ -8,8 +8,8 @@ import lykrast.meetyourfight.entity.SwampMineEntity;
 import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -40,7 +40,6 @@ public class ModEntities {
 			.size(1, 1).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build("");
 
-	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	public static void regsiterEntities(final RegistryEvent.Register<EntityType<?>> event) {
 		IForgeRegistry<EntityType<?>> reg = event.getRegistry();
@@ -52,21 +51,16 @@ public class ModEntities {
 		SWAMPJAW.setRegistryName(MeetYourFight.MODID, "swampjaw");
 		reg.register(SWAMPJAW);
 		
-		//The new event is a lie, at least on this forge version
-		GlobalEntityTypeAttributes.put(BELLRINGER, BellringerEntity.getAttributes().create());
-		GlobalEntityTypeAttributes.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
-		GlobalEntityTypeAttributes.put(SWAMPJAW, SwampjawEntity.getAttributes().create());
-		
 		PROJECTILE_LINE.setRegistryName(MeetYourFight.MODID, "projectile_line");
 		reg.register(PROJECTILE_LINE);
 		SWAMP_MINE.setRegistryName(MeetYourFight.MODID, "swamp_mine");
 		reg.register(SWAMP_MINE);
 	}
-	
-	//This new event is a lie, at least on this forge version
-//	public static void registerEntityAttributes(final EntityAttributeCreationEvent event) {
-//		event.put(BELLRINGER, BellringerEntity.getAttributes().create());
-//		event.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
-//		event.put(SWAMPJAW, SwampjawEntity.getAttributes().create());
-//	}
+
+	@SubscribeEvent
+	public static void registerEntityAttributes(final EntityAttributeCreationEvent event) {
+		event.put(BELLRINGER, BellringerEntity.getAttributes().create());
+		event.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
+		event.put(SWAMPJAW, SwampjawEntity.getAttributes().create());
+	}
 }
