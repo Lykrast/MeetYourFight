@@ -23,7 +23,7 @@ public class ModEntities {
 			.build("");
 	public static final EntityType<DameFortunaEntity> DAME_FORTUNA = EntityType.Builder
 			.<DameFortunaEntity>create(DameFortunaEntity::new, EntityClassification.MONSTER)
-			.size(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.size(0.6f, 2.325f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	public static final EntityType<SwampjawEntity> SWAMPJAW = EntityType.Builder
 			.<SwampjawEntity>create(SwampjawEntity::new, EntityClassification.MONSTER)

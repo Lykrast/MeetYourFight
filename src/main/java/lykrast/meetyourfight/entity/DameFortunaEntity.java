@@ -44,11 +44,24 @@ public class DameFortunaEntity extends BossEntity {
 	private static final DataParameter<Byte> ATTACK = EntityDataManager.createKey(DameFortunaEntity.class, DataSerializers.BYTE);
 	public static final int NO_ATTACK = 0, PROJ_ATTACK = 1, CLAW_ATTACK = 2;
 	public int attackCooldown;
+	/**
+	 * Since the animation only rotates in 90°, it's given in 90° by 0 1 2 or 3
+	 */
+	public int headTargetPitch, headTargetYaw, headTargetRoll;
+	public int headRotationTimer;
+	public float headRotationProgress, headRotationProgressLast;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, World worldIn) {
 		super(type, worldIn);
 		moveController = new VexMovementController(this);
 		experienceValue = 100;
+		//Animations
+		headRotationTimer = 30;
+		headTargetPitch = 0;
+		headTargetYaw = 0;
+		headTargetRoll = 0;
+		headRotationProgress = 1;
+		headRotationProgressLast = 1;
 	}
 
 	@Override
@@ -63,6 +76,53 @@ public class DameFortunaEntity extends BossEntity {
 		super.tick();
 		noClip = false;
 		setNoGravity(true);
+		
+		//Animations
+		if (world.isRemote) {
+			headRotationTimer--;
+			if (headRotationTimer <= 0) {
+				headRotationTimer = 30;
+				rotateHead();
+				headRotationProgress = 0;
+				headRotationProgressLast = 0;
+			}
+			else {
+				headRotationProgressLast = headRotationProgress;
+				headRotationProgress = Math.min(1, headRotationProgress + 0.08f);
+			}
+		}
+	}
+	
+	public float getHeadRotationProgress(float partialTicks) {
+	      return MathHelper.lerp(partialTicks, headRotationProgressLast, headRotationProgress);
+	}
+	
+	private void rotateHead() {
+		boolean reverse = rand.nextBoolean();
+		int axis = rand.nextInt(3);
+		switch (axis) {
+			case 0:
+				if (reverse) {
+					if (headTargetPitch <= 0) headTargetPitch = 3;
+					else headTargetPitch--;
+				}
+				else headTargetPitch++;
+				break;
+			case 1:
+				if (reverse) {
+					if (headTargetYaw <= 0) headTargetYaw = 3;
+					else headTargetYaw--;
+				}
+				else headTargetYaw++;
+				break;
+			case 2:
+				if (reverse) {
+					if (headTargetRoll <= 0) headTargetRoll = 3;
+					else headTargetRoll--;
+				}
+				else headTargetRoll++;
+				break;
+		}
 	}
 
 	@Override
