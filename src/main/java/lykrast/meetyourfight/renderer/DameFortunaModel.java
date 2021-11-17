@@ -29,8 +29,9 @@ public class DameFortunaModel extends BipedModel<DameFortunaEntity> {
 		float headZ = bipedHead.rotateAngleZ;
 		
 		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		//Hey guess what this gets overridden in the super too...
-        bipedHead.rotationPointY = -8;
+		//Hey guess what this gets overridden in the super too
+		//We'll do something fancy with it, should cycle every 100 ticks (5 seconds)
+        bipedHead.rotationPointY = -8 + MathHelper.sin(ageInTicks * (float)Math.PI / 50f);
 		
 		//Head animation
 		bipedHead.rotateAngleX = rotLerpRad(headProgress, headX, entityIn.headTargetPitch * ((float)Math.PI / 2f));

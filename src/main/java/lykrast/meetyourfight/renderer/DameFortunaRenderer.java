@@ -17,10 +17,11 @@ public class DameFortunaRenderer extends BipedRenderer<DameFortunaEntity, DameFo
 	
 	@Override
 	protected void applyRotations(DameFortunaEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-		//Copied this bit from the Mourned from Defiled Lands, that I think copied from endermen
+		//Copied/changed this bit from the Mourned from Defiled Lands, that I think copied from endermen
 		//(and it don't want to show me the endermen code)
-		if (entity.getRage() >= 1) {
-			rotationYaw += (float)(Math.cos(ageInTicks * 3.25D) * Math.PI);
+		int rage = entity.getRage();
+		if (rage >= 1) {
+			rotationYaw += (float)(Math.cos((ageInTicks + partialTicks) * 3.25) * Math.PI * rage);
 		}
 		super.applyRotations(entity, stack, ageInTicks, rotationYaw, partialTicks);
 	}
