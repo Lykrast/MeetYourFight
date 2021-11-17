@@ -74,6 +74,24 @@ public class DameFortunaEntity extends BossEntity {
 	}
 
 	@Override
+	protected void registerGoals() {
+		super.registerGoals();
+		goalSelector.addGoal(0, new SwimGoal(this));
+		goalSelector.addGoal(2, new RegularAttack(this));
+		goalSelector.addGoal(3, new RageEvokerLines(this));
+		goalSelector.addGoal(7, new MoveAroundTarget(this));
+		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
+		goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+		goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
+		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
+		targetSelector.addGoal(2, new HurtByTargetGoal(this));
+	}
+	
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 300).createMutableAttribute(Attributes.ARMOR, 5).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
+    }
+
+	@Override
 	public void move(MoverType typeIn, Vector3d pos) {
 		super.move(typeIn, pos);
 		doBlockCollisions();
@@ -143,23 +161,6 @@ public class DameFortunaEntity extends BossEntity {
 				break;
 		}
 	}
-
-	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		goalSelector.addGoal(0, new SwimGoal(this));
-		goalSelector.addGoal(2, new RegularAttack(this));
-		goalSelector.addGoal(7, new MoveAroundTarget(this));
-		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
-		goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-		goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
-		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
-		targetSelector.addGoal(2, new HurtByTargetGoal(this));
-	}
-	
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 300).createMutableAttribute(Attributes.ARMOR, 5).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
-    }
 	
 	public static void spawn(PlayerEntity player, World world) {
 		Random rand = player.getRNG();
@@ -311,10 +312,10 @@ public class DameFortunaEntity extends BossEntity {
 		public void startExecuting() {
 			dame.attackCooldown = 2;
 			target = dame.getAttackTarget();
-			chosenAttack = dame.rand.nextInt(4);
+			chosenAttack = dame.rand.nextInt(3);
 			//Choose animation depending on the attack
 			//Horrible ad hoc n°1
-			dame.setAttack(chosenAttack == 1 || chosenAttack == 2 ? CLAW_ATTACK : PROJ_ATTACK);
+			dame.setAttack(chosenAttack == 1 ? CLAW_ATTACK : PROJ_ATTACK);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack, dame.getSoundVolume(), dame.getSoundPitch());
@@ -325,19 +326,10 @@ public class DameFortunaEntity extends BossEntity {
 			switch (chosenAttack) {
 				case 0:
 					return dame.rage >= 1 ? 24 : 16;
-				default:
 				case 1:
-					switch (dame.rage) {
-						case 1:
-							return 4;
-						case 2:
-							return 8;
-						default:
-							return 3;
-					}
-				case 2:
 					return 8 + dame.rage;
-				case 3:
+				default:
+				case 2:
 					return 4 + dame.rage;
 			}
 		}
@@ -370,25 +362,14 @@ public class DameFortunaEntity extends BossEntity {
 					dame.playSound(ModSounds.dameFortunaShoot, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
-					//Evoker lines
-					attackDelay = dame.rage >= 2 ? 10 : 20;
+					//Harvester style Evoker jaws
+					attackDelay = 10;
 					double minY = Math.min(ty, dame.getPosY());
 					double maxY = Math.max(ty, dame.getPosY()) + 1;
 					angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
-					for (int i = 0; i < 16; ++i) {
-						double dist = 1.25 * (i + 1);
-						dame.spawnFangs(dame.getPosX() + MathHelper.cos(angle) * dist, dame.getPosZ() + MathHelper.sin(angle) * dist, minY, maxY, angle, i);
-					}
-					break;
-				case 2:
-					//Harvester style Evoker jaws
-					attackDelay = 10;
-					minY = Math.min(ty, dame.getPosY());
-					maxY = Math.max(ty, dame.getPosY()) + 1;
-					angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
 					dame.spawnFangs(tx, tz, minY, maxY, angle, 0);
 					break;
-				case 3:
+				case 2:
 					//Grid above
 					attackDelay = 20;
 					for (int x = -3; x <= 3; x++) {
@@ -417,6 +398,52 @@ public class DameFortunaEntity extends BossEntity {
 
 	}
 	
+	//Firing evoker lines when enraged
+	private static class RageEvokerLines extends Goal {
+		private DameFortunaEntity dame;
+		private LivingEntity target;
+		private int delay;
+
+		public RageEvokerLines(DameFortunaEntity dame) {
+			this.dame = dame;
+		}
+
+		@Override
+		public boolean shouldExecute() {
+			return dame.rage >= 2 && dame.getAttackTarget() != null && dame.getAttackTarget().isAlive();
+		}
+
+		@Override
+		public void startExecuting() {
+			target = dame.getAttackTarget();
+			delay = 60;
+		}
+
+		@Override
+		public void tick() {
+			delay--;
+			if (delay <= 0) {
+				double tx = target.getPosX();
+				double ty = target.getPosY();
+				double tz = target.getPosZ();
+				//Evoker lines
+				double minY = Math.min(ty, dame.getPosY());
+				double maxY = Math.max(ty, dame.getPosY()) + 1;
+				float angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
+				for (int i = 0; i < 16; ++i) {
+					double dist = 1.25 * (i + 1);
+					dame.spawnFangs(dame.getPosX() + MathHelper.cos(angle) * dist, dame.getPosZ() + MathHelper.sin(angle) * dist, minY, maxY, angle, i);
+				}
+			}
+		}
+
+		@Override
+		public boolean shouldContinueExecuting() {
+			return delay > 0 && target.isAlive();
+		}
+
+	}
+	
 	//Rotate around attack target
 	private static class MoveAroundTarget extends Goal {
 		private MobEntity mob;
@@ -435,7 +462,7 @@ public class DameFortunaEntity extends BossEntity {
 		public void startExecuting() {			
 			LivingEntity target = mob.getAttackTarget();
 			Random rand = mob.getRNG();
-			float angle = (rand.nextInt(5) + 2) * 10f * ((float)Math.PI / 180F);
+			float angle = (rand.nextInt(4) + 2) * 10f * ((float)Math.PI / 180F);
 			if (rand.nextBoolean()) angle *= -1;
 			Vector3d offset = new Vector3d(mob.getPosX() - target.getPosX(), 0, mob.getPosZ() - target.getPosZ()).normalize().rotateYaw(angle);
 			double distance = rand.nextDouble() * 2 + 4;
