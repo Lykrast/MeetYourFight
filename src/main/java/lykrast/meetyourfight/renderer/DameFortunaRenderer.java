@@ -1,5 +1,7 @@
 package lykrast.meetyourfight.renderer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
 import net.minecraft.client.renderer.entity.BipedRenderer;
@@ -11,6 +13,16 @@ public class DameFortunaRenderer extends BipedRenderer<DameFortunaEntity, DameFo
 
 	public DameFortunaRenderer(EntityRendererManager renderManagerIn) {
 		super(renderManagerIn, new DameFortunaModel(), 0.5F);
+	}
+	
+	@Override
+	protected void applyRotations(DameFortunaEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+		//Copied this bit from the Mourned from Defiled Lands, that I think copied from endermen
+		//(and it don't want to show me the endermen code)
+		if (entity.getRage() >= 1) {
+			rotationYaw += (float)(Math.cos(ageInTicks * 3.25D) * Math.PI);
+		}
+		super.applyRotations(entity, stack, ageInTicks, rotationYaw, partialTicks);
 	}
 
 	@Override

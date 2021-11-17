@@ -90,14 +90,24 @@ public class DameFortunaEntity extends BossEntity {
 		if (world.isRemote) {
 			headRotationTimer--;
 			if (headRotationTimer <= 0) {
-				headRotationTimer = 30 + rand.nextInt(11);
+				//So uh I do not intend to have rage beyond 3 levels, so the ad hoc will do
+				switch (getRage()) {
+					case 0:
+						headRotationTimer = 20 + rand.nextInt(21);
+						break;
+					case 1:
+						headRotationTimer = 15 + rand.nextInt(11);
+						break;
+					default:
+						headRotationTimer = 5 + rand.nextInt(11);
+				}
 				rotateHead();
 				headRotationProgress = 0;
 				headRotationProgressLast = 0;
 			}
 			else {
 				headRotationProgressLast = headRotationProgress;
-				headRotationProgress = Math.min(1, headRotationProgress + 0.06f);
+				headRotationProgress = Math.min(1, headRotationProgress + 0.07f);
 			}
 		}
 	}
