@@ -41,8 +41,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class DameFortunaEntity extends BossEntity {
-	private static final DataParameter<Byte> ATTACK = EntityDataManager.createKey(DameFortunaEntity.class, DataSerializers.BYTE);
+	/**
+	 * Look at me I can embed attacks AND rage in a single byte! 0x0000RRAA with R for rage (0-2) and A for attack (0-2)
+	 */
+	private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(DameFortunaEntity.class, DataSerializers.BYTE);
 	public static final int NO_ATTACK = 0, PROJ_ATTACK = 1, CLAW_ATTACK = 2;
+	private static final int ATTACK_MASK = 0b11, RAGE_MASK = ~ATTACK_MASK;
 	public int attackCooldown;
 	/**
 	 * Since the animation only rotates in 90°, it's given in 90° by 0 1 2 or 3
@@ -50,11 +54,16 @@ public class DameFortunaEntity extends BossEntity {
 	public int headTargetPitch, headTargetYaw, headTargetRoll;
 	public int headRotationTimer;
 	public float headRotationProgress, headRotationProgressLast;
+	/**
+	 * Server side cached rage
+	 */
+	private int rage;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, World worldIn) {
 		super(type, worldIn);
 		moveController = new VexMovementController(this);
 		experienceValue = 100;
+		rage = 0;
 		//Animations
 		headRotationTimer = 30;
 		headTargetPitch = 0;
@@ -157,18 +166,28 @@ public class DameFortunaEntity extends BossEntity {
 	@Override
 	protected void registerData() {
 		super.registerData();
-		dataManager.register(ATTACK, (byte)0);
+		dataManager.register(STATUS, (byte)0);
 	}
 	
 	public int getAttack() {
-		return dataManager.get(ATTACK);
+		return dataManager.get(STATUS) & ATTACK_MASK;
 	}
 	
 	public void setAttack(int attack) {
-		dataManager.set(ATTACK, (byte)attack);
+		int rage = dataManager.get(STATUS) & RAGE_MASK;
+		dataManager.set(STATUS, (byte)(rage | attack));
 	}
 	
-	private int getRage() {
+	public int getRage() {
+		return (dataManager.get(STATUS) & RAGE_MASK) >> 2;
+	}
+	
+	public void setRage(int rage) {
+		int attack = dataManager.get(STATUS) & ATTACK_MASK;
+		dataManager.set(STATUS, (byte)((rage << 2) | attack));
+	}
+	
+	private int getRageTarget() {
 		//+1 rage every 1/3 of life lost
 		float health = getHealth();
 		float third = getMaxHealth() / 3f;
@@ -180,6 +199,11 @@ public class DameFortunaEntity extends BossEntity {
 	@Override
 	public void updateAITasks() {
 		if (attackCooldown > 0) attackCooldown--;
+		int newrage = getRageTarget();
+		if (newrage > rage) {
+			rage = newrage;
+			setRage(rage);
+		}
 		super.updateAITasks();
 	}
 	
@@ -290,10 +314,10 @@ public class DameFortunaEntity extends BossEntity {
 		private int getAttackCount() {
 			switch (chosenAttack) {
 				case 0:
-					return dame.getRage() >= 1 ? 24 : 16;
+					return dame.rage >= 1 ? 24 : 16;
 				default:
 				case 1:
-					switch (dame.getRage()) {
+					switch (dame.rage) {
 						case 1:
 							return 4;
 						case 2:
@@ -302,9 +326,9 @@ public class DameFortunaEntity extends BossEntity {
 							return 3;
 					}
 				case 2:
-					return 8 + dame.getRage();
+					return 8 + dame.rage;
 				case 3:
-					return 4 + dame.getRage();
+					return 4 + dame.rage;
 			}
 		}
 
@@ -331,13 +355,13 @@ public class DameFortunaEntity extends BossEntity {
 					attackDelay = 3;
 					float angle = MathHelper.wrapDegrees(attackRemaining * 45F) * ((float)Math.PI / 180F);
 					ProjectileLineEntity proj = dame.readyLine();
-					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, tx + dame.rand.nextInt(3) - 1, ty + 1, tz + dame.rand.nextInt(3) - 1, dame.getRage() >= 2 ? 3 : 2);
+					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, tx + dame.rand.nextInt(3) - 1, ty + 1, tz + dame.rand.nextInt(3) - 1, dame.rage >= 2 ? 3 : 2);
 					dame.world.addEntity(proj);
 					dame.playSound(ModSounds.dameFortunaShoot, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
 					//Evoker lines
-					attackDelay = dame.getRage() >= 2 ? 10 : 20;
+					attackDelay = dame.rage >= 2 ? 10 : 20;
 					double minY = Math.min(ty, dame.getPosY());
 					double maxY = Math.max(ty, dame.getPosY()) + 1;
 					angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
