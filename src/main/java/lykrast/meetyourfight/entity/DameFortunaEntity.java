@@ -324,11 +324,10 @@ public class DameFortunaEntity extends BossEntity {
 		//Horrible horrible ad hoc n°2
 		private int getAttackCount() {
 			switch (chosenAttack) {
-				case 0:
-					return dame.rage >= 1 ? 24 : 16;
 				case 1:
-					return 8 + dame.rage;
+					return 8 + dame.rage * 2;
 				default:
+				case 0:
 				case 2:
 					return 4 + dame.rage;
 			}
@@ -353,12 +352,26 @@ public class DameFortunaEntity extends BossEntity {
 			switch (chosenAttack) {
 				default:
 				case 0:
-					//Circular lines
-					attackDelay = 3;
-					float angle = MathHelper.wrapDegrees(attackRemaining * 45F) * ((float)Math.PI / 180F);
-					ProjectileLineEntity proj = dame.readyLine();
-					proj.setUpTowards(9, dame.getPosX() + MathHelper.sin(angle) * 4, dame.getPosY() + 6, dame.getPosZ() + MathHelper.cos(angle) * 4, tx + dame.rand.nextInt(3) - 1, ty + 1, tz + dame.rand.nextInt(3) - 1, dame.rage >= 2 ? 3 : 2);
-					dame.world.addEntity(proj);
+					//Vertical lines
+					//Copied a good deal from Bellringer
+					attackDelay = 20;
+					BlockPos self = dame.getPosition();
+					double sx = self.getX();
+					double sz = self.getZ();
+					Direction dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
+					double cx = dir.getXOffset();
+					double cz = dir.getZOffset();
+					
+					for (int i = -4; i <= 4; i++) {
+						if ((i + 4) % 2 == attackRemaining % 2) {
+							for (int y = 0; y < 3; y++) {
+								ProjectileLineEntity proj = dame.readyLine();
+								proj.setUp(10, cx, 0, cz, tx - 7*cx + 1.5*i*cz, ty + 1.5*y, tz - 7*cz + 1.5*i*cx);
+								dame.world.addEntity(proj);
+							}
+						}
+					}
+					
 					dame.playSound(ModSounds.dameFortunaShoot, 2.0F, (dame.rand.nextFloat() - dame.rand.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
@@ -366,7 +379,7 @@ public class DameFortunaEntity extends BossEntity {
 					attackDelay = 10;
 					double minY = Math.min(ty, dame.getPosY());
 					double maxY = Math.max(ty, dame.getPosY()) + 1;
-					angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
+					float angle = (float) MathHelper.atan2(tz - dame.getPosZ(), tx - dame.getPosX());
 					dame.spawnFangs(tx, tz, minY, maxY, angle, 0);
 					break;
 				case 2:
@@ -375,7 +388,7 @@ public class DameFortunaEntity extends BossEntity {
 					for (int x = -3; x <= 3; x++) {
 						for (int z = -3; z <= 3; z++) {
 							if ((x + z + 6) % 2 != attackRemaining % 2) continue;
-							proj = dame.readyLine();
+							ProjectileLineEntity proj = dame.readyLine();
 							proj.setUp(15, 0, -1, 0, tx + x * 1.5, ty + 7, tz + z * 1.5);
 							dame.world.addEntity(proj);
 						}
