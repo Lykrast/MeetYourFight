@@ -25,24 +25,28 @@
 	"entity.dame_fortuna.idle": {
 		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.idle",
 		"sounds": [
-			"mob/vex/idle1",
-			"mob/vex/idle2",
-			"mob/vex/idle3",
-			"mob/vex/idle4"
+			"meetyourfight:fortuna/idle1",
+			"meetyourfight:fortuna/idle2",
+			"meetyourfight:fortuna/idle3",
+			"meetyourfight:fortuna/idle4",
+			"meetyourfight:fortuna/idle5",
+			"meetyourfight:fortuna/idle6"
 		]
 	},
 	"entity.dame_fortuna.hurt": {
 		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.hurt",
 		"sounds": [
-			"mob/vex/hurt1",
-			"mob/vex/hurt2"
+			"meetyourfight:fortuna/hurt1",
+			"meetyourfight:fortuna/hurt2",
+			"meetyourfight:fortuna/hurt3",
+			"meetyourfight:fortuna/hurt4",
+			"meetyourfight:fortuna/hurt5"
 		]
 	},
 	"entity.dame_fortuna.death": {
 		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.death",
 		"sounds": [
-			"mob/vex/death1",
-			"mob/vex/death2"
+			"meetyourfight:fortuna/death"
 		]
 	},
 	"entity.dame_fortuna.attack": {
