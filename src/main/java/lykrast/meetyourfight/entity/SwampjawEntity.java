@@ -146,7 +146,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicSwampjaw;
+		return ModSounds.musicMagnum;
 	}
 
 	@Override

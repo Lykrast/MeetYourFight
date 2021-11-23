@@ -14,7 +14,7 @@ public class ModSounds {
 	public static SoundEvent dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
 	public static SoundEvent swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
 	public static SoundEvent slicersDiceProc, aceOfIronProc, cagedHeartProc;
-	public static SoundEvent musicBellringer, musicDameFortuna, musicSwampjaw;
+	public static SoundEvent musicMagnum;
 	
 	@SubscribeEvent
 	public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
@@ -39,9 +39,7 @@ public class ModSounds {
 		aceOfIronProc = initSound(reg, "item.proc.ace_of_iron");
 		cagedHeartProc = initSound(reg, "item.proc.caged_heart");
 		
-		musicBellringer = initSound(reg, "music.bellringer");
-		musicDameFortuna = initSound(reg, "music.dame_fortuna");
-		musicSwampjaw = initSound(reg, "music.swampjaw");
+		musicMagnum = initSound(reg, "music.magnum");
 	}
 
 	public static SoundEvent initSound(IForgeRegistry<SoundEvent> reg, String name) {

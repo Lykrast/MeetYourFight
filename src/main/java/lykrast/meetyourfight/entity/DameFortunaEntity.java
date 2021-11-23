@@ -283,7 +283,7 @@ public class DameFortunaEntity extends BossEntity {
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicDameFortuna;
+		return ModSounds.musicMagnum;
 	}
 	
 	@Override
