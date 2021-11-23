@@ -41,6 +41,11 @@ public class ModSounds {
 		
 		musicMagnum = initSound(reg, "music.magnum");
 	}
+	
+	//Supplier for the disc since I init the stuff during the registry event
+	public static SoundEvent supplyMagnum() {
+		return musicMagnum;
+	}
 
 	public static SoundEvent initSound(IForgeRegistry<SoundEvent> reg, String name) {
 		ResourceLocation loc = MeetYourFight.rl(name);

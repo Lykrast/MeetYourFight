@@ -5,6 +5,7 @@ import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.*;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
+import net.minecraft.item.MusicDiscItem;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.potion.EffectInstance;
@@ -19,6 +20,7 @@ public class ModItems {
 	public static Item hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static Item devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static Item fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
+	public static Item discMagnum;
 	public static Item eggBellringer, eggDameFortuna, eggSwampjaw;
 	
 	@SubscribeEvent
@@ -45,6 +47,8 @@ public class ModItems {
 		depthStar = initItem(reg, new DepthStar(bossNS()), "depth_star");
 		cagedHeart = initItem(reg, new CurioBaseItem(bossNS(), true), "caged_heart");
 		marshyDelight = initItem(reg, new Item(boss().food((new Food.Builder().hunger(14).saturation(0.9f).meat().build()))), "marshy_delight");
+		
+		discMagnum = initItem(reg, new MusicDiscItem(1, ModSounds::supplyMagnum, noStack().rarity(Rarity.RARE)), "music_disc_magnum");
 		
 		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");

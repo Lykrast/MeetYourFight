@@ -127,5 +127,5 @@
 		]
 	},
 	
-	"music.magnum": { "sounds": [{"name": "meetyourfight:music/monkey_warhol_magnum", "stream": true, "volume": 0.4}] }
+	"music.magnum": { "sounds": [{"name": "meetyourfight:music/monkey_warhol_magnum", "stream": true, "volume": 0.3}] }
 }

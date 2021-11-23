@@ -36,6 +36,9 @@
 	"item.meetyourfight.caged_heart.desc": "Reduces damage that exceeds 1/4 of max health",
 	"item.meetyourfight.marshy_delight": "Marshy Delight",
 	
+	"item.meetyourfight.music_disc_magnum": "Music Disc",
+	"item.meetyourfight.music_disc_magnum.desc": "Monkey Warhol - Magnum",
+	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Dame Fortuna Spawn Egg",
 	"item.meetyourfight.swampjaw_spawn_egg": "Swampjaw Spawn Egg",
