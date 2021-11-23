@@ -297,6 +297,7 @@ public class DameFortunaEntity extends BossEntity {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
 		private int attackRemaining, attackDelay, chosenAttack;
+		private double stationaryY;
 
 		public RegularAttack(DameFortunaEntity dame) {
 			setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
@@ -319,6 +320,7 @@ public class DameFortunaEntity extends BossEntity {
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack, dame.getSoundVolume(), dame.getSoundPitch());
+			stationaryY = target.getPosY() + 1 + dame.rand.nextDouble() * 2;
 		}
 
 		//Horrible horrible ad hoc n°2
@@ -341,6 +343,13 @@ public class DameFortunaEntity extends BossEntity {
 				attackRemaining--;
 				performAttack();
 				if (attackRemaining <= 0) resetTask();
+			}
+			
+			//Stay stationary
+			if (!dame.getMoveHelper().isUpdating()) {
+				if (Math.abs(dame.getPosY() - stationaryY) >= 1) {
+					dame.getMoveHelper().setMoveTo(dame.getPosX(), stationaryY, dame.getPosZ(), 1);
+				}
 			}
 		}
 
@@ -389,7 +398,7 @@ public class DameFortunaEntity extends BossEntity {
 						for (int z = -3; z <= 3; z++) {
 							if ((x + z + 6) % 2 != attackRemaining % 2) continue;
 							ProjectileLineEntity proj = dame.readyLine();
-							proj.setUp(15, 0, -1, 0, tx + x * 1.5, ty + 7, tz + z * 1.5);
+							proj.setUp(15, 0, -1, 0, tx + x * 1.6, ty + 7, tz + z * 1.6);
 							dame.world.addEntity(proj);
 						}
 					}
@@ -482,7 +491,7 @@ public class DameFortunaEntity extends BossEntity {
 
 			mob.getMoveHelper().setMoveTo(
 					target.getPosX() + offset.x * distance, 
-					target.getPosY() + 2 + rand.nextDouble() * 2, 
+					target.getPosY() + 1 + rand.nextDouble() * 2, 
 					target.getPosZ() + offset.z * distance,
 					1);
 		}
