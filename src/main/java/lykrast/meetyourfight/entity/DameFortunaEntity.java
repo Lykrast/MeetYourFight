@@ -438,7 +438,7 @@ public class DameFortunaEntity extends BossEntity {
 		@Override
 		public void startExecuting() {
 			target = dame.getAttackTarget();
-			delay = 60;
+			delay = 80;
 		}
 
 		@Override
