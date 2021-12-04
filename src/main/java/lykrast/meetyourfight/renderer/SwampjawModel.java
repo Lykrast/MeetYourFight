@@ -38,13 +38,13 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 
 	public SwampjawModel(ModelPart modelPart) {
 		bodyMain = modelPart.getChild("body");
-		finRight = modelPart.getChild("fin_right");
-		finLeft = modelPart.getChild("fin_left");
-		tailInner = modelPart.getChild("tail_inner");
-		tailOuter = modelPart.getChild("tail_outer");
-		tailfinTop = modelPart.getChild("tail_fin_top");
-		tailfinBottom = modelPart.getChild("tail_fin_bottom");
-		head = modelPart.getChild("head");
+		finRight = bodyMain.getChild("fin_right");
+		finLeft = bodyMain.getChild("fin_left");
+		tailInner = bodyMain.getChild("tail_inner");
+		tailOuter = tailInner.getChild("tail_outer");
+		tailfinTop = tailOuter.getChild("tail_fin_top");
+		tailfinBottom = tailOuter.getChild("tail_fin_bottom");
+		head = bodyMain.getChild("head");
 		//jaw = modelPart.getChild("jaw");
 	}
 	
