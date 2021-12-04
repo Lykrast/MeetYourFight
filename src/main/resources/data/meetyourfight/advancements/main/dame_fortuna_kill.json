@@ -12,7 +12,7 @@
 	"criteria": {
 		"get_item": {
 			"trigger": "minecraft:inventory_changed",
-			"conditions": { "items": [{ "item": "meetyourfight:fortunes_favor" }] }
+			"conditions": { "items": [{ "items": ["meetyourfight:fortunes_favor"] }] }
 		}
 	},
 	"requirements": [["get_item"]]

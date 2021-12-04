@@ -12,7 +12,7 @@
 	"criteria": {
 		"get_item": {
 			"trigger": "minecraft:inventory_changed",
-			"conditions": { "items": [{ "item": "meetyourfight:devils_ante" }] }
+			"conditions": { "items": [{ "items": ["meetyourfight:devils_ante"] }] }
 		}
 	},
 	"requirements": [["get_item"]]

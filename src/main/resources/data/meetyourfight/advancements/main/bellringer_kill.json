@@ -12,7 +12,7 @@
 	"criteria": {
 		"get_item": {
 			"trigger": "minecraft:inventory_changed",
-			"conditions": { "items": [{ "item": "meetyourfight:phantoplasm" }] }
+			"conditions": { "items": [{ "items": ["meetyourfight:phantoplasm"] }] }
 		}
 	},
 	"requirements": [["get_item"]]

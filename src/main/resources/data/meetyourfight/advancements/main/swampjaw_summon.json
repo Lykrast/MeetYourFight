@@ -12,7 +12,7 @@
 	"criteria": {
 		"get_item": {
 			"trigger": "minecraft:inventory_changed",
-			"conditions": { "items": [{ "item": "meetyourfight:fossil_bait" }] }
+			"conditions": { "items": [{ "items": ["meetyourfight:fossil_bait"] }] }
 		}
 	},
 	"requirements": [["get_item"]]

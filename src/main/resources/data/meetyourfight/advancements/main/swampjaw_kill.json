@@ -12,7 +12,7 @@
 	"criteria": {
 		"get_item": {
 			"trigger": "minecraft:inventory_changed",
-			"conditions": { "items": [{ "item": "meetyourfight:mossy_tooth" }] }
+			"conditions": { "items": [{ "items": ["meetyourfight:mossy_tooth"] }] }
 		}
 	},
 	"requirements": [["get_item"]]

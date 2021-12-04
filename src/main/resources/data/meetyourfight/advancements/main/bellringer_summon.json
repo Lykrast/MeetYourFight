@@ -12,7 +12,7 @@
 	"criteria": {
 		"get_item": {
 			"trigger": "minecraft:inventory_changed",
-			"conditions": { "items": [{ "item": "meetyourfight:haunted_bell" }] }
+			"conditions": { "items": [{ "items": ["meetyourfight:haunted_bell"] }] }
 		}
 	},
 	"requirements": [["get_item"]]
