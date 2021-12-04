@@ -217,6 +217,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 		protected boolean isCloseToOffset() {
 			return swampjaw.orbitOffset.distanceToSqr(swampjaw.getX(), swampjaw.getY(), swampjaw.getZ()) < 4;
 		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
 	}
 
 	private static class OrbitPointGoal extends BaseMoveGoal {
@@ -362,6 +367,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		public PickAttackGoal(SwampjawEntity swampjaw) {
 			this.swampjaw = swampjaw;
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
 		}
 
 		@Override

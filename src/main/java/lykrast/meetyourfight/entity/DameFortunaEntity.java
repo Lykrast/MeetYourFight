@@ -305,6 +305,11 @@ public class DameFortunaEntity extends BossEntity {
 		}
 
 		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
 		public boolean canUse() {
 			return dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
 		}
@@ -428,6 +433,11 @@ public class DameFortunaEntity extends BossEntity {
 
 		public RageEvokerLines(DameFortunaEntity dame) {
 			this.dame = dame;
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
 		}
 
 		@Override

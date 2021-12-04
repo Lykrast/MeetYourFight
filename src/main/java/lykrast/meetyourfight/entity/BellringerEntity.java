@@ -179,6 +179,11 @@ public class BellringerEntity extends BossEntity {
 		}
 
 		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
 		public void start() {
 			ringer.attackCooldown = 2;
 			attackDelay = 20;
@@ -270,6 +275,11 @@ public class BellringerEntity extends BossEntity {
 		}
 
 		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
 		public void start() {
 			ringer.attackCooldown = 2;
 			ringer.rageAttacks = 1;
@@ -352,6 +362,11 @@ public class BellringerEntity extends BossEntity {
 		@Override
 		public boolean canUse() {
 			return mob.getTarget() != null && !mob.getMoveControl().hasWanted();
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
 		}
 
 		@Override
