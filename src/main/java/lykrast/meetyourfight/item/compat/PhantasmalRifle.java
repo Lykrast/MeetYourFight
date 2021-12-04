@@ -20,11 +20,11 @@ public class PhantasmalRifle extends GunItem {
 
 	@Override
 	protected void changeBullet(World world, PlayerEntity player, ItemStack gun, BulletEntity bullet, boolean bulletFree) {
-		bullet.noClip = true;
+		bullet.noPhysics = true;
 	}
 
 	@Override
 	protected void addExtraStatsTooltip(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
+		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
 	}
 }

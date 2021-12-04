@@ -17,9 +17,9 @@ public class LuckCurio extends CurioBaseItem {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		super.addInformation(stack, worldIn, tooltip, flagIn);
-		tooltip.add(new TranslationTextComponent(TOOLTIP_LUCK).mergeStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+		tooltip.add(new TranslationTextComponent(TOOLTIP_LUCK).withStyle(TextFormatting.GRAY));
 	}
 
 }

@@ -24,16 +24,16 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class CocktailCutlass extends SwordItem {
-	private static final IItemTier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.fromItems(ModItems.fortunesFavor));
+	private static final IItemTier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor));
 	private static final List<Triple<Effect, Integer, Boolean>> EFFECTS = new ArrayList<>();
 	
 	public static void initEffects() {
 		//Effect, duration, scale duration instead of amplifier (for like Fire Resistance)
-		EFFECTS.add(Triple.of(Effects.SPEED, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.HASTE, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.STRENGTH, 60*20, false));
+		EFFECTS.add(Triple.of(Effects.MOVEMENT_SPEED, 60*20, false));
+		EFFECTS.add(Triple.of(Effects.DIG_SPEED, 60*20, false));
+		EFFECTS.add(Triple.of(Effects.DAMAGE_BOOST, 60*20, false));
 		EFFECTS.add(Triple.of(Effects.REGENERATION, 10*20, false));
-		EFFECTS.add(Triple.of(Effects.RESISTANCE, 60*20, false));
+		EFFECTS.add(Triple.of(Effects.DAMAGE_RESISTANCE, 60*20, false));
 		EFFECTS.add(Triple.of(Effects.FIRE_RESISTANCE, 60*20, true));
 		EFFECTS.add(Triple.of(Effects.WATER_BREATHING, 60*20, true));
 		EFFECTS.add(Triple.of(Effects.INVISIBILITY, 60*20, true));
@@ -46,7 +46,7 @@ public class CocktailCutlass extends SwordItem {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target != null && attacker instanceof PlayerEntity) {
 			float luck = ((PlayerEntity)attacker).getLuck();
 			double chance = 1.0 / 5.0;
@@ -69,17 +69,17 @@ public class CocktailCutlass extends SwordItem {
 				//If the effect doesn't scale with potency, increase duration instead
 				int duration = triple.getRight() ? triple.getMiddle() * (1 + effectLevel) : triple.getMiddle();
 				int potency = triple.getRight() ? 0 : effectLevel;
-				attacker.addPotionEffect(new EffectInstance(triple.getLeft(), duration, potency, false, false, true));
-				attacker.world.playSound(null, attacker.getPosition(), SoundEvents.ENTITY_GENERIC_DRINK, SoundCategory.PLAYERS, 1, 1);
+				attacker.addEffect(new EffectInstance(triple.getLeft(), duration, potency, false, false, true));
+				attacker.level.playSound(null, attacker.blockPosition(), SoundEvents.GENERIC_DRINK, SoundCategory.PLAYERS, 1, 1);
 			}
 		}
-		return super.hitEntity(stack, target, attacker);
+		return super.hurtEnemy(stack, target, attacker);
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
-		tooltip.add(new TranslationTextComponent(LuckCurio.TOOLTIP_LUCK).mergeStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
+		tooltip.add(new TranslationTextComponent(LuckCurio.TOOLTIP_LUCK).withStyle(TextFormatting.GRAY));
 	}
 
 }

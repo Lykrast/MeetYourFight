@@ -13,24 +13,24 @@ public class ProjectileLineModel<T extends Entity> extends EntityModel<T> {
 	private final ModelRenderer renderer;
 
 	public ProjectileLineModel() {
-		super(RenderType::getEntityCutoutNoCull);
-		textureWidth = 64;
-		textureHeight = 32;
+		super(RenderType::entityCutoutNoCull);
+		texWidth = 64;
+		texHeight = 32;
 		renderer = new ModelRenderer(this);
-		renderer.setTextureOffset(0, 0).addBox(-4, -4, -4, 8, 8, 8, 0);
-		renderer.setRotationPoint(0, 0, 0);
+		renderer.texOffs(0, 0).addBox(-4, -4, -4, 8, 8, 8, 0);
+		renderer.setPos(0, 0, 0);
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
 	@Override
-	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		//TODO great it's backwards when facing any axis except one of the horizontal ones
-		renderer.rotateAngleY = netHeadYaw * ((float) Math.PI / 180);
-		renderer.rotateAngleX = headPitch * ((float) Math.PI / 180);
+		renderer.yRot = netHeadYaw * ((float) Math.PI / 180);
+		renderer.xRot = headPitch * ((float) Math.PI / 180);
 	}
 
 }

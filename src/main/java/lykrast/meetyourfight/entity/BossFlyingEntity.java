@@ -33,8 +33,8 @@ public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEn
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		if (hasCustomName()) bossInfo.setName(getDisplayName());
 
 	}
@@ -46,35 +46,35 @@ public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEn
 	}
 
 	@Override
-	protected void updateAITasks() {
-		super.updateAITasks();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		bossInfo.setPercent(getHealth() / getMaxHealth());
 	}
 
 	@Override
-	public void addTrackingPlayer(ServerPlayerEntity player) {
-		super.addTrackingPlayer(player);
+	public void startSeenByPlayer(ServerPlayerEntity player) {
+		super.startSeenByPlayer(player);
 		bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void removeTrackingPlayer(ServerPlayerEntity player) {
-		super.removeTrackingPlayer(player);
+	public void stopSeenByPlayer(ServerPlayerEntity player) {
+		super.stopSeenByPlayer(player);
 		bossInfo.removePlayer(player);
 	}
 
 	@Override
-	public boolean isNonBoss() {
+	public boolean canChangeDimensions() {
 		return false;
 	}
 
 	@Override
-	protected boolean isDespawnPeaceful() {
+	protected boolean shouldDespawnInPeaceful() {
 		return true;
 	}
 
 	@Override
-	public SoundCategory getSoundCategory() {
+	public SoundCategory getSoundSource() {
 		return SoundCategory.HOSTILE;
 	}
 
@@ -82,7 +82,7 @@ public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEn
 	// https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/entity/EntityDoppleganger.java#L992
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -92,7 +92,7 @@ public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEn
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void readSpawnData(PacketBuffer additionalData) {
-		Minecraft.getInstance().getSoundHandler().play(new BossMusic(this, getMusic()));
+		Minecraft.getInstance().getSoundManager().play(new BossMusic(this, getMusic()));
 	}
 
 	protected abstract SoundEvent getMusic();

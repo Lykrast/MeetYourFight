@@ -22,14 +22,14 @@ public class ClientStuff {
 	public static void clientStuff(final FMLClientSetupEvent event) {
 		//Items
 		ItemColors icol = Minecraft.getInstance().getItemColors();
-		icol.register((s, t) -> t == 1 ? MathHelper.hsvToRGB(((Util.milliTime() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass);
-		if (MeetYourFight.loadedGunsWithoutRoses()) icol.register((s, t) -> t == 1 ? MathHelper.hsvToRGB(((Util.milliTime() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun);
+		icol.register((s, t) -> t == 1 ? MathHelper.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass);
+		if (MeetYourFight.loadedGunsWithoutRoses()) icol.register((s, t) -> t == 1 ? MathHelper.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun);
 
 		//Same as Bow
-		ItemModelsProperties.func_239418_a_(ModItems.depthStar, MeetYourFight.rl("charge"),
-				(stack, world, entity) -> entity == null || entity.getActiveItemStack() != stack ? 0 : (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F);
-		ItemModelsProperties.func_239418_a_(ModItems.depthStar, MeetYourFight.rl("charging"),
-				(stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1 : 0);
+		ItemModelsProperties.register(ModItems.depthStar, MeetYourFight.rl("charge"),
+				(stack, world, entity) -> entity == null || entity.getUseItem() != stack ? 0 : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F);
+		ItemModelsProperties.register(ModItems.depthStar, MeetYourFight.rl("charging"),
+				(stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0);
 		
 		//Entities
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.BELLRINGER, (manager) -> new BellringerRenderer(manager));

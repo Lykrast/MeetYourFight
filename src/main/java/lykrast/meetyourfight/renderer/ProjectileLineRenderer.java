@@ -22,7 +22,7 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 	private static final RenderType[] OVERLAYS;
 	static {
 		OVERLAYS = new RenderType[TEXTURES.length];
-		for (int i = 0; i < OVERLAYS.length; i++) OVERLAYS[i] = RenderType.getEntityTranslucent(TEXTURES[i]);
+		for (int i = 0; i < OVERLAYS.length; i++) OVERLAYS[i] = RenderType.entityTranslucent(TEXTURES[i]);
 	}
 	private final ProjectileLineModel<ProjectileLineEntity> model = new ProjectileLineModel<>();
 
@@ -31,7 +31,7 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 	}
 
 	@Override
-	protected int getBlockLight(ProjectileLineEntity entityIn, BlockPos partialTicks) {
+	protected int getBlockLightLevel(ProjectileLineEntity entityIn, BlockPos partialTicks) {
 		return 15;
 	}
 
@@ -39,22 +39,22 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 	public void render(ProjectileLineEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		//TODO great it's backwards when facing any axis except one of the horizontal ones
 		//So I just made the texture not have any direction
-		matrixStackIn.push();
-		float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw);
-		float f1 = MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch);
+		matrixStackIn.pushPose();
+		float f = MathHelper.rotLerp(partialTicks, entityIn.yRotO, entityIn.yRot);
+		float f1 = MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot);
 		matrixStackIn.translate(0, 0.15, 0);
-		model.setRotationAngles(entityIn, 0, 0, 0, f, f1);
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(model.getRenderType(TEXTURES[clampVariant(entityIn)]));
-		model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		model.setupAnim(entityIn, 0, 0, 0, f, f1);
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(model.renderType(TEXTURES[clampVariant(entityIn)]));
+		model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		matrixStackIn.scale(1.5F, 1.5F, 1.5F);
 		IVertexBuilder ivertexbuilder1 = bufferIn.getBuffer(OVERLAYS[clampVariant(entityIn)]);
-		model.render(matrixStackIn, ivertexbuilder1, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.15F);
-		matrixStackIn.pop();
+		model.renderToBuffer(matrixStackIn, ivertexbuilder1, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.15F);
+		matrixStackIn.popPose();
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(ProjectileLineEntity entity) {
+	public ResourceLocation getTextureLocation(ProjectileLineEntity entity) {
 		return TEXTURES[clampVariant(entity)];
 	}
 	

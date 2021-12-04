@@ -31,7 +31,7 @@ public class CocktailShotgun extends ShotgunItem {
 	
 	public static void initEffects() {
 		//Effect, duration, scale duration instead of amplifier (for like Glowing)
-		EFFECTS.add(Triple.of(Effects.SLOWNESS, 20*20, false));
+		EFFECTS.add(Triple.of(Effects.MOVEMENT_SLOWDOWN, 20*20, false));
 		EFFECTS.add(Triple.of(Effects.WEAKNESS, 20*20, false));
 		EFFECTS.add(Triple.of(Effects.POISON, 20*20, false));
 		EFFECTS.add(Triple.of(Effects.WITHER, 20*20, false));
@@ -70,19 +70,19 @@ public class CocktailShotgun extends ShotgunItem {
 			int potency = triple.getRight() ? 0 : effectLevel;
 			
 	        PotionEntity potionentity = new PotionEntity(world, player);
-	        potionentity.setItem(PotionUtils.appendEffects(new ItemStack(Items.SPLASH_POTION), Collections.singleton(new EffectInstance(triple.getLeft(), duration, potency))));
-	        potionentity.func_234612_a_(player, player.rotationPitch, player.rotationYaw, -5, (float)getProjectileSpeed(gun, player), 1);
-	        world.addEntity(potionentity);
+	        potionentity.setItem(PotionUtils.setCustomEffects(new ItemStack(Items.SPLASH_POTION), Collections.singleton(new EffectInstance(triple.getLeft(), duration, potency))));
+	        potionentity.shootFromRotation(player, player.xRot, player.yRot, -5, (float)getProjectileSpeed(gun, player), 1);
+	        world.addFreshEntity(potionentity);
 	        
-	        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_SPLASH_POTION_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+	        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SPLASH_POTION_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 		}
 	}
 
 	@Override
 	protected void addExtraStatsTooltip(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip) {
 		super.addExtraStatsTooltip(stack, world, tooltip);
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
-		tooltip.add(new TranslationTextComponent(LuckCurio.TOOLTIP_LUCK).mergeStyle(TextFormatting.GRAY));
+		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
+		tooltip.add(new TranslationTextComponent(LuckCurio.TOOLTIP_LUCK).withStyle(TextFormatting.GRAY));
 	}
 
 }

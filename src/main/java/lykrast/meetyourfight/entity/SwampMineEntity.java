@@ -23,73 +23,73 @@ public class SwampMineEntity extends Entity {
 
 	public SwampMineEntity(EntityType<? extends SwampMineEntity> entityTypeIn, World worldIn) {
 		super(entityTypeIn, worldIn);
-		preventEntitySpawning = true;
+		blocksBuilding = true;
 	}
 
 	public SwampMineEntity(World worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
 		this(ModEntities.SWAMP_MINE, worldIn);
-		this.setPosition(x, y, z);
-		double angle = worldIn.rand.nextDouble() * Math.PI * 2;
-		setMotion(-Math.sin(angle) * 0.06, 0.05, -Math.cos(angle) * 0.06);
+		this.setPos(x, y, z);
+		double angle = worldIn.random.nextDouble() * Math.PI * 2;
+		setDeltaMovement(-Math.sin(angle) * 0.06, 0.05, -Math.cos(angle) * 0.06);
 		fuse = 200;
-		prevPosX = x;
-		prevPosY = y;
-		prevPosZ = z;
+		xo = x;
+		yo = y;
+		zo = z;
 		bomber = igniter;
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
+	protected boolean isMovementNoisy() {
 		return false;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean canBeCollidedWith() {
+	public boolean isPickable() {
 		return !this.removed;
 	}
 
 	@Override
 	public void tick() {
-		if (!hasNoGravity()) {
-			setMotion(getMotion().add(0.0D, -0.04D, 0.0D));
+		if (!isNoGravity()) {
+			setDeltaMovement(getDeltaMovement().add(0.0D, -0.04D, 0.0D));
 		}
 
-		move(MoverType.SELF, getMotion());
+		move(MoverType.SELF, getDeltaMovement());
 		//if (getMotion().y < 0) setMotion(getMotion().mul(0.98, 0.8, 0.98));
 		//else setMotion(getMotion().scale(0.98));
-		setMotion(getMotion().scale(0.98));
+		setDeltaMovement(getDeltaMovement().scale(0.98));
 		
 		if (onGround) fuse = 0;
 		else --fuse;
 		if (fuse <= 0) {
 			remove();
-			if (!world.isRemote) explode();
+			if (!level.isClientSide) explode();
 		}
 		else {
-			func_233566_aG_();
-			if (world.isRemote) {
-				world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY() + 0.5D, this.getPosZ(), 0.0D, 0.0D, 0.0D);
+			updateInWaterStateAndDoFluidPushing();
+			if (level.isClientSide) {
+				level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 
 	}
 
 	protected void explode() {
-		world.createExplosion(bomber != null ? bomber : this, getPosX(), getPosYHeight(0.0625D), getPosZ(), 2, Explosion.Mode.NONE);
+		level.explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2, Explosion.Mode.NONE);
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundNBT compound) {
 		compound.putShort("Fuse", (short) fuse);
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundNBT compound) {
 		fuse = compound.getShort("Fuse");
 	}
 
@@ -99,7 +99,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

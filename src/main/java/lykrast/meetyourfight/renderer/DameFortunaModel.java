@@ -10,50 +10,50 @@ public class DameFortunaModel extends BipedModel<DameFortunaEntity> {
 	
 	public DameFortunaModel() {
 		super(0, 0, 64, 64);
-		bipedHead = new ModelRenderer(this, 0, 0);
-		bipedHead.addBox(-4, -4, -4, 8, 8, 8, 0);
-		bipedHead.setRotationPoint(0, -8, 0);
+		head = new ModelRenderer(this, 0, 0);
+		head.addBox(-4, -4, -4, 8, 8, 8, 0);
+		head.setPos(0, -8, 0);
 	}
 
 	@Override
-	public void setLivingAnimations(DameFortunaEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+	public void prepareMobModel(DameFortunaEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
 		headProgress = entityIn.getHeadRotationProgress(partialTick);
-		super.setLivingAnimations(entityIn, limbSwing, limbSwingAmount, partialTick);
+		super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
 	}
 
 	@Override
-	public void setRotationAngles(DameFortunaEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(DameFortunaEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		//Save previous head angles for animations before super overrides them so we override them back
-		float headX = bipedHead.rotateAngleX;
-		float headY = bipedHead.rotateAngleY;
-		float headZ = bipedHead.rotateAngleZ;
+		float headX = head.xRot;
+		float headY = head.yRot;
+		float headZ = head.zRot;
 		
-		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		//Hey guess what this gets overridden in the super too
 		//We'll do something fancy with it, should cycle every 100 ticks (5 seconds)
-        bipedHead.rotationPointY = -8 + MathHelper.sin(ageInTicks * (float)Math.PI / 50f);
+        head.y = -8 + MathHelper.sin(ageInTicks * (float)Math.PI / 50f);
 		
 		//Head animation
-		bipedHead.rotateAngleX = rotLerpRad(headProgress, headX, entityIn.headTargetPitch * ((float)Math.PI / 2f));
-		bipedHead.rotateAngleY = rotLerpRad(headProgress, headY, entityIn.headTargetYaw * ((float)Math.PI / 2f));
-		bipedHead.rotateAngleZ = rotLerpRad(headProgress, headZ, entityIn.headTargetRoll * ((float)Math.PI / 2f));
+		head.xRot = rotlerpRad(headProgress, headX, entityIn.headTargetPitch * ((float)Math.PI / 2f));
+		head.yRot = rotlerpRad(headProgress, headY, entityIn.headTargetYaw * ((float)Math.PI / 2f));
+		head.zRot = rotlerpRad(headProgress, headZ, entityIn.headTargetRoll * ((float)Math.PI / 2f));
 		
 		int attack = entityIn.getAttack();
 		//Same pose as Illagers casting spells
 		//1 is normal attack, 2 is big attack
 		if (attack == DameFortunaEntity.PROJ_ATTACK) {
-			bipedLeftArm.rotationPointZ = 0.0F;
-			bipedLeftArm.rotationPointX = 5.0F;
-			bipedLeftArm.rotateAngleX = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
-			bipedLeftArm.rotateAngleZ = -2.3561945F;
-			bipedLeftArm.rotateAngleY = 0.0F;
+			leftArm.z = 0.0F;
+			leftArm.x = 5.0F;
+			leftArm.xRot = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
+			leftArm.zRot = -2.3561945F;
+			leftArm.yRot = 0.0F;
 		}
 		else if (attack == DameFortunaEntity.CLAW_ATTACK) {
-			bipedRightArm.rotationPointZ = 0.0F;
-			bipedRightArm.rotationPointX = -5.0F;
-			bipedRightArm.rotateAngleX = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
-			bipedRightArm.rotateAngleZ = 2.3561945F;
-			bipedRightArm.rotateAngleY = 0.0F;
+			rightArm.z = 0.0F;
+			rightArm.x = -5.0F;
+			rightArm.xRot = MathHelper.cos(ageInTicks * 0.6662F) * 0.25F;
+			rightArm.zRot = 2.3561945F;
+			rightArm.yRot = 0.0F;
 		}
 	}
 

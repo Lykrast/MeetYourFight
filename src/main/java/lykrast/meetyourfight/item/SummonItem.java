@@ -26,30 +26,30 @@ public class SummonItem extends Item {
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entityLiving) {
+	public ItemStack finishUsingItem(ItemStack stack, World world, LivingEntity entityLiving) {
 		if (!(entityLiving instanceof PlayerEntity)) return stack;
 		PlayerEntity player = (PlayerEntity)entityLiving;
-		if (!world.isRemote) {
-			if (!world.getLoadedEntitiesWithinAABB(MobEntity.class, player.getBoundingBox().grow(32), e -> !e.isNonBoss() && e.isAlive()).isEmpty()) {
-				player.sendStatusMessage(new TranslationTextComponent("status.meetyourfight.boss_nearby"), true);
+		if (!world.isClientSide) {
+			if (!world.getLoadedEntitiesOfClass(MobEntity.class, player.getBoundingBox().inflate(32), e -> !e.canChangeDimensions() && e.isAlive()).isEmpty()) {
+				player.displayClientMessage(new TranslationTextComponent("status.meetyourfight.boss_nearby"), true);
 				return stack;
 			}
 			
 			spawner.spawn(player, world);
 			
-			if (!player.abilities.isCreativeMode) {
+			if (!player.abilities.instabuild) {
 				stack.shrink(1);
-				player.sendBreakAnimation(player.getActiveHand());
+				player.broadcastBreakEvent(player.getUsedItemHand());
 			}
-			player.addStat(Stats.ITEM_USED.get(this));
+			player.awardStat(Stats.ITEM_USED.get(this));
 		}
 		return stack;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		player.setActiveHand(hand);
-		return ActionResult.resultConsume(player.getHeldItem(hand));
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		player.startUsingItem(hand);
+		return ActionResult.consume(player.getItemInHand(hand));
 	}
 
 	@Override
@@ -58,13 +58,13 @@ public class SummonItem extends Item {
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
+	public UseAction getUseAnimation(ItemStack stack) {
 		return UseAction.BOW;
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
 	}
 	
 	@FunctionalInterface

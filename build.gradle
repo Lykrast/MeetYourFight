@@ -5,13 +5,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 version = "${project.minecraft_version}-${project.mod_version}"
 group = "lykrast.meetyourfight" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -20,7 +22,7 @@ archivesBaseName = "meetyourfight"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: project.mcp_mappings
+    mappings channel: 'official', version: '1.16.5'
 
     // Default run configurations.
     runs {
@@ -94,7 +96,10 @@ repositories {
         url "https://maven.theillusivec4.top/"
     }
     maven {
-        url = "https://www.cursemaven.com"
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
 }
 
@@ -103,5 +108,5 @@ dependencies {
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}")
-    compile fg.deobf("curse.maven:gunswithoutroses-405077:${project.gwr_file}")
+    implementation fg.deobf("curse.maven:gunswithoutroses-405077:${project.gwr_file}")
 }

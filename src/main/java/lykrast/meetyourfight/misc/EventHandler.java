@@ -36,9 +36,9 @@ public class EventHandler {
 				double chance = 1.0 / 6.0;
 				if (luck >= 0) chance = (1.0 + luck) / (6.0 + 2 * luck);
 				else chance = 1.0 / (6.0 - 3 * luck);
-				if (pattacked.getRNG().nextDouble() <= chance) {
+				if (pattacked.getRandom().nextDouble() <= chance) {
 					event.setCanceled(true);
-					pattacked.world.playSound(null, attacked.getPosition(), ModSounds.aceOfIronProc, SoundCategory.PLAYERS, 1, 1);
+					pattacked.level.playSound(null, attacked.blockPosition(), ModSounds.aceOfIronProc, SoundCategory.PLAYERS, 1, 1);
 				}
 			}
 		}
@@ -47,7 +47,7 @@ public class EventHandler {
 		if (event.isCanceled()) return;
 		
 		//Damage increases
-		Entity attacker = event.getSource().getTrueSource();
+		Entity attacker = event.getSource().getEntity();
 		if (attacker != null && attacker instanceof PlayerEntity) {
 			PlayerEntity pattacker = (PlayerEntity)attacker;
 			//Slicer's Dice
@@ -56,10 +56,10 @@ public class EventHandler {
 				double chance = 0.2;
 				if (luck >= 0) chance = (1.0 + luck) / (5.0 + luck);
 				else chance = 1.0 / (5.0 - 3 * luck);
-				if (pattacker.getRNG().nextDouble() <= chance) {
+				if (pattacker.getRandom().nextDouble() <= chance) {
 					event.setAmount(event.getAmount() * 2);
-					pattacker.world.playSound(null, attacked.getPosition(), ModSounds.slicersDiceProc, SoundCategory.PLAYERS, 1, 1);
-					((ServerWorld)pattacker.world).spawnParticle(ParticleTypes.CRIT, attacked.getPosX(), attacked.getPosYEye(), attacked.getPosZ(), 15, 0.2, 0.2, 0.2, 0);
+					pattacker.level.playSound(null, attacked.blockPosition(), ModSounds.slicersDiceProc, SoundCategory.PLAYERS, 1, 1);
+					((ServerWorld)pattacker.level).sendParticles(ParticleTypes.CRIT, attacked.getX(), attacked.getEyeY(), attacked.getZ(), 15, 0.2, 0.2, 0.2, 0);
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class EventHandler {
 				float treshold = pattacked.getMaxHealth() / 4.0f;
 				if (event.getAmount() > treshold) {
 					event.setAmount((event.getAmount() - treshold) * 0.5f + treshold);
-					pattacked.world.playSound(null, attacked.getPosition(), ModSounds.cagedHeartProc, SoundCategory.PLAYERS, 1, 1);
+					pattacked.level.playSound(null, attacked.blockPosition(), ModSounds.cagedHeartProc, SoundCategory.PLAYERS, 1, 1);
 				}
 			}
 		}

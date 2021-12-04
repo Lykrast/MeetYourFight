@@ -15,12 +15,12 @@ public class BellringerRenderer extends BipedRenderer<BellringerEntity, Bellring
 	}
 
 	@Override
-	protected int getBlockLight(BellringerEntity entityIn, BlockPos partialTicks) {
+	protected int getBlockLightLevel(BellringerEntity entityIn, BlockPos partialTicks) {
 		return 15;
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BellringerEntity entity) {
+	public ResourceLocation getTextureLocation(BellringerEntity entity) {
 		return TEXTURE;
 	}
 

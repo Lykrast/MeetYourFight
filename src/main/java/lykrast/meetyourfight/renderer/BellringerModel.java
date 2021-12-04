@@ -14,38 +14,38 @@ public class BellringerModel extends BipedModel<BellringerEntity> {
 
 	public BellringerModel() {
 		super(0, 0, 64, 64);
-		bipedLeftLeg.showModel = false;
-		bipedHeadwear.showModel = false;
-		bipedRightLeg = new ModelRenderer(this, 32, 0);
-		bipedRightLeg.addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F, 0.0F);
-		bipedRightLeg.setRotationPoint(-1.9F, 12.0F, 0.0F);
+		leftLeg.visible = false;
+		hat.visible = false;
+		rightLeg = new ModelRenderer(this, 32, 0);
+		rightLeg.addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F, 0.0F);
+		rightLeg.setPos(-1.9F, 12.0F, 0.0F);
 		//Bell
 		//Same rotation point as right arm, calibrated in tabula
 		bell = new ModelRenderer(this, 0, 32);
-		bell.setRotationPoint(-5, 2, 0);
+		bell.setPos(-5, 2, 0);
 		bell.addBox(-4, 5, 2, 6, 6, 7);
 	}
 
 	@Override
-	protected Iterable<ModelRenderer> getBodyParts() {
-		return Iterables.concat(super.getBodyParts(), ImmutableList.of(bell));
+	protected Iterable<ModelRenderer> bodyParts() {
+		return Iterables.concat(super.bodyParts(), ImmutableList.of(bell));
 	}
 
 	@Override
-	public void setRotationAngles(BellringerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		bipedRightArm.rotateAngleX = (float) (-Math.PI / 2);
-		if (swingProgress > 0) {
-			// It's currently unmapped, but it's from func_230486_a_ to swing the arm
-			float f = 1 - swingProgress;
+	public void setupAnim(BellringerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		rightArm.xRot = (float) (-Math.PI / 2);
+		if (attackTime > 0) {
+			// It's currently unmapped, but it's from setupAttackAnimation to swing the arm
+			float f = 1 - attackTime;
 			f = f * f;
 			f = f * f;
 			f = 1 - f;
 			float f1 = MathHelper.sin(f * (float) Math.PI);
-			float f2 = MathHelper.sin(swingProgress * (float) Math.PI) * -(bipedHead.rotateAngleX - 0.7F) * 0.75F;
-			bipedRightArm.rotateAngleX -= f1 * 1.2F + f2;
+			float f2 = MathHelper.sin(attackTime * (float) Math.PI) * -(head.xRot - 0.7F) * 0.75F;
+			rightArm.xRot -= f1 * 1.2F + f2;
 		}
-		bell.copyModelAngles(bipedRightArm);
+		bell.copyFrom(rightArm);
 	}
 
 }

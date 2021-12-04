@@ -26,31 +26,31 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class DepthStar extends SwordItem {
-	private static final IItemTier TIER = new CustomTier(2, 693, 6, 2, 14, () -> Ingredient.fromItems(ModItems.mossyTooth));
+	private static final IItemTier TIER = new CustomTier(2, 693, 6, 2, 14, () -> Ingredient.of(ModItems.mossyTooth));
 
 	public DepthStar(Properties builderIn) {
 		super(TIER, 6, -3.1f, builderIn);
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
+	public void releaseUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
 		if (entityLiving instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			float strength = getShockwaveStrength(getUseDuration(stack) - timeLeft);
 			if (strength >= 0.25) {
-				if (!world.isRemote) {
-					Vector3d start = new Vector3d(player.getPosX(), player.getPosYEye(), player.getPosZ());
-					Vector3d end = player.getLookVec().scale(2).add(start);
-					BlockRayTraceResult raytrace = world.rayTraceBlocks(new RayTraceContext(start, end, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player));
-					if (raytrace.getType() != RayTraceResult.Type.MISS) end = raytrace.getHitVec();
+				if (!world.isClientSide) {
+					Vector3d start = new Vector3d(player.getX(), player.getEyeY(), player.getZ());
+					Vector3d end = player.getLookAngle().scale(2).add(start);
+					BlockRayTraceResult raytrace = world.clip(new RayTraceContext(start, end, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player));
+					if (raytrace.getType() != RayTraceResult.Type.MISS) end = raytrace.getLocation();
 
-					world.createExplosion(player, end.x, end.y, end.z, strength * 1.5f, Explosion.Mode.NONE);
+					world.explode(player, end.x, end.y, end.z, strength * 1.5f, Explosion.Mode.NONE);
 
-					stack.damageItem(2, player, (entity) -> entity.sendBreakAnimation(player.getActiveHand()));
+					stack.hurtAndBreak(2, player, (entity) -> entity.broadcastBreakEvent(player.getUsedItemHand()));
 				}
 				
-				player.addExhaustion(strength);
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 0.8F + strength * 0.5F);
+				player.causeFoodExhaustion(strength);
+				world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundCategory.PLAYERS, 1, 0.8F + strength * 0.5F);
 			}
 		}
 	}
@@ -68,19 +68,19 @@ public class DepthStar extends SwordItem {
 	}
 	
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
+	public UseAction getUseAnimation(ItemStack stack) {
 		return UseAction.BOW;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		playerIn.setActiveHand(handIn);
-		return ActionResult.resultConsume(playerIn.getHeldItem(handIn));
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		playerIn.startUsingItem(handIn);
+		return ActionResult.consume(playerIn.getItemInHand(handIn));
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
 	}
 
 }

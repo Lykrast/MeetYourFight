@@ -13,8 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 public class PhantomAttackPlayer extends Goal {
 	//Phantom's targeting except I make it see through walls
 	//setLineOfSiteRequired is backwards btw, it should be like "ignoreLineOfSight"
-	private final EntityPredicate predicate = (new EntityPredicate()).setDistance(64.0D).setLineOfSiteRequired();
-	public static final EntityPredicate DEFAULT_BUT_THROUGH_WALLS = (new EntityPredicate()).setLineOfSiteRequired();
+	private final EntityPredicate predicate = (new EntityPredicate()).range(64.0D).allowUnseeable();
+	public static final EntityPredicate DEFAULT_BUT_THROUGH_WALLS = (new EntityPredicate()).allowUnseeable();
 	private int tickDelay = 20;
 	private MobEntity entity;
 
@@ -23,20 +23,20 @@ public class PhantomAttackPlayer extends Goal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.tickDelay > 0) {
 			--this.tickDelay;
 			return false;
 		}
 		else {
 			this.tickDelay = 60;
-			List<PlayerEntity> list = entity.world.getTargettablePlayersWithinAABB(predicate, entity, entity.getBoundingBox().grow(16.0D, 64.0D, 16.0D));
+			List<PlayerEntity> list = entity.level.getNearbyPlayers(predicate, entity, entity.getBoundingBox().inflate(16.0D, 64.0D, 16.0D));
 			if (!list.isEmpty()) {
-				list.sort(Comparator.<Entity, Double>comparing(Entity::getPosY).reversed());
+				list.sort(Comparator.<Entity, Double>comparing(Entity::getY).reversed());
 
 				for (PlayerEntity playerentity : list) {
 					if (entity.canAttack(playerentity, DEFAULT_BUT_THROUGH_WALLS)) {
-						entity.setAttackTarget(playerentity);
+						entity.setTarget(playerentity);
 						return true;
 					}
 				}
@@ -47,8 +47,8 @@ public class PhantomAttackPlayer extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		LivingEntity livingentity = entity.getAttackTarget();
+	public boolean canContinueToUse() {
+		LivingEntity livingentity = entity.getTarget();
 		return livingentity != null ? entity.canAttack(livingentity, DEFAULT_BUT_THROUGH_WALLS) : false;
 	}
 

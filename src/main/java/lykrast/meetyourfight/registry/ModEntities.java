@@ -18,26 +18,26 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModEntities {
 	//Bosses
 	public static final EntityType<BellringerEntity> BELLRINGER = EntityType.Builder
-			.<BellringerEntity>create(BellringerEntity::new, EntityClassification.MONSTER)
-			.size(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.<BellringerEntity>of(BellringerEntity::new, EntityClassification.MONSTER)
+			.sized(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	public static final EntityType<DameFortunaEntity> DAME_FORTUNA = EntityType.Builder
-			.<DameFortunaEntity>create(DameFortunaEntity::new, EntityClassification.MONSTER)
-			.size(0.6f, 2.325f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.<DameFortunaEntity>of(DameFortunaEntity::new, EntityClassification.MONSTER)
+			.sized(0.6f, 2.325f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	public static final EntityType<SwampjawEntity> SWAMPJAW = EntityType.Builder
-			.<SwampjawEntity>create(SwampjawEntity::new, EntityClassification.MONSTER)
-			.size(2.6f, 1.6f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+			.<SwampjawEntity>of(SwampjawEntity::new, EntityClassification.MONSTER)
+			.sized(2.6f, 1.6f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	
 	//Projectiles
 	public static final EntityType<ProjectileLineEntity> PROJECTILE_LINE = EntityType.Builder
-			.<ProjectileLineEntity>create(ProjectileLineEntity::new, EntityClassification.MISC)
-			.size(0.3125f, 0.3125f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+			.<ProjectileLineEntity>of(ProjectileLineEntity::new, EntityClassification.MISC)
+			.sized(0.3125f, 0.3125f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build("");
 	public static final EntityType<SwampMineEntity> SWAMP_MINE = EntityType.Builder
-			.<SwampMineEntity>create(SwampMineEntity::new, EntityClassification.MISC)
-			.size(1, 1).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+			.<SwampMineEntity>of(SwampMineEntity::new, EntityClassification.MISC)
+			.sized(1, 1).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build("");
 
 	@SubscribeEvent
@@ -59,8 +59,8 @@ public class ModEntities {
 
 	@SubscribeEvent
 	public static void registerEntityAttributes(final EntityAttributeCreationEvent event) {
-		event.put(BELLRINGER, BellringerEntity.getAttributes().create());
-		event.put(DAME_FORTUNA, DameFortunaEntity.getAttributes().create());
-		event.put(SWAMPJAW, SwampjawEntity.getAttributes().create());
+		event.put(BELLRINGER, BellringerEntity.createAttributes().build());
+		event.put(DAME_FORTUNA, DameFortunaEntity.createAttributes().build());
+		event.put(SWAMPJAW, SwampjawEntity.createAttributes().build());
 	}
 }

@@ -45,21 +45,21 @@ public class BellringerEntity extends BossEntity {
 	
 	public BellringerEntity(EntityType<? extends BellringerEntity> type, World worldIn) {
 		super(type, worldIn);
-		moveController = new VexMovementController(this);
-		experienceValue = 50;
+		moveControl = new VexMovementController(this);
+		xpReward = 50;
 	}
 
 	@Override
 	public void move(MoverType typeIn, Vector3d pos) {
 		super.move(typeIn, pos);
-		doBlockCollisions();
+		checkInsideBlocks();
 	}
 
 	@Override
 	public void tick() {
-		noClip = true;
+		noPhysics = true;
 		super.tick();
-		noClip = false;
+		noPhysics = false;
 		setNoGravity(true);
 	}
 
@@ -77,59 +77,59 @@ public class BellringerEntity extends BossEntity {
 		targetSelector.addGoal(2, new HurtByTargetGoal(this));
 	}
 	
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 200).createMutableAttribute(Attributes.FOLLOW_RANGE, 64);
+	public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 200).add(Attributes.FOLLOW_RANGE, 64);
     }
 	
 	public static void spawn(PlayerEntity player, World world) {
-		Random rand = player.getRNG();
+		Random rand = player.getRandom();
 		BellringerEntity bellringer = ModEntities.BELLRINGER.create(world);
-		bellringer.setLocationAndAngles(player.getPosX() + rand.nextInt(15) - 7, player.getPosY() + rand.nextInt(9) - 1, player.getPosZ() + rand.nextInt(15) - 7, rand.nextFloat() * 360 - 180, 0);
+		bellringer.moveTo(player.getX() + rand.nextInt(15) - 7, player.getY() + rand.nextInt(9) - 1, player.getZ() + rand.nextInt(15) - 7, rand.nextFloat() * 360 - 180, 0);
 		bellringer.attackCooldown = 100;
-		if (!player.abilities.isCreativeMode) bellringer.setAttackTarget(player);
-		bellringer.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 100, 2));
+		if (!player.abilities.instabuild) bellringer.setTarget(player);
+		bellringer.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 100, 2));
 
-		bellringer.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(bellringer.getPosition()), SpawnReason.EVENT, null, null);
-		world.addEntity(bellringer);
-		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS, 2, 1);
+		bellringer.finalizeSpawn((ServerWorld) world, world.getCurrentDifficultyAt(bellringer.blockPosition()), SpawnReason.EVENT, null, null);
+		world.addFreshEntity(bellringer);
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BELL_BLOCK, SoundCategory.PLAYERS, 2, 1);
 	}
 	
 	@Override
-	public void updateAITasks() {
+	public void customServerAiStep() {
 		if (attackCooldown > 0) attackCooldown--;
-		super.updateAITasks();
+		super.customServerAiStep();
 	}
 	
 	private void dingDong() {
-		swingArm(Hand.MAIN_HAND);
-        playSound(SoundEvents.BLOCK_BELL_USE, 2, 1);
+		swing(Hand.MAIN_HAND);
+        playSound(SoundEvents.BELL_BLOCK, 2, 1);
 	}
 	
 	private ProjectileLineEntity readyAttack() {
-		ProjectileLineEntity ghost = new ProjectileLineEntity(world, this, 0, 0, 0);
-		ghost.setShooter(this);
-		ghost.setPosition(getPosX() - 2 + rand.nextDouble() * 4, getPosY() - 2 + rand.nextDouble() * 4, getPosZ() - 2 + rand.nextDouble() * 4);
+		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this, 0, 0, 0);
+		ghost.setOwner(this);
+		ghost.setPos(getX() - 2 + random.nextDouble() * 4, getY() - 2 + random.nextDouble() * 4, getZ() - 2 + random.nextDouble() * 4);
 		ghost.setVariant(ProjectileLineEntity.VAR_BELLRINGER);
 		return ghost;
 	}
 	
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
 		rageAttacks = compound.getInt("Rage");
 
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putInt("AttackCooldown", attackCooldown);
 		compound.putInt("Rage", rageAttacks);
 	}
 
 	@Override
-	public CreatureAttribute getCreatureAttribute() {
+	public CreatureAttribute getMobType() {
 		return CreatureAttribute.UNDEAD;
 	}
 
@@ -154,7 +154,7 @@ public class BellringerEntity extends BossEntity {
 	}
 	
 	@Override
-	protected ResourceLocation getLootTable() {
+	protected ResourceLocation getDefaultLootTable() {
 		return MeetYourFight.rl("bellringer");
 	}
 
@@ -174,17 +174,17 @@ public class BellringerEntity extends BossEntity {
 		}
 
 		@Override
-		public boolean shouldExecute() {
-			return ringer.attackCooldown <= 0 && ringer.getAttackTarget() != null && ringer.getAttackTarget().isAlive();
+		public boolean canUse() {
+			return ringer.attackCooldown <= 0 && ringer.getTarget() != null && ringer.getTarget().isAlive();
 		}
 
 		@Override
-		public void startExecuting() {
+		public void start() {
 			ringer.attackCooldown = 2;
 			attackDelay = 20;
 			attackRemaining = 3 + ringer.rageAttacks;
-			target = ringer.getAttackTarget();
-			chosenAttack = ringer.rand.nextInt(2);
+			target = ringer.getTarget();
+			chosenAttack = ringer.random.nextInt(2);
 		}
 
 		@Override
@@ -199,33 +199,33 @@ public class BellringerEntity extends BossEntity {
 				
 				performAttack();
 				
-				if (attackRemaining <= 0) resetTask();
+				if (attackRemaining <= 0) stop();
 			}
 		}
 		
 		private void performAttack() {
 			//BlockPos rounds values so +0.5 for center of block
-			BlockPos tgt = target.getPosition();
+			BlockPos tgt = target.blockPosition();
 			double tx = tgt.getX() + 0.5;
 			double tz = tgt.getZ() + 0.5;
 			double ty = tgt.getY() + 0.1;
 			//Prevents lines being unjumpable if an attack is launched mid jump
-			if (!target.isOnGround() && !target.isInWater() && !ringer.world.getBlockState(tgt.down()).getMaterial().blocksMovement()) ty -= 1;
+			if (!target.isOnGround() && !target.isInWater() && !ringer.level.getBlockState(tgt.below()).getMaterial().blocksMotion()) ty -= 1;
 			switch (chosenAttack) {
 				default:
 				case 0:
 					//Lines at target
-					BlockPos self = ringer.getPosition();
+					BlockPos self = ringer.blockPosition();
 					double sx = self.getX();
 					double sz = self.getZ();
-					Direction dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
-					double cx = dir.getXOffset();
-					double cz = dir.getZOffset();
+					Direction dir = Direction.getNearest(tx - sx, 0, tz - sz);
+					double cx = dir.getStepX();
+					double cz = dir.getStepZ();
 					
 					for (int i = -4; i <= 4; i++) {
 						ProjectileLineEntity ghost = ringer.readyAttack();
 						ghost.setUp(20, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
-						ringer.world.addEntity(ghost);
+						ringer.level.addFreshEntity(ghost);
 					}
 					break;
 				case 1:
@@ -234,7 +234,7 @@ public class BellringerEntity extends BossEntity {
 						for (int z = -1; z <= 1; z++) {
 							ProjectileLineEntity ghost = ringer.readyAttack();
 							ghost.setUp(20, 0, -1, 0, tx + x, ty + 7, tz + z);
-							ringer.world.addEntity(ghost);
+							ringer.level.addFreshEntity(ghost);
 						}
 					}
 					break;
@@ -242,12 +242,12 @@ public class BellringerEntity extends BossEntity {
 		}
 
 		@Override
-		public void resetTask() {
-			ringer.attackCooldown = 40 + ringer.rand.nextInt(21);
+		public void stop() {
+			ringer.attackCooldown = 40 + ringer.random.nextInt(21);
 		}
 
 		@Override
-		public boolean shouldContinueExecuting() {
+		public boolean canContinueToUse() {
 			return attackRemaining > 0 && target.isAlive();
 		}
 		
@@ -265,35 +265,35 @@ public class BellringerEntity extends BossEntity {
 		}
 
 		@Override
-		public boolean shouldExecute() {
-			return ringer.attackCooldown <= 0 && ringer.rageAttacks == 0 && ringer.getHealth() <= ringer.getMaxHealth() / 2 && ringer.getAttackTarget() != null && ringer.getAttackTarget().isAlive();
+		public boolean canUse() {
+			return ringer.attackCooldown <= 0 && ringer.rageAttacks == 0 && ringer.getHealth() <= ringer.getMaxHealth() / 2 && ringer.getTarget() != null && ringer.getTarget().isAlive();
 		}
 
 		@Override
-		public void startExecuting() {
+		public void start() {
 			ringer.attackCooldown = 2;
 			ringer.rageAttacks = 1;
 			attackDelay = 30;
 			attackRemaining = 20;
-			target = ringer.getAttackTarget();
+			target = ringer.getTarget();
 			
-			BlockPos self = ringer.getPosition();
+			BlockPos self = ringer.blockPosition();
 			double sx = self.getX();
 			double sz = self.getZ();
-			BlockPos tgt = target.getPosition();
+			BlockPos tgt = target.blockPosition();
 			double tx = tgt.getX();
 			double tz = tgt.getZ();
-			dir = Direction.getFacingFromVector(tx - sx, 0, tz - sz);
+			dir = Direction.getNearest(tx - sx, 0, tz - sz);
 			
 			//Slowness
-			List<Entity> list = ringer.world.getEntitiesInAABBexcluding(ringer, ringer.getBoundingBox().grow(16), e -> e instanceof LivingEntity && e.isAlive() && e.isNonBoss());
+			List<Entity> list = ringer.level.getEntities(ringer, ringer.getBoundingBox().inflate(16), e -> e instanceof LivingEntity && e.isAlive() && e.canChangeDimensions());
 			list.add(target);
 			for (Entity e : list) {
 				//Duration should last through the whole attack
-				((LivingEntity)e).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 300, 1));
+				((LivingEntity)e).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300, 1));
 			}
 			ringer.dingDong();
-			ringer.playSound(SoundEvents.BLOCK_BELL_RESONATE, 2, 1);
+			ringer.playSound(SoundEvents.BELL_RESONATE, 2, 1);
 		}
 
 		@Override
@@ -306,34 +306,34 @@ public class BellringerEntity extends BossEntity {
 				ringer.dingDong();
 				
 				//BlockPos rounds values so +0.5 for center of block
-				BlockPos tgt = target.getPosition();
+				BlockPos tgt = target.blockPosition();
 				double tx = tgt.getX() + 0.5;
 				double tz = tgt.getZ() + 0.5;
 				double ty = tgt.getY() + 0.1;
 				//Prevents lines being unjumpable if an attack is launched mid jump
-				if (!target.isOnGround() && !target.isInWater() && !ringer.world.getBlockState(tgt.down()).getMaterial().blocksMovement()) ty -= 1;
+				if (!target.isOnGround() && !target.isInWater() && !ringer.level.getBlockState(tgt.below()).getMaterial().blocksMotion()) ty -= 1;
 
-				double cx = dir.getXOffset();
-				double cz = dir.getZOffset();
+				double cx = dir.getStepX();
+				double cz = dir.getStepZ();
 				
 				int off = attackRemaining % 2 == 0 ? 1 : -1;
 				for (int i = -5; i <= 5; i++) {
 					ProjectileLineEntity ghost = ringer.readyAttack();
 					ghost.setUp(15 + off*i, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
-					ringer.world.addEntity(ghost);
+					ringer.level.addFreshEntity(ghost);
 				}
 				
-				if (attackRemaining <= 0) resetTask();
+				if (attackRemaining <= 0) stop();
 			}
 		}
 
 		@Override
-		public void resetTask() {
-			ringer.attackCooldown = 40 + ringer.rand.nextInt(21);
+		public void stop() {
+			ringer.attackCooldown = 40 + ringer.random.nextInt(21);
 		}
 
 		@Override
-		public boolean shouldContinueExecuting() {
+		public boolean canContinueToUse() {
 			return attackRemaining > 0 && target.isAlive();
 		}
 		
@@ -345,32 +345,32 @@ public class BellringerEntity extends BossEntity {
 		private int moveCooldown;
 
 		public MoveFrontOfTarget(MobEntity mob) {
-			setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
 			this.mob = mob;
 		}
 
 		@Override
-		public boolean shouldExecute() {
-			return mob.getAttackTarget() != null && !mob.getMoveHelper().isUpdating();
+		public boolean canUse() {
+			return mob.getTarget() != null && !mob.getMoveControl().hasWanted();
 		}
 
 		@Override
-		public void startExecuting() {
+		public void start() {
 			moveCooldown = 20;
 			
-			LivingEntity target = mob.getAttackTarget();
-			BlockPos targetP = target.getPosition();
-			Vector3d look = Vector3d.fromPitchYaw(0, target.rotationYaw);
+			LivingEntity target = mob.getTarget();
+			BlockPos targetP = target.blockPosition();
+			Vector3d look = Vector3d.directionFromRotation(0, target.yRot);
 
-			mob.getMoveHelper().setMoveTo(
-					targetP.getX() + look.x * 4 - 0.5 + mob.getRNG().nextDouble() * 2, 
-					targetP.getY() + 2 + mob.getRNG().nextDouble() * 2, 
-					targetP.getZ() + look.z * 4 - 0.5 + mob.getRNG().nextDouble() * 2,
+			mob.getMoveControl().setWantedPosition(
+					targetP.getX() + look.x * 4 - 0.5 + mob.getRandom().nextDouble() * 2, 
+					targetP.getY() + 2 + mob.getRandom().nextDouble() * 2, 
+					targetP.getZ() + look.z * 4 - 0.5 + mob.getRandom().nextDouble() * 2,
 					1);
 		}
 
 		@Override
-		public boolean shouldContinueExecuting() {
+		public boolean canContinueToUse() {
 			return moveCooldown > 0;
 		}
 

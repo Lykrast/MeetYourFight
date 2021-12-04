@@ -17,20 +17,20 @@ public class BossMusic extends TickableSound {
 	public BossMusic(LivingEntity boss, SoundEvent sound) {
 		super(sound, SoundCategory.RECORDS);
 		this.boss = boss;
-		x = boss.getPosX();
-		y = boss.getPosY();
-		z = boss.getPosZ();
-		repeat = true;
+		x = boss.getX();
+		y = boss.getY();
+		z = boss.getZ();
+		looping = true;
 	}
 
 	@Override
 	public void tick() {
 		if (boss.isAlive()) {
-			x = boss.getPosX();
-			y = boss.getPosY();
-			z = boss.getPosZ();
+			x = boss.getX();
+			y = boss.getY();
+			z = boss.getZ();
 		}
-		else func_239509_o_();
+		else stop();
 	}
 
 }

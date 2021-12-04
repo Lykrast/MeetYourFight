@@ -24,15 +24,15 @@ public class PassagesToll extends Item {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
-		World world = context.getWorld();
-		if (world.isRemote) return ActionResultType.SUCCESS;
+	public ActionResultType useOn(ItemUseContext context) {
+		World world = context.getLevel();
+		if (world.isClientSide) return ActionResultType.SUCCESS;
 
-		BlockPos pos = context.getPos();
-		Direction dir = context.getFace().getOpposite();
+		BlockPos pos = context.getClickedPos();
+		Direction dir = context.getClickedFace().getOpposite();
 		PlayerEntity player = context.getPlayer();
 		
-		player.getCooldownTracker().setCooldown(this, 20);
+		player.getCooldowns().addCooldown(this, 20);
 
 		//Query the wall to see if there's a hole
 		BlockPos.Mutable mut = new BlockPos.Mutable(pos.getX(), pos.getY(), pos.getZ());
@@ -41,13 +41,13 @@ public class PassagesToll extends Item {
 			mut.move(dir);
 			//Prevent players getting in the void
 			if (mut.getY() <= 0) break;
-			if (!world.getBlockState(mut).getMaterial().blocksMovement()) {
+			if (!world.getBlockState(mut).getMaterial().blocksMotion()) {
 				found = true;
 				//Bring down to player's height as much as possible
-				double targetY = player.getPosY();
+				double targetY = player.getY();
 				while (mut.getY() > targetY && mut.getY() > 1) {
 					mut.move(0, -1, 0);
-					if (world.getBlockState(mut).getMaterial().blocksMovement()) {
+					if (world.getBlockState(mut).getMaterial().blocksMotion()) {
 						mut.move(0, 1, 0);
 						break;
 					}
@@ -58,18 +58,18 @@ public class PassagesToll extends Item {
 		
 		if (!found) return ActionResultType.FAIL;
 		else {
-			player.setPositionAndUpdate(mut.getX() + 0.5, mut.getY() + 0.5, mut.getZ() + 0.5);
+			player.teleportTo(mut.getX() + 0.5, mut.getY() + 0.5, mut.getZ() + 0.5);
 			player.fallDistance = 0;
-			world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1, 1);
-			player.playSound(SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+			player.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1, 1);
 			return ActionResultType.SUCCESS;
 		}
 
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getTranslationKey() + ".desc").mergeStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
 	}
 
 }
