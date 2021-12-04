@@ -1,10 +1,10 @@
 package lykrast.meetyourfight.registry;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
-public class ItemGroupMeetYourFight extends ItemGroup {
-	public static final ItemGroup INSTANCE = new ItemGroupMeetYourFight(ItemGroup.getGroupCountSafe(), "meetyourfight");
+public class ItemGroupMeetYourFight extends CreativeModeTab {
+	public static final CreativeModeTab INSTANCE = new ItemGroupMeetYourFight(CreativeModeTab.getGroupCountSafe(), "meetyourfight");
 
 	public ItemGroupMeetYourFight(int index, String label) {
 		super(index, label);

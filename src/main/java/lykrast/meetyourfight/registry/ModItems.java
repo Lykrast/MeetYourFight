@@ -3,13 +3,13 @@ package lykrast.meetyourfight.registry;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.*;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.MusicDiscItem;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,27 +32,27 @@ public class ModItems {
 		passagesToll = initItem(reg, new PassagesToll(bossNS()), "passages_toll");
 		spectresEye = initItem(reg, new SpectresEye(bossNS()), "spectres_eye");
 		spectresGrasp = initItem(reg, new SpectresGrasp(bossNS()), "spectres_grasp");
-		aetherGlazedCupcake = initItem(reg, new Item(boss().food((new Food.Builder().nutrition(5).saturationMod(0.6f).alwaysEat().effect(() -> new EffectInstance(Effects.LEVITATION, 5*20), 1).build()))), "aether_glazed_cupcake");
+		aetherGlazedCupcake = initItem(reg, new Item(boss().food((new FoodProperties.Builder().nutrition(5).saturationMod(0.6f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LEVITATION, 5*20), 1).build()))), "aether_glazed_cupcake");
 		
 		devilsAnte = initItem(reg, new SummonItem(noStack(), DameFortunaEntity::spawn), "devils_ante");
 		fortunesFavor = initItem(reg, new Item(boss()), "fortunes_favor");
 		slicersDice = initItem(reg, new LuckCurio(bossNS()), "slicers_dice");
 		aceOfIron = initItem(reg, new LuckCurio(bossNS()), "ace_of_iron");
 		cocktailCutlass = initItem(reg, new CocktailCutlass(bossNS()), "cocktail_cutlass");
-		velvetFortune = initItem(reg, new Item(boss().food((new Food.Builder().nutrition(2).saturationMod(0.1f).alwaysEat().effect(() -> new EffectInstance(Effects.LUCK, 10*60*20), 1).build()))), "velvet_fortune");
+		velvetFortune = initItem(reg, new Item(boss().food((new FoodProperties.Builder().nutrition(2).saturationMod(0.1f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LUCK, 10*60*20), 1).build()))), "velvet_fortune");
 		
 		fossilBait = initItem(reg, new SummonItem(noStack(), SwampjawEntity::spawn), "fossil_bait");
 		mossyTooth = initItem(reg, new Item(boss()), "mossy_tooth");
 		boneRaker = initItem(reg, new BoneRaker(bossNS()), "bone_raker");
 		depthStar = initItem(reg, new DepthStar(bossNS()), "depth_star");
 		cagedHeart = initItem(reg, new CurioBaseItem(bossNS(), true), "caged_heart");
-		marshyDelight = initItem(reg, new Item(boss().food((new Food.Builder().nutrition(14).saturationMod(0.9f).meat().build()))), "marshy_delight");
+		marshyDelight = initItem(reg, new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))), "marshy_delight");
 		
-		discMagnum = initItem(reg, new MusicDiscItem(1, ModSounds::supplyMagnum, noStack().rarity(Rarity.RARE)), "music_disc_magnum");
+		discMagnum = initItem(reg, new RecordItem(1, ModSounds::supplyMagnum, noStack().rarity(Rarity.RARE)), "music_disc_magnum");
 		
-		eggBellringer = initItem(reg, new SpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
-		eggDameFortuna = initItem(reg, new SpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
-		eggSwampjaw = initItem(reg, new SpawnEggItem(ModEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()), "swampjaw_spawn_egg");
+		eggBellringer = initItem(reg, new ForgeSpawnEggItem(() -> ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
+		eggDameFortuna = initItem(reg, new ForgeSpawnEggItem(() -> ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
+		eggSwampjaw = initItem(reg, new ForgeSpawnEggItem(() -> ModEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()), "swampjaw_spawn_egg");
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems(reg);
 	}

@@ -8,43 +8,43 @@ import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.EvokerFangsEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.EvokerFangs;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class DameFortunaEntity extends BossEntity {
 	/**
 	 * Look at me I can embed attacks AND rage in a single byte! 0x0000RRAA with R for rage (0-2) and A for attack (0-2)
 	 */
-	private static final DataParameter<Byte> STATUS = EntityDataManager.defineId(DameFortunaEntity.class, DataSerializers.BYTE);
+	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(DameFortunaEntity.class, EntityDataSerializers.BYTE);
 	public static final int NO_ATTACK = 0, PROJ_ATTACK = 1, CLAW_ATTACK = 2;
 	private static final int ATTACK_MASK = 0b11, RAGE_MASK = ~ATTACK_MASK;
 	public int attackCooldown;
@@ -59,7 +59,7 @@ public class DameFortunaEntity extends BossEntity {
 	 */
 	private int rage;
 	
-	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, World worldIn) {
+	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, Level worldIn) {
 		super(type, worldIn);
 		moveControl = new VexMovementController(this);
 		xpReward = 100;
@@ -76,23 +76,23 @@ public class DameFortunaEntity extends BossEntity {
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
-		goalSelector.addGoal(0, new SwimGoal(this));
+		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(2, new RegularAttack(this));
 		goalSelector.addGoal(3, new RageEvokerLines(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
-		goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-		goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
-		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
+		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
 		targetSelector.addGoal(2, new HurtByTargetGoal(this));
 	}
 	
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 300).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
+	public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 300).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
     }
 
 	@Override
-	public void move(MoverType typeIn, Vector3d pos) {
+	public void move(MoverType typeIn, Vec3 pos) {
 		super.move(typeIn, pos);
 		checkInsideBlocks();
 	}
@@ -131,7 +131,7 @@ public class DameFortunaEntity extends BossEntity {
 	}
 	
 	public float getHeadRotationProgress(float partialTicks) {
-	      return MathHelper.lerp(partialTicks, headRotationProgressLast, headRotationProgress);
+	      return Mth.lerp(partialTicks, headRotationProgressLast, headRotationProgress);
 	}
 	
 	private void rotateHead() {
@@ -162,15 +162,15 @@ public class DameFortunaEntity extends BossEntity {
 		}
 	}
 	
-	public static void spawn(PlayerEntity player, World world) {
+	public static void spawn(Player player, Level world) {
 		Random rand = player.getRandom();
 		DameFortunaEntity dame = ModEntities.DAME_FORTUNA.create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
-		if (!player.abilities.instabuild) dame.setTarget(player);
-		dame.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 100, 2));
+		if (!player.getAbilities().instabuild) dame.setTarget(player);
+		dame.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
-		dame.finalizeSpawn((ServerWorld) world, world.getCurrentDifficultyAt(dame.blockPosition()), SpawnReason.EVENT, null, null);
+		dame.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
 	}
 
@@ -248,20 +248,20 @@ public class DameFortunaEntity extends BossEntity {
 
 			blockpos = blockpos.below();
 		}
-		while (blockpos.getY() >= MathHelper.floor(minY) - 1);
+		while (blockpos.getY() >= Mth.floor(minY) - 1);
 
-		if (success) level.addFreshEntity(new EvokerFangsEntity(level, posX, blockpos.getY() + d0, posZ, rotationRad, delay, this));
+		if (success) level.addFreshEntity(new EvokerFangs(level, posX, blockpos.getY() + d0, posZ, rotationRad, delay, this));
 
 	}
 	
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("AttackCooldown", attackCooldown);
 	}
@@ -388,7 +388,7 @@ public class DameFortunaEntity extends BossEntity {
 					attackDelay = 10;
 					double minY = Math.min(ty, dame.getY());
 					double maxY = Math.max(ty, dame.getY()) + 1;
-					float angle = (float) MathHelper.atan2(tz - dame.getZ(), tx - dame.getX());
+					float angle = (float) Mth.atan2(tz - dame.getZ(), tx - dame.getX());
 					dame.spawnFangs(tx, tz, minY, maxY, angle, 0);
 					break;
 				case 2:
@@ -451,10 +451,10 @@ public class DameFortunaEntity extends BossEntity {
 				//Evoker lines
 				double minY = Math.min(ty, dame.getY());
 				double maxY = Math.max(ty, dame.getY()) + 1;
-				float angle = (float) MathHelper.atan2(tz - dame.getZ(), tx - dame.getX());
+				float angle = (float) Mth.atan2(tz - dame.getZ(), tx - dame.getX());
 				for (int i = 0; i < 16; ++i) {
 					double dist = 1.25 * (i + 1);
-					dame.spawnFangs(dame.getX() + MathHelper.cos(angle) * dist, dame.getZ() + MathHelper.sin(angle) * dist, minY, maxY, angle, i);
+					dame.spawnFangs(dame.getX() + Mth.cos(angle) * dist, dame.getZ() + Mth.sin(angle) * dist, minY, maxY, angle, i);
 				}
 			}
 		}
@@ -468,9 +468,9 @@ public class DameFortunaEntity extends BossEntity {
 	
 	//Rotate around attack target
 	private static class MoveAroundTarget extends Goal {
-		private MobEntity mob;
+		private Mob mob;
 
-		public MoveAroundTarget(MobEntity mob) {
+		public MoveAroundTarget(Mob mob) {
 			setFlags(EnumSet.of(Goal.Flag.MOVE));
 			this.mob = mob;
 		}
@@ -486,7 +486,7 @@ public class DameFortunaEntity extends BossEntity {
 			Random rand = mob.getRandom();
 			float angle = (rand.nextInt(4) + 2) * 10f * ((float)Math.PI / 180F);
 			if (rand.nextBoolean()) angle *= -1;
-			Vector3d offset = new Vector3d(mob.getX() - target.getX(), 0, mob.getZ() - target.getZ()).normalize().yRot(angle);
+			Vec3 offset = new Vec3(mob.getX() - target.getX(), 0, mob.getZ() - target.getZ()).normalize().yRot(angle);
 			double distance = rand.nextDouble() * 2 + 4;
 
 			mob.getMoveControl().setWantedPosition(

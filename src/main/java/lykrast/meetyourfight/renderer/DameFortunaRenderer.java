@@ -1,22 +1,22 @@
 package lykrast.meetyourfight.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
-import net.minecraft.client.renderer.entity.BipedRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.resources.ResourceLocation;
 
-public class DameFortunaRenderer extends BipedRenderer<DameFortunaEntity, DameFortunaModel> {
+public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, DameFortunaModel> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png");
 
-	public DameFortunaRenderer(EntityRendererManager renderManagerIn) {
+	public DameFortunaRenderer(EntityRenderDispatcher renderManagerIn) {
 		super(renderManagerIn, new DameFortunaModel(), 0.5F);
 	}
 	
 	@Override
-	protected void setupRotations(DameFortunaEntity entity, MatrixStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+	protected void setupRotations(DameFortunaEntity entity, PoseStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
 		//Copied/changed this bit from the Mourned from Defiled Lands, that I think copied from endermen
 		//(and it don't want to show me the endermen code)
 		int rage = entity.getRage();

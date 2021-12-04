@@ -3,30 +3,30 @@ package lykrast.meetyourfight.entity;
 import javax.annotation.Nullable;
 
 import lykrast.meetyourfight.registry.ModEntities;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkHooks;
 
 public class SwampMineEntity extends Entity {
 	//Mostly copied from TNT
 	private LivingEntity bomber;
 	public int fuse = 200;
 
-	public SwampMineEntity(EntityType<? extends SwampMineEntity> entityTypeIn, World worldIn) {
+	public SwampMineEntity(EntityType<? extends SwampMineEntity> entityTypeIn, Level worldIn) {
 		super(entityTypeIn, worldIn);
 		blocksBuilding = true;
 	}
 
-	public SwampMineEntity(World worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
+	public SwampMineEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
 		this(ModEntities.SWAMP_MINE, worldIn);
 		this.setPos(x, y, z);
 		double angle = worldIn.random.nextDouble() * Math.PI * 2;
@@ -39,14 +39,8 @@ public class SwampMineEntity extends Entity {
 	}
 
 	@Override
-	protected boolean isMovementNoisy() {
-		return false;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
 	public boolean isPickable() {
-		return !this.removed;
+		return !this.isRemoved();
 	}
 
 	@Override
@@ -63,7 +57,7 @@ public class SwampMineEntity extends Entity {
 		if (onGround) fuse = 0;
 		else --fuse;
 		if (fuse <= 0) {
-			remove();
+			remove(RemovalReason.KILLED);
 			if (!level.isClientSide) explode();
 		}
 		else {
@@ -76,7 +70,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	protected void explode() {
-		level.explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2, Explosion.Mode.NONE);
+		level.explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2, Explosion.BlockInteraction.NONE);
 	}
 
 	@Override
@@ -84,22 +78,22 @@ public class SwampMineEntity extends Entity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		compound.putShort("Fuse", (short) fuse);
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		fuse = compound.getShort("Fuse");
 	}
 
 	@Override
-	protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 0.15F;
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

@@ -2,15 +2,15 @@ package lykrast.meetyourfight.renderer;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.BellringerEntity;
-import net.minecraft.client.renderer.entity.BipedRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 
-public class BellringerRenderer extends BipedRenderer<BellringerEntity, BellringerModel> {
+public class BellringerRenderer extends HumanoidMobRenderer<BellringerEntity, BellringerModel> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/bellringer.png");
 
-	public BellringerRenderer(EntityRendererManager renderManagerIn) {
+	public BellringerRenderer(EntityRenderDispatcher renderManagerIn) {
 		super(renderManagerIn, new BellringerModel(), 0.5F);
 	}
 

@@ -5,42 +5,42 @@ import javax.annotation.Nullable;
 
 import lykrast.meetyourfight.misc.BossMusic;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.FlyingEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.BossInfo;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerBossInfo;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.FlyingMob;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
-public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEntityAdditionalSpawnData {
+public abstract class BossFlyingEntity extends FlyingMob implements Enemy, IEntityAdditionalSpawnData {
 	// turns out Phantoms aren't MonsterEntity, so I'm just pasting the BossEntity
 	// stuff here
-	private final ServerBossInfo bossInfo = new ServerBossInfo(getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS);
+	private final ServerBossEvent bossInfo = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
 
-	protected BossFlyingEntity(EntityType<? extends FlyingEntity> type, World worldIn) {
+	protected BossFlyingEntity(EntityType<? extends FlyingMob> type, Level worldIn) {
 		super(type, worldIn);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (hasCustomName()) bossInfo.setName(getDisplayName());
 
 	}
 
 	@Override
-	public void setCustomName(@Nullable ITextComponent name) {
+	public void setCustomName(@Nullable Component name) {
 		super.setCustomName(name);
 		bossInfo.setName(getDisplayName());
 	}
@@ -48,17 +48,17 @@ public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEn
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		bossInfo.setPercent(getHealth() / getMaxHealth());
+		bossInfo.setProgress(getHealth() / getMaxHealth());
 	}
 
 	@Override
-	public void startSeenByPlayer(ServerPlayerEntity player) {
+	public void startSeenByPlayer(ServerPlayer player) {
 		super.startSeenByPlayer(player);
 		bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void stopSeenByPlayer(ServerPlayerEntity player) {
+	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		bossInfo.removePlayer(player);
 	}
@@ -74,24 +74,24 @@ public abstract class BossFlyingEntity extends FlyingEntity implements IMob, IEn
 	}
 
 	@Override
-	public SoundCategory getSoundSource() {
-		return SoundCategory.HOSTILE;
+	public SoundSource getSoundSource() {
+		return SoundSource.HOSTILE;
 	}
 
 	// Bit to play music from Botania
 	// https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/entity/EntityDoppleganger.java#L992
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	public void writeSpawnData(PacketBuffer buffer) {}
+	public void writeSpawnData(FriendlyByteBuf buffer) {}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readSpawnData(PacketBuffer additionalData) {
+	public void readSpawnData(FriendlyByteBuf additionalData) {
 		Minecraft.getInstance().getSoundManager().play(new BossMusic(this, getMusic()));
 	}
 

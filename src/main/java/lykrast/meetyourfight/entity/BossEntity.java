@@ -5,38 +5,38 @@ import javax.annotation.Nullable;
 
 import lykrast.meetyourfight.misc.BossMusic;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.BossInfo;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerBossInfo;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
-public abstract class BossEntity extends MonsterEntity implements IEntityAdditionalSpawnData {
-	private final ServerBossInfo bossInfo = new ServerBossInfo(getDisplayName(), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS);
+public abstract class BossEntity extends Monster implements IEntityAdditionalSpawnData {
+	private final ServerBossEvent bossInfo = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
 
-	public BossEntity(EntityType<? extends MonsterEntity> type, World worldIn) {
+	public BossEntity(EntityType<? extends Monster> type, Level worldIn) {
 		super(type, worldIn);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (hasCustomName()) bossInfo.setName(getDisplayName());
 
 	}
 
 	@Override
-	public void setCustomName(@Nullable ITextComponent name) {
+	public void setCustomName(@Nullable Component name) {
 		super.setCustomName(name);
 		bossInfo.setName(getDisplayName());
 	}
@@ -44,17 +44,17 @@ public abstract class BossEntity extends MonsterEntity implements IEntityAdditio
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		bossInfo.setPercent(getHealth() / getMaxHealth());
+		bossInfo.setProgress(getHealth() / getMaxHealth());
 	}
 
 	@Override
-	public void startSeenByPlayer(ServerPlayerEntity player) {
+	public void startSeenByPlayer(ServerPlayer player) {
 		super.startSeenByPlayer(player);
 		bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void stopSeenByPlayer(ServerPlayerEntity player) {
+	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		bossInfo.removePlayer(player);
 	}
@@ -67,16 +67,16 @@ public abstract class BossEntity extends MonsterEntity implements IEntityAdditio
 	//Bit to play music from Botania https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/common/entity/EntityDoppleganger.java#L992
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 	
 	@Override
-	public void writeSpawnData(PacketBuffer buffer) {}
+	public void writeSpawnData(FriendlyByteBuf buffer) {}
 	
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void readSpawnData(PacketBuffer additionalData) {
+	public void readSpawnData(FriendlyByteBuf additionalData) {
 		Minecraft.getInstance().getSoundManager().play(new BossMusic(this, getMusic()));
 	}
 	

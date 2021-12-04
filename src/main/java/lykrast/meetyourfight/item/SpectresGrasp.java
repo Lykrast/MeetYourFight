@@ -5,21 +5,21 @@ import java.util.UUID;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeMod;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class SpectresGrasp extends CurioBaseItem {
-	private static final UUID AT_ID = UUID.fromString("930f68d4-3550-4dca-92c3-f1b20df720ff");
-
 	public SpectresGrasp(Properties properties) {
 		super(properties, false);
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(String identifier) {
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
 		Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-		map.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(AT_ID, "Reach bonus", 2, AttributeModifier.Operation.ADDITION));
+		map.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(uuid, "Reach bonus", 2, AttributeModifier.Operation.ADDITION));
 
 		return map;
 	}

@@ -1,8 +1,8 @@
 package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.item.compat.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class CompatGWRItems {

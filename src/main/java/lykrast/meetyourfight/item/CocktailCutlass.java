@@ -6,39 +6,39 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 
 import lykrast.meetyourfight.registry.ModItems;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 
 public class CocktailCutlass extends SwordItem {
-	private static final IItemTier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor));
-	private static final List<Triple<Effect, Integer, Boolean>> EFFECTS = new ArrayList<>();
+	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor));
+	private static final List<Triple<MobEffect, Integer, Boolean>> EFFECTS = new ArrayList<>();
 	
 	public static void initEffects() {
 		//Effect, duration, scale duration instead of amplifier (for like Fire Resistance)
-		EFFECTS.add(Triple.of(Effects.MOVEMENT_SPEED, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.DIG_SPEED, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.DAMAGE_BOOST, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.REGENERATION, 10*20, false));
-		EFFECTS.add(Triple.of(Effects.DAMAGE_RESISTANCE, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.FIRE_RESISTANCE, 60*20, true));
-		EFFECTS.add(Triple.of(Effects.WATER_BREATHING, 60*20, true));
-		EFFECTS.add(Triple.of(Effects.INVISIBILITY, 60*20, true));
-		EFFECTS.add(Triple.of(Effects.ABSORPTION, 60*20, false));
-		EFFECTS.add(Triple.of(Effects.LUCK, 60*20, false));
+		EFFECTS.add(Triple.of(MobEffects.MOVEMENT_SPEED, 60*20, false));
+		EFFECTS.add(Triple.of(MobEffects.DIG_SPEED, 60*20, false));
+		EFFECTS.add(Triple.of(MobEffects.DAMAGE_BOOST, 60*20, false));
+		EFFECTS.add(Triple.of(MobEffects.REGENERATION, 10*20, false));
+		EFFECTS.add(Triple.of(MobEffects.DAMAGE_RESISTANCE, 60*20, false));
+		EFFECTS.add(Triple.of(MobEffects.FIRE_RESISTANCE, 60*20, true));
+		EFFECTS.add(Triple.of(MobEffects.WATER_BREATHING, 60*20, true));
+		EFFECTS.add(Triple.of(MobEffects.INVISIBILITY, 60*20, true));
+		EFFECTS.add(Triple.of(MobEffects.ABSORPTION, 60*20, false));
+		EFFECTS.add(Triple.of(MobEffects.LUCK, 60*20, false));
 	}
 
 	public CocktailCutlass(Properties builderIn) {
@@ -47,39 +47,39 @@ public class CocktailCutlass extends SwordItem {
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		if (target != null && attacker instanceof PlayerEntity) {
-			float luck = ((PlayerEntity)attacker).getLuck();
+		if (target != null && attacker instanceof Player) {
+			float luck = ((Player)attacker).getLuck();
 			double chance = 1.0 / 5.0;
 			if (luck >= 0) chance = (2.0 + luck) / (10.0 + luck);
 			else chance = 1.0 / (5.0 - luck);
 			int effectLevel = -1;
 			//Using the Item random cause it seems like that's what vanilla item uses (and at least for bonemeal it's used a different amount of times in client)
-			if (random.nextDouble() <= chance) {
+			if (attacker.getLevel().getRandom().nextDouble() <= chance) {
 				effectLevel = 0;
 				//Roll for extra strength
 				for (int i = 0; i < 2; i++) {
 					chance *= 0.5;
-					if (random.nextDouble() <= chance) effectLevel++;
+					if (attacker.getLevel().getRandom().nextDouble() <= chance) effectLevel++;
 					else break;
 				}
 			}
 			if (effectLevel >= 0) {
 				//Choose effect
-				Triple<Effect, Integer, Boolean> triple = EFFECTS.get(random.nextInt(EFFECTS.size()));
+				Triple<MobEffect, Integer, Boolean> triple = EFFECTS.get(attacker.getLevel().getRandom().nextInt(EFFECTS.size()));
 				//If the effect doesn't scale with potency, increase duration instead
 				int duration = triple.getRight() ? triple.getMiddle() * (1 + effectLevel) : triple.getMiddle();
 				int potency = triple.getRight() ? 0 : effectLevel;
-				attacker.addEffect(new EffectInstance(triple.getLeft(), duration, potency, false, false, true));
-				attacker.level.playSound(null, attacker.blockPosition(), SoundEvents.GENERIC_DRINK, SoundCategory.PLAYERS, 1, 1);
+				attacker.addEffect(new MobEffectInstance(triple.getLeft(), duration, potency, false, false, true));
+				attacker.level.playSound(null, attacker.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1, 1);
 			}
 		}
 		return super.hurtEnemy(stack, target, attacker);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
-		tooltip.add(new TranslationTextComponent(LuckCurio.TOOLTIP_LUCK).withStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(new TranslatableComponent(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 
 }

@@ -2,12 +2,12 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class LuckCurio extends CurioBaseItem {
 	public static final String TOOLTIP_LUCK = "item.meetyourfight.desc.luck";
@@ -17,9 +17,9 @@ public class LuckCurio extends CurioBaseItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-		tooltip.add(new TranslationTextComponent(TOOLTIP_LUCK).withStyle(TextFormatting.GRAY));
+		tooltip.add(new TranslatableComponent(TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 
 }

@@ -1,28 +1,28 @@
 package lykrast.meetyourfight.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
 
 public class ProjectileLineModel<T extends Entity> extends EntityModel<T> {
 	// This is mostly the shulker bullet but copy pasted then inlined
-	private final ModelRenderer renderer;
+	private final ModelPart renderer;
 
 	public ProjectileLineModel() {
 		super(RenderType::entityCutoutNoCull);
 		texWidth = 64;
 		texHeight = 32;
-		renderer = new ModelRenderer(this);
+		renderer = new ModelPart(this);
 		renderer.texOffs(0, 0).addBox(-4, -4, -4, 8, 8, 8, 0);
 		renderer.setPos(0, 0, 0);
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 

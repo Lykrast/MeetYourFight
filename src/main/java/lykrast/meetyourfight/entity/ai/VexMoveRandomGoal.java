@@ -2,15 +2,15 @@ package lykrast.meetyourfight.entity.ai;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
 
 public class VexMoveRandomGoal extends Goal {
 	//The Vex's MoveRandom but separated
-	private MobEntity mob;
+	private Mob mob;
 
-    public VexMoveRandomGoal(MobEntity mob) {
+    public VexMoveRandomGoal(Mob mob) {
        setFlags(EnumSet.of(Goal.Flag.MOVE));
        this.mob = mob;
     }

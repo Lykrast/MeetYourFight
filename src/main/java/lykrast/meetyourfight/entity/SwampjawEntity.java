@@ -9,63 +9,63 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.PhantomAttackPlayer;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class SwampjawEntity extends BossFlyingEntity {
 	private int behavior;
 	private static final int CIRCLE = 0, BOMB = 1, SWOOP = 2;
 	//A lot of similarity with Phantoms
-	private Vector3d orbitOffset = Vector3d.ZERO;
+	private Vec3 orbitOffset = Vec3.ZERO;
 	private BlockPos orbitPosition = BlockPos.ZERO;
 	
 	//For rotating the tail
 	public float tailYaw, tailPitch;
 
-	public SwampjawEntity(EntityType<? extends SwampjawEntity> type, World worldIn) {
+	public SwampjawEntity(EntityType<? extends SwampjawEntity> type, Level worldIn) {
 		super(type, worldIn);
 		xpReward = 30;
 		moveControl = new MoveHelperController(this);
-		tailYaw = yRot;
-		tailPitch = xRot;
+		tailYaw = getYRot();
+		tailPitch = getXRot();
 	}
 
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 7);
+	public static AttributeSupplier.Builder createAttributes() {
+		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 7);
 	}
 	
-	public static void spawn(PlayerEntity player, World world) {
+	public static void spawn(Player player, Level world) {
 		Random rand = player.getRandom();
 		SwampjawEntity fish = ModEntities.SWAMPJAW.create(world);
 		fish.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(10) + 5, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		//fish.attackCooldown = 100;
-		if (!player.abilities.instabuild) fish.setTarget(player);
-		fish.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 100, 2));
+		if (!player.getAbilities().instabuild) fish.setTarget(player);
+		fish.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
-		fish.finalizeSpawn((ServerWorld) world, world.getCurrentDifficultyAt(fish.blockPosition()), SpawnReason.EVENT, null, null);
+		fish.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(fish.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(fish);
 	}
 
@@ -82,12 +82,12 @@ public class SwampjawEntity extends BossFlyingEntity {
 		goalSelector.addGoal(2, new SweepAttackGoal(this));
 		goalSelector.addGoal(3, new BombMovementGoal(this));
 		goalSelector.addGoal(4, new OrbitPointGoal(this));
-		goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 16));
+		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 16));
 		targetSelector.addGoal(1, new PhantomAttackPlayer(this));
 	}
 
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
 		orbitPosition = this.blockPosition().above(5);
 		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
@@ -99,30 +99,30 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 	
 	public float getTailYaw(float partialTick) {
-		return MathHelper.approachDegrees(tailYaw, yRot, 6 * partialTick);
+		return Mth.approachDegrees(tailYaw, getYRot(), 6 * partialTick);
 	}
 	
 	public float getTailPitch(float partialTick) {
-		return MathHelper.approachDegrees(tailPitch, xRot, 2 * partialTick);
+		return Mth.approachDegrees(tailPitch, getXRot(), 2 * partialTick);
 	}
 
 	@Override
 	public void aiStep() {
 		super.aiStep();
 		if (level.isClientSide) {
-			tailYaw = MathHelper.approachDegrees(tailYaw, yRot, 6);
-			tailPitch = MathHelper.approachDegrees(tailPitch, xRot, 2);
+			tailYaw = Mth.approachDegrees(tailYaw, getYRot(), 6);
+			tailPitch = Mth.approachDegrees(tailPitch, getXRot(), 2);
 		}
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("AX")) orbitPosition = new BlockPos(compound.getInt("AX"), compound.getInt("AY"), compound.getInt("AZ"));
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("AX", orbitPosition.getX());
 		compound.putInt("AY", orbitPosition.getY());
@@ -150,8 +150,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 	
 	@Override
@@ -160,7 +160,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 	
 	//Same controller as Phantoms but ignores walls
-	private static class MoveHelperController extends MovementController {
+	private static class MoveHelperController extends MoveControl {
 		private float speedFactor = 0.1F;
 		private SwampjawEntity swampjaw;
 
@@ -174,35 +174,35 @@ public class SwampjawEntity extends BossFlyingEntity {
 			float targetX = (float) (swampjaw.orbitOffset.x - swampjaw.getX());
 			float targetY = (float) (swampjaw.orbitOffset.y - swampjaw.getY());
 			float targetZ = (float) (swampjaw.orbitOffset.z - swampjaw.getZ());
-			double horizontalDist = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ);
-			double verticalAdjust = 1.0D - (double) MathHelper.abs(targetY * 0.7F) / horizontalDist;
+			double horizontalDist = (double) Mth.sqrt(targetX * targetX + targetZ * targetZ);
+			double verticalAdjust = 1.0D - (double) Mth.abs(targetY * 0.7F) / horizontalDist;
 			targetX = (float) ((double) targetX * verticalAdjust);
 			targetZ = (float) ((double) targetZ * verticalAdjust);
-			horizontalDist = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ);
-			double totalDist = (double) MathHelper.sqrt(targetX * targetX + targetZ * targetZ + targetY * targetY);
-			float prevYaw = swampjaw.yRot;
-			float targetYaw = (float) MathHelper.atan2((double) targetZ, (double) targetX);
-			float startYaw = MathHelper.wrapDegrees(swampjaw.yRot + 90.0F);
-			targetYaw = MathHelper.wrapDegrees(targetYaw * (180F / (float) Math.PI));
+			horizontalDist = (double) Mth.sqrt(targetX * targetX + targetZ * targetZ);
+			double totalDist = (double) Mth.sqrt(targetX * targetX + targetZ * targetZ + targetY * targetY);
+			float prevYaw = swampjaw.getYRot();
+			float targetYaw = (float) Mth.atan2((double) targetZ, (double) targetX);
+			float startYaw = Mth.wrapDegrees(swampjaw.getYRot() + 90.0F);
+			targetYaw = Mth.wrapDegrees(targetYaw * (180F / (float) Math.PI));
 			//Phantoms approach by 4�
-			swampjaw.yRot = MathHelper.approachDegrees(startYaw, targetYaw, 10) - 90.0F;
-			swampjaw.yBodyRot = swampjaw.yRot;
-			if (MathHelper.degreesDifferenceAbs(prevYaw, swampjaw.yRot) < 3.0F) {
+			swampjaw.setYRot(Mth.approachDegrees(startYaw, targetYaw, 10) - 90.0F);
+			swampjaw.yBodyRot = swampjaw.getYRot();
+			if (Mth.degreesDifferenceAbs(prevYaw, swampjaw.getYRot()) < 3.0F) {
 				float maxSpeed = swampjaw.behavior != CIRCLE ? 3F : 1.2F;
 				float multiplier = speedFactor > maxSpeed ? 10 : maxSpeed / speedFactor;
-				speedFactor = MathHelper.approach(speedFactor, maxSpeed, 0.005F * multiplier);
+				speedFactor = Mth.approach(speedFactor, maxSpeed, 0.005F * multiplier);
 			}
 			//else speedFactor = MathHelper.approach(this.speedFactor, 0.2F, 0.025F);
-			else speedFactor = MathHelper.approach(speedFactor, swampjaw.behavior == BOMB ? 0.7F : 0.4F, 0.05F);
+			else speedFactor = Mth.approach(speedFactor, swampjaw.behavior == BOMB ? 0.7F : 0.4F, 0.05F);
 
-			float finalPitch = (float) (-(MathHelper.atan2(-targetY, horizontalDist) * (180F / (float) Math.PI)));
-			swampjaw.xRot = finalPitch;
-			float adjustedYaw = swampjaw.yRot + 90.0F;
-			double finalX = (double) (speedFactor * MathHelper.cos(adjustedYaw * ((float) Math.PI / 180F))) * Math.abs((double) targetX / totalDist);
-			double finalZ = (double) (speedFactor * MathHelper.sin(adjustedYaw * ((float) Math.PI / 180F))) * Math.abs((double) targetZ / totalDist);
-			double finalY = (double) (speedFactor * MathHelper.sin(finalPitch * ((float) Math.PI / 180F))) * Math.abs((double) targetY / totalDist);
-			Vector3d vector3d = swampjaw.getDeltaMovement();
-			swampjaw.setDeltaMovement(vector3d.add((new Vector3d(finalX, finalY, finalZ)).subtract(vector3d).scale(0.2)));
+			float finalPitch = (float) (-(Mth.atan2(-targetY, horizontalDist) * (180F / (float) Math.PI)));
+			swampjaw.setXRot(finalPitch);
+			float adjustedYaw = swampjaw.getYRot() + 90.0F;
+			double finalX = (double) (speedFactor * Mth.cos(adjustedYaw * ((float) Math.PI / 180F))) * Math.abs((double) targetX / totalDist);
+			double finalZ = (double) (speedFactor * Mth.sin(adjustedYaw * ((float) Math.PI / 180F))) * Math.abs((double) targetZ / totalDist);
+			double finalY = (double) (speedFactor * Mth.sin(finalPitch * ((float) Math.PI / 180F))) * Math.abs((double) targetY / totalDist);
+			Vec3 vector3d = swampjaw.getDeltaMovement();
+			swampjaw.setDeltaMovement(vector3d.add((new Vec3(finalX, finalY, finalZ)).subtract(vector3d).scale(0.2)));
 		}
 	}
 
@@ -280,7 +280,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 			if (BlockPos.ZERO.equals(swampjaw.orbitPosition)) swampjaw.orbitPosition = swampjaw.blockPosition();
 
 			angle += direction * 20 * ((float) Math.PI / 180F);
-			swampjaw.orbitOffset = Vector3d.atLowerCornerOf(swampjaw.orbitPosition).add(radius * MathHelper.cos(angle), -4.0F + height, radius * MathHelper.sin(this.angle));
+			swampjaw.orbitOffset = Vec3.atLowerCornerOf(swampjaw.orbitPosition).add(radius * Mth.cos(angle), -4.0F + height, radius * Mth.sin(this.angle));
 		}
 	}
 	
@@ -310,9 +310,9 @@ public class SwampjawEntity extends BossFlyingEntity {
 			if (target != null) {
 				double difX = target.getX() - swampjaw.orbitOffset.x;
 				double difZ = target.getZ() - swampjaw.orbitOffset.z;
-				Vector3d overshoot = new Vector3d(difX, 0, difZ).normalize();
-				Vector3d vec = target.position();
-				swampjaw.orbitOffset = new Vector3d(vec.x + overshoot.x * 7, swampjaw.orbitPosition.getY() - 4, vec.z + overshoot.z * 7);
+				Vec3 overshoot = new Vec3(difX, 0, difZ).normalize();
+				Vec3 vec = target.position();
+				swampjaw.orbitOffset = new Vec3(vec.x + overshoot.x * 7, swampjaw.orbitPosition.getY() - 4, vec.z + overshoot.z * 7);
 			}
 		}
 	}
@@ -332,7 +332,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 			LivingEntity livingentity = swampjaw.getTarget();
 			if (livingentity == null) return false;
 			else if (!livingentity.isAlive()) return false;
-			else if (!(livingentity instanceof PlayerEntity) || !((PlayerEntity) livingentity).isSpectator() && !((PlayerEntity) livingentity).isCreative()) return canUse();
+			else if (!(livingentity instanceof Player) || !((Player) livingentity).isSpectator() && !((Player) livingentity).isCreative()) return canUse();
 			else return false;
 		}
 
@@ -344,7 +344,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		@Override
 		public void tick() {
 			LivingEntity livingentity = swampjaw.getTarget();
-			swampjaw.orbitOffset = new Vector3d(livingentity.getX(), livingentity.getY(0.5D), livingentity.getZ());
+			swampjaw.orbitOffset = new Vec3(livingentity.getX(), livingentity.getY(0.5D), livingentity.getZ());
 			if (swampjaw.getBoundingBox().inflate(0.2).intersects(livingentity.getBoundingBox())) {
 				swampjaw.doHurtTarget(livingentity);
 				swampjaw.behavior = CIRCLE;
@@ -411,7 +411,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 						swampjaw.playSound(ModSounds.swampjawBomb, 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level, swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
 						//The ellpeck idea
-						Vector3d motion = swampjaw.getDeltaMovement();
+						Vec3 motion = swampjaw.getDeltaMovement();
 						tntentity.setDeltaMovement(tntentity.getDeltaMovement().add(motion.x * 0.5, 0, motion.z * 0.5));
 						swampjaw.level.addFreshEntity(tntentity);
 					}

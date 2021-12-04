@@ -2,20 +2,20 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 
 public class SummonItem extends Item {
 	private BossSpawner spawner;
@@ -26,18 +26,18 @@ public class SummonItem extends Item {
 	}
 
 	@Override
-	public ItemStack finishUsingItem(ItemStack stack, World world, LivingEntity entityLiving) {
-		if (!(entityLiving instanceof PlayerEntity)) return stack;
-		PlayerEntity player = (PlayerEntity)entityLiving;
+	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entityLiving) {
+		if (!(entityLiving instanceof Player)) return stack;
+		Player player = (Player)entityLiving;
 		if (!world.isClientSide) {
-			if (!world.getLoadedEntitiesOfClass(MobEntity.class, player.getBoundingBox().inflate(32), e -> !e.canChangeDimensions() && e.isAlive()).isEmpty()) {
-				player.displayClientMessage(new TranslationTextComponent("status.meetyourfight.boss_nearby"), true);
+			if (!world.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(32), e -> !e.canChangeDimensions() && e.isAlive()).isEmpty()) {
+				player.displayClientMessage(new TranslatableComponent("status.meetyourfight.boss_nearby"), true);
 				return stack;
 			}
 			
 			spawner.spawn(player, world);
 			
-			if (!player.abilities.instabuild) {
+			if (!player.getAbilities().instabuild) {
 				stack.shrink(1);
 				player.broadcastBreakEvent(player.getUsedItemHand());
 			}
@@ -47,9 +47,9 @@ public class SummonItem extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		player.startUsingItem(hand);
-		return ActionResult.consume(player.getItemInHand(hand));
+		return InteractionResultHolder.consume(player.getItemInHand(hand));
 	}
 
 	@Override
@@ -58,18 +58,18 @@ public class SummonItem extends Item {
 	}
 
 	@Override
-	public UseAction getUseAnimation(ItemStack stack) {
-		return UseAction.BOW;
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.BOW;
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
 	}
 	
 	@FunctionalInterface
 	public static interface BossSpawner {
-		void spawn(PlayerEntity player, World world);
+		void spawn(Player player, Level world);
 	}
 
 }

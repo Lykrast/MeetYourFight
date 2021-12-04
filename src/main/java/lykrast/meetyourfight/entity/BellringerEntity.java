@@ -9,48 +9,48 @@ import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class BellringerEntity extends BossEntity {
 	public int attackCooldown;
 	private int rageAttacks = 0;
 	
-	public BellringerEntity(EntityType<? extends BellringerEntity> type, World worldIn) {
+	public BellringerEntity(EntityType<? extends BellringerEntity> type, Level worldIn) {
 		super(type, worldIn);
 		moveControl = new VexMovementController(this);
 		xpReward = 50;
 	}
 
 	@Override
-	public void move(MoverType typeIn, Vector3d pos) {
+	public void move(MoverType typeIn, Vec3 pos) {
 		super.move(typeIn, pos);
 		checkInsideBlocks();
 	}
@@ -66,32 +66,32 @@ public class BellringerEntity extends BossEntity {
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
-		goalSelector.addGoal(0, new SwimGoal(this));
+		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new RageAttack(this));
 		goalSelector.addGoal(2, new BurstAttack(this));
 		goalSelector.addGoal(7, new MoveFrontOfTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
-		goalSelector.addGoal(9, new LookAtGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-		goalSelector.addGoal(10, new LookAtGoal(this, MobEntity.class, 8.0F));
-		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
+		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
 		targetSelector.addGoal(2, new HurtByTargetGoal(this));
 	}
 	
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 200).add(Attributes.FOLLOW_RANGE, 64);
+	public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 200).add(Attributes.FOLLOW_RANGE, 64);
     }
 	
-	public static void spawn(PlayerEntity player, World world) {
+	public static void spawn(Player player, Level world) {
 		Random rand = player.getRandom();
 		BellringerEntity bellringer = ModEntities.BELLRINGER.create(world);
 		bellringer.moveTo(player.getX() + rand.nextInt(15) - 7, player.getY() + rand.nextInt(9) - 1, player.getZ() + rand.nextInt(15) - 7, rand.nextFloat() * 360 - 180, 0);
 		bellringer.attackCooldown = 100;
-		if (!player.abilities.instabuild) bellringer.setTarget(player);
-		bellringer.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 100, 2));
+		if (!player.getAbilities().instabuild) bellringer.setTarget(player);
+		bellringer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
-		bellringer.finalizeSpawn((ServerWorld) world, world.getCurrentDifficultyAt(bellringer.blockPosition()), SpawnReason.EVENT, null, null);
+		bellringer.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(bellringer.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(bellringer);
-		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BELL_BLOCK, SoundCategory.PLAYERS, 2, 1);
+		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 2, 1);
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public class BellringerEntity extends BossEntity {
 	}
 	
 	private void dingDong() {
-		swing(Hand.MAIN_HAND);
+		swing(InteractionHand.MAIN_HAND);
         playSound(SoundEvents.BELL_BLOCK, 2, 1);
 	}
 	
@@ -114,7 +114,7 @@ public class BellringerEntity extends BossEntity {
 	}
 	
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
 		rageAttacks = compound.getInt("Rage");
@@ -122,15 +122,15 @@ public class BellringerEntity extends BossEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("AttackCooldown", attackCooldown);
 		compound.putInt("Rage", rageAttacks);
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.UNDEAD;
+	public MobType getMobType() {
+		return MobType.UNDEAD;
 	}
 
 	@Override
@@ -290,7 +290,7 @@ public class BellringerEntity extends BossEntity {
 			list.add(target);
 			for (Entity e : list) {
 				//Duration should last through the whole attack
-				((LivingEntity)e).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 300, 1));
+				((LivingEntity)e).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 1));
 			}
 			ringer.dingDong();
 			ringer.playSound(SoundEvents.BELL_RESONATE, 2, 1);
@@ -341,10 +341,10 @@ public class BellringerEntity extends BossEntity {
 	
 	//Stay in front of attack target
 	private static class MoveFrontOfTarget extends Goal {
-		private MobEntity mob;
+		private Mob mob;
 		private int moveCooldown;
 
-		public MoveFrontOfTarget(MobEntity mob) {
+		public MoveFrontOfTarget(Mob mob) {
 			setFlags(EnumSet.of(Goal.Flag.MOVE));
 			this.mob = mob;
 		}
@@ -360,7 +360,7 @@ public class BellringerEntity extends BossEntity {
 			
 			LivingEntity target = mob.getTarget();
 			BlockPos targetP = target.blockPosition();
-			Vector3d look = Vector3d.directionFromRotation(0, target.yRot);
+			Vec3 look = Vec3.directionFromRotation(0, target.getYRot());
 
 			mob.getMoveControl().setWantedPosition(
 					targetP.getX() + look.x * 4 - 0.5 + mob.getRandom().nextDouble() * 2, 

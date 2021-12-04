@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[38,)"
 issueTrackerURL="https://github.com/Lykrast/MeetYourFight/issues"
 license="MIT License https://github.com/Lykrast/MeetYourFight/blob/master/LICENSE"
 
 [[mods]]
 modId="meetyourfight"
-version="${version}"
+version="${file.jarVersion}"
 displayName="Meet Your Fight"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/meet-your-fight"
 credits="JTK22 for the Haunted Bell texture, Monkey Warhol (www.monkeywarhol.com) for the song Magnum (CC BY 4.0)"
@@ -17,18 +17,18 @@ Adds several bosses to fight, each giving you access to unique goodies, such as 
 [[dependencies.meetyourfight]]
     modId="forge"
     mandatory=true
-    versionRange="[34,)"
+    versionRange="[38,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.meetyourfight]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3,)"
+    versionRange="[1.18,]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.meetyourfight]]
     modId="curios"
     mandatory=true
-    versionRange="[1.16.3-4.0.1.0,)"
+    versionRange="[1.18-5.0.2.3,)"
     ordering="NONE"
     side="BOTH"

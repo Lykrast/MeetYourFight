@@ -2,11 +2,13 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class SpectresEye extends CurioBaseItem {
 
@@ -15,12 +17,13 @@ public class SpectresEye extends CurioBaseItem {
 	}
 	
 	@Override
-	public void curioTick(String identifier, int index, LivingEntity livingEntity) {
-		if (livingEntity.tickCount % 60 != 0 || !(livingEntity instanceof PlayerEntity)) return;
+	public void curioTick(SlotContext slotContext, ItemStack stack) {
+		LivingEntity livingEntity = slotContext.entity();
+		if (livingEntity.tickCount % 60 != 0 || !(livingEntity instanceof Player)) return;
 		
-		List<LivingEntity> list = livingEntity.level.getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(20), e -> e instanceof IMob);
+		List<LivingEntity> list = livingEntity.level.getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(20), e -> e instanceof Enemy);
 		for (LivingEntity e : list) {
-			e.addEffect(new EffectInstance(Effects.GLOWING, 100));
+			e.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100));
 		}
 	}
 

@@ -2,20 +2,20 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 
 public class PassagesToll extends Item {
 
@@ -24,18 +24,18 @@ public class PassagesToll extends Item {
 	}
 
 	@Override
-	public ActionResultType useOn(ItemUseContext context) {
-		World world = context.getLevel();
-		if (world.isClientSide) return ActionResultType.SUCCESS;
+	public InteractionResult useOn(UseOnContext context) {
+		Level world = context.getLevel();
+		if (world.isClientSide) return InteractionResult.SUCCESS;
 
 		BlockPos pos = context.getClickedPos();
 		Direction dir = context.getClickedFace().getOpposite();
-		PlayerEntity player = context.getPlayer();
+		Player player = context.getPlayer();
 		
 		player.getCooldowns().addCooldown(this, 20);
 
 		//Query the wall to see if there's a hole
-		BlockPos.Mutable mut = new BlockPos.Mutable(pos.getX(), pos.getY(), pos.getZ());
+		BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
 		boolean found = false;
 		for (int i = 0; i < 16; i++) {
 			mut.move(dir);
@@ -56,20 +56,20 @@ public class PassagesToll extends Item {
 			}
 		}
 		
-		if (!found) return ActionResultType.FAIL;
+		if (!found) return InteractionResult.FAIL;
 		else {
 			player.teleportTo(mut.getX() + 0.5, mut.getY() + 0.5, mut.getZ() + 0.5);
 			player.fallDistance = 0;
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1, 1);
 			player.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1, 1);
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent(getDescriptionId() + ".desc").withStyle(TextFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(new TranslatableComponent(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
 	}
 
 }

@@ -3,22 +3,21 @@ package lykrast.meetyourfight.entity.ai;
 import java.util.Comparator;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 
 public class PhantomAttackPlayer extends Goal {
 	//Phantom's targeting except I make it see through walls
-	//setLineOfSiteRequired is backwards btw, it should be like "ignoreLineOfSight"
-	private final EntityPredicate predicate = (new EntityPredicate()).range(64.0D).allowUnseeable();
-	public static final EntityPredicate DEFAULT_BUT_THROUGH_WALLS = (new EntityPredicate()).allowUnseeable();
+	private final TargetingConditions predicate = TargetingConditions.forCombat().ignoreLineOfSight();
+	public static final TargetingConditions DEFAULT_BUT_THROUGH_WALLS = TargetingConditions.forCombat().ignoreLineOfSight();
 	private int tickDelay = 20;
-	private MobEntity entity;
+	private Mob entity;
 
-	public PhantomAttackPlayer(MobEntity entity) {
+	public PhantomAttackPlayer(Mob entity) {
 		this.entity = entity;
 	}
 
@@ -30,11 +29,11 @@ public class PhantomAttackPlayer extends Goal {
 		}
 		else {
 			this.tickDelay = 60;
-			List<PlayerEntity> list = entity.level.getNearbyPlayers(predicate, entity, entity.getBoundingBox().inflate(16.0D, 64.0D, 16.0D));
+			List<Player> list = entity.level.getNearbyPlayers(predicate, entity, entity.getBoundingBox().inflate(16.0D, 64.0D, 16.0D));
 			if (!list.isEmpty()) {
 				list.sort(Comparator.<Entity, Double>comparing(Entity::getY).reversed());
 
-				for (PlayerEntity playerentity : list) {
+				for (Player playerentity : list) {
 					if (entity.canAttack(playerentity, DEFAULT_BUT_THROUGH_WALLS)) {
 						entity.setTarget(playerentity);
 						return true;

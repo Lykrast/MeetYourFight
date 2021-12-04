@@ -16,13 +16,13 @@ apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 version = "${project.minecraft_version}-${project.mod_version}"
-group = "lykrast.meetyourfight" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "lykrast.meetyourfight"
 archivesBaseName = "meetyourfight"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.18'
 
     // Default run configurations.
     runs {
@@ -78,18 +78,6 @@ minecraft {
     }
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-
-        expand 'version': project.mod_version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
-    }
-}
-
 repositories {
     maven {
         name "curios"
@@ -109,4 +97,18 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}")
     implementation fg.deobf("curse.maven:gunswithoutroses-405077:${project.gwr_file}")
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "meetyourfight",
+                "Specification-Vendor": "Lykrast",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"Lykrast",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
