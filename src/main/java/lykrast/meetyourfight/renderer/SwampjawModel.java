@@ -58,7 +58,7 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		PartDefinition tailOuter = tailInner.addOrReplaceChild("tail_outer", CubeListBuilder.create().texOffs(40, 38).addBox(-1, 0, 0, 2, 2, 6), PartPose.offset(0, 0, 8));
 		tailOuter.addOrReplaceChild("tail_fin_top", CubeListBuilder.create().texOffs(0, 33).addBox(-0.5f, -10, 0, 1, 10, 5), PartPose.offsetAndRotation(0, 1, 5, -TAILFIN_PITCH, 0, 0));
 		tailOuter.addOrReplaceChild("tail_fin_bottom", CubeListBuilder.create().texOffs(12, 33).addBox(-0.5f, 0, 0, 1, 10, 5, new CubeDeformation(-0.1f)), PartPose.offsetAndRotation(0, 1, 5, TAILFIN_PITCH, 0, 0));
-		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(12, 33).addBox(-5, -4, -10, 10, 6, 10), PartPose.offset(0, -5, -6));
+		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-5, -4, -10, 10, 6, 10), PartPose.offset(0, -5, -6));
 		head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 16).addBox(-5, 0, -10, 10, 2, 10), PartPose.offset(0, 2, 0));
 		return LayerDefinition.create(meshdefinition, 128, 64);
 	}
