@@ -28,6 +28,16 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE, (context) -> new ProjectileLineRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE, (context) -> new SwampMineRenderer(context));
     }
+    
+    @SubscribeEvent
+    public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    	event.registerLayerDefinition(BellringerModel.MODEL, BellringerModel::createBodyLayer);
+    	event.registerLayerDefinition(DameFortunaModel.MODEL, DameFortunaModel::createBodyLayer);
+    	event.registerLayerDefinition(SwampjawModel.MODEL, SwampjawModel::createBodyLayer);
+
+    	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
+    	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);
+    }
 
 	@SubscribeEvent
 	public static void clientStuff(final FMLClientSetupEvent event) {

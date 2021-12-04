@@ -1,18 +1,31 @@
 package lykrast.meetyourfight.renderer;
 
+import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
+	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "main");
 	public float headProgress;
 	
-	public DameFortunaModel() {
-		super(0, 0, 64, 64);
-		head = new ModelPart(this, 0, 0);
-		head.addBox(-4, -4, -4, 8, 8, 8, 0);
-		head.setPos(0, -8, 0);
+	public DameFortunaModel(ModelPart modelPart) {
+		super(modelPart);
+	}
+
+	public static LayerDefinition createBodyLayer() {
+	      MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0);
+	      PartDefinition partdefinition = meshdefinition.getRoot();
+	      partdefinition.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4, -4, -4, 8, 8, 8), PartPose.offset(0, -8, 0));
+	      return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
 	@Override

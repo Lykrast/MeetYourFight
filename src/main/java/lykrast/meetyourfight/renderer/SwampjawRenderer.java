@@ -13,7 +13,7 @@ public class SwampjawRenderer extends MobRenderer<SwampjawEntity, SwampjawModel>
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/swampjaw.png");
 
 	public SwampjawRenderer(Context context) {
-		super(context, new SwampjawModel(), 0.75F);
+		super(context, new SwampjawModel(context.bakeLayer(SwampjawModel.MODEL)), 0.75F);
 	}
 
 	@Override

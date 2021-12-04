@@ -12,7 +12,7 @@ public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, 
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png");
 
 	public DameFortunaRenderer(Context context) {
-		super(context, new DameFortunaModel(), 0.5F);
+		super(context, new DameFortunaModel(context.bakeLayer(DameFortunaModel.MODEL)), 0.5F);
 	}
 	
 	@Override

@@ -3,27 +3,38 @@ package lykrast.meetyourfight.renderer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.BellringerEntity;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 public class BellringerModel extends HumanoidModel<BellringerEntity> {
+	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("bellringer"), "main");
 	// Mostly copied from Vex
 	private final ModelPart bell;
 
-	public BellringerModel() {
-		super(0, 0, 64, 64);
+	public BellringerModel(ModelPart modelPart) {
+		super(modelPart);
 		leftLeg.visible = false;
 		hat.visible = false;
-		rightLeg = new ModelPart(this, 32, 0);
-		rightLeg.addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F, 0.0F);
-		rightLeg.setPos(-1.9F, 12.0F, 0.0F);
-		//Bell
-		//Same rotation point as right arm, calibrated in tabula
-		bell = new ModelPart(this, 0, 32);
-		bell.setPos(-5, 2, 0);
-		bell.addBox(-4, 5, 2, 6, 6, 7);
+		bell = modelPart.getChild("bell");
+	}
+
+	public static LayerDefinition createBodyLayer() {
+	      MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0);
+	      PartDefinition partdefinition = meshdefinition.getRoot();
+	      partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(32, 0).addBox(-1.0F, -1.0F, -2.0F, 6.0F, 10.0F, 4.0F), PartPose.offset(-1.9F, 12.0F, 0.0F));
+	      //Same rotation point as right arm, calibrated in tabula
+	      partdefinition.addOrReplaceChild("bell", CubeListBuilder.create().texOffs(0, 32).addBox(-4, 5, 2, 6, 6, 7), PartPose.offset(-5, 2, 0));
+	      return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
 	@Override

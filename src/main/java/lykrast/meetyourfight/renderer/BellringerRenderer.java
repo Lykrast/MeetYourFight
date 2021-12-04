@@ -11,7 +11,7 @@ public class BellringerRenderer extends HumanoidMobRenderer<BellringerEntity, Be
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/bellringer.png");
 
 	public BellringerRenderer(Context context) {
-		super(context, new BellringerModel(), 0.5F);
+		super(context, new BellringerModel(context.bakeLayer(BellringerModel.MODEL)), 0.5F);
 	}
 
 	@Override

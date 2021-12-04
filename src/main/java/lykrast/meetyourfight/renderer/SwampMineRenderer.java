@@ -15,10 +15,11 @@ import net.minecraft.util.Mth;
 
 public class SwampMineRenderer extends EntityRenderer<SwampMineEntity> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/swampmine.png");
-	private final EntityModel<SwampMineEntity> model = new SwampMineModel();
+	private final EntityModel<SwampMineEntity> model;
 
 	public SwampMineRenderer(Context context) {
 		super(context);
+		model = new SwampMineModel(context.bakeLayer(SwampMineModel.MODEL));
 		shadowRadius = 0.5F;
 	}
 

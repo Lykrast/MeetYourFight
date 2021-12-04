@@ -3,15 +3,24 @@ package lykrast.meetyourfight.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 // Made with Blockbench 3.7.4
 // Exported for Minecraft version 1.15
 // Paste this class into your mod and generate all required imports
 public class SwampjawModel extends EntityModel<SwampjawEntity> {
+	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("swampjaw"), "main");
 	private final ModelPart bodyMain;
 	private final ModelPart finRight;
 	private final ModelPart finLeft;
@@ -19,7 +28,7 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	private final ModelPart tailfinTop;
 	private final ModelPart tailOuter;
 	private final ModelPart tailInner;
-	private final ModelPart jaw;
+	//private final ModelPart jaw;
 	private final ModelPart head;
 	
 	//Blockbench constant
@@ -27,66 +36,38 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	
 	private float tailYaw, tailPitch;
 
-	public SwampjawModel() {
-		texWidth = 128;
-		texHeight = 64;
-		
-		//Blockbench whyyyyy you grouping stuff
-		//Had to rotate all the things I wanted separate by a little bit so that I got a second export where they're separate
-		bodyMain = new ModelPart(this);
-		bodyMain.setPos(0.0F, 24.0F, 0.0F);
-		bodyMain.texOffs(40, 0).addBox(-6.0F, -10.0F, -6.0F, 12.0F, 10.0F, 12.0F, 0.0F, false);
-
-		finRight = new ModelPart(this);
-		finRight.setPos(-6.0F, -5.0F, 0.0F);
-		bodyMain.addChild(finRight);
-		setRotationAngle(finRight, 0.0F, 0.0F, -0.4363F);
-		finRight.texOffs(0, 28).addBox(-8.0F, 0.0F, -2.0F, 8.0F, 1.0F, 4.0F, 0.0F, true);
-
-		finLeft = new ModelPart(this);
-		finLeft.setPos(6.0F, -5.0F, 0.0F);
-		bodyMain.addChild(finLeft);
-		setRotationAngle(finLeft, 0.0F, 0.0F, 0.4363F);
-		finLeft.texOffs(0, 28).addBox(0.0F, 0.0F, -2.0F, 8.0F, 1.0F, 4.0F, 0.0F, false);
-
-		tailInner = new ModelPart(this);
-		tailInner.setPos(0.0F, -10.0F, 6.0F);
-		bodyMain.addChild(tailInner);
-		tailInner.texOffs(40, 22).addBox(-5.0F, 0.0F, 0.0F, 10.0F, 8.0F, 8.0F, 0.0F, false);
-
-		tailOuter = new ModelPart(this);
-		tailOuter.setPos(0, 0, 8);
-		tailInner.addChild(tailOuter);
-		tailOuter.texOffs(40, 38).addBox(-1.0F, 0.0F, 0.0F, 2.0F, 2.0F, 6.0F, 0.0F, false);
-
-		tailfinTop = new ModelPart(this);
-		tailfinTop.setPos(0, 1, 5);
-		tailOuter.addChild(tailfinTop);
-		setRotationAngle(tailfinTop, -TAILFIN_PITCH, 0.0F, 0.0F);
-		tailfinTop.texOffs(0, 33).addBox(-0.5F, -10.0F, 0.0F, 1.0F, 10.0F, 5.0F, 0.0F, false);
-
-		tailfinBottom = new ModelPart(this);
-		tailfinBottom.setPos(0, 1, 5);
-		tailOuter.addChild(tailfinBottom);
-		setRotationAngle(tailfinBottom, TAILFIN_PITCH, 0.0F, 0.0F);
-		tailfinBottom.texOffs(12, 33).addBox(-0.5F, 0.0F, 0.0F, 1.0F, 10.0F, 5.0F, -0.1F, false);
-
-		head = new ModelPart(this);
-		head.setPos(0.0F, -5.0F, -6.0F);
-		bodyMain.addChild(head);
-		head.texOffs(0, 0).addBox(-5.0F, -4.0F, -10.0F, 10.0F, 6.0F, 10.0F, 0.0F, false);
-
-		jaw = new ModelPart(this);
-		jaw.setPos(0, 2, 0);
-		head.addChild(jaw);
-		jaw.texOffs(0, 16).addBox(-5.0F, 0.0F, -10.0F, 10.0F, 2.0F, 10.0F, 0.0F, false);
+	public SwampjawModel(ModelPart modelPart) {
+		bodyMain = modelPart.getChild("body");
+		finRight = modelPart.getChild("fin_right");
+		finLeft = modelPart.getChild("fin_left");
+		tailInner = modelPart.getChild("tail_inner");
+		tailOuter = modelPart.getChild("tail_outer");
+		tailfinTop = modelPart.getChild("tail_fin_top");
+		tailfinBottom = modelPart.getChild("tail_fin_bottom");
+		head = modelPart.getChild("head");
+		//jaw = modelPart.getChild("jaw");
+	}
+	
+	public static LayerDefinition createBodyLayer() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(40, 0).addBox(-6, -10, -6, 12, 10, 12), PartPose.offset(0, 24, 0));
+		body.addOrReplaceChild("fin_right", CubeListBuilder.create().texOffs(0, 28).addBox(-8, 0, -2, 8, 1, 4), PartPose.offsetAndRotation(-6, -5, 0, 0, 0, -0.4363F));
+		body.addOrReplaceChild("fin_left", CubeListBuilder.create().texOffs(0, 28).addBox(0, 0, -2, 8, 1, 4), PartPose.offsetAndRotation(6, -5, 0, 0, 0, 0.4363F));
+		PartDefinition tailInner = body.addOrReplaceChild("tail_inner", CubeListBuilder.create().texOffs(40, 22).addBox(-5, 0, 0, 10, 8, 8), PartPose.offset(0, -10, 6));
+		PartDefinition tailOuter = tailInner.addOrReplaceChild("tail_outer", CubeListBuilder.create().texOffs(40, 38).addBox(-1, 0, 0, 2, 2, 6), PartPose.offset(0, 0, 8));
+		tailOuter.addOrReplaceChild("tail_fin_top", CubeListBuilder.create().texOffs(0, 33).addBox(-0.5f, -10, 0, 1, 10, 5), PartPose.offsetAndRotation(0, 1, 5, -TAILFIN_PITCH, 0, 0));
+		tailOuter.addOrReplaceChild("tail_fin_bottom", CubeListBuilder.create().texOffs(12, 33).addBox(-0.5f, 0, 0, 1, 10, 5, new CubeDeformation(-0.1f)), PartPose.offsetAndRotation(0, 1, 5, TAILFIN_PITCH, 0, 0));
+		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(12, 33).addBox(-5, -4, -10, 10, 6, 10), PartPose.offset(0, -5, -6));
+		head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 16).addBox(-5, 0, -10, 10, 2, 10), PartPose.offset(0, 2, 0));
+		return LayerDefinition.create(meshdefinition, 128, 64);
 	}
 
 	@Override
 	public void prepareMobModel(SwampjawEntity entity, float limbSwing, float limbSwingAmount, float partialTick) {
 		super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
-		tailYaw = Mth.degreesDifference(entity.yRot, entity.getTailYaw(partialTick)) / 3F;
-		tailPitch = -Mth.degreesDifference(entity.xRot, entity.getTailPitch(partialTick)) / 1.5F;
+		tailYaw = Mth.degreesDifference(entity.getYRot(), entity.getTailYaw(partialTick)) / 3F;
+		tailPitch = -Mth.degreesDifference(entity.getXRot(), entity.getTailPitch(partialTick)) / 1.5F;
 		tailYaw *= (float)Math.PI / 180F;
 		tailPitch *= (float)Math.PI / 180F;
 	}

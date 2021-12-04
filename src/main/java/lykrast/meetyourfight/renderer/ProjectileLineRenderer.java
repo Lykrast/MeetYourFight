@@ -24,10 +24,11 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 		OVERLAYS = new RenderType[TEXTURES.length];
 		for (int i = 0; i < OVERLAYS.length; i++) OVERLAYS[i] = RenderType.entityTranslucent(TEXTURES[i]);
 	}
-	private final ProjectileLineModel<ProjectileLineEntity> model = new ProjectileLineModel<>();
+	private final ProjectileLineModel<ProjectileLineEntity> model;
 
 	public ProjectileLineRenderer(Context context) {
 		super(context);
+		model = new ProjectileLineModel<>(context.bakeLayer(ProjectileLineModel.MODEL));
 	}
 
 	@Override
