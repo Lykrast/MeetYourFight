@@ -31,7 +31,7 @@ public class SwampMineModel extends EntityModel<SwampMineEntity> {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 		partdefinition.addOrReplaceChild("main", CubeListBuilder.create().texOffs(0, 0).addBox(-8, -16, -8, 16, 16, 16), PartPose.offset(0, 24, 0));
-		PartDefinition spikes = partdefinition.addOrReplaceChild("spikes", CubeListBuilder.create(), PartPose.offset(-6, 10, -6));
+		PartDefinition spikes = partdefinition.addOrReplaceChild("spikes", CubeListBuilder.create(), PartPose.offset(-6, 10, 6));
 		spikes.addOrReplaceChild("bottombackright", CubeListBuilder.create().texOffs(0, 0).addBox(-1, -7, -1, 2, 7, 2), PartPose.offsetAndRotation(0, 12, 0, -2.3562F, -0.7854F, 0.0F));
 		spikes.addOrReplaceChild("bottombackleft", CubeListBuilder.create().texOffs(0, 0).addBox(-1, -7, -1, 2, 7, 2), PartPose.offsetAndRotation(12, 12, 0, -2.3562F, 0.7854F, 0.0F));
 		spikes.addOrReplaceChild("bottomfrontright", CubeListBuilder.create().texOffs(0, 0).addBox(-1, -7, -1, 2, 7, 2), PartPose.offsetAndRotation(0, 12, -12, 2.3562F, 0.7854F, 0.0F));
