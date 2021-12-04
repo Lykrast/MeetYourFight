@@ -4,15 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
 
 public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, DameFortunaModel> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png");
 
-	public DameFortunaRenderer(EntityRenderDispatcher renderManagerIn) {
-		super(renderManagerIn, new DameFortunaModel(), 0.5F);
+	public DameFortunaRenderer(Context context) {
+		super(context, new DameFortunaModel(), 0.5F);
 	}
 	
 	@Override

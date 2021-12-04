@@ -8,10 +8,10 @@ import lykrast.meetyourfight.entity.ProjectileLineEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity> {
@@ -26,8 +26,8 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 	}
 	private final ProjectileLineModel<ProjectileLineEntity> model = new ProjectileLineModel<>();
 
-	public ProjectileLineRenderer(EntityRenderDispatcher renderManager) {
-		super(renderManager);
+	public ProjectileLineRenderer(Context context) {
+		super(context);
 	}
 
 	@Override
@@ -40,8 +40,8 @@ public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity>
 		//TODO great it's backwards when facing any axis except one of the horizontal ones
 		//So I just made the texture not have any direction
 		matrixStackIn.pushPose();
-		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.yRot);
-		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.xRot);
+		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.getYRot());
+		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
 		matrixStackIn.translate(0, 0.15, 0);
 		model.setupAnim(entityIn, 0, 0, 0, f, f1);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(TEXTURES[clampVariant(entityIn)]));

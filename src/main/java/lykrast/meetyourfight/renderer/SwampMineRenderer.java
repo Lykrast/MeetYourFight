@@ -5,10 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.SwampMineEntity;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -17,16 +17,16 @@ public class SwampMineRenderer extends EntityRenderer<SwampMineEntity> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/swampmine.png");
 	private final EntityModel<SwampMineEntity> model = new SwampMineModel();
 
-	public SwampMineRenderer(EntityRenderDispatcher renderManagerIn) {
-		super(renderManagerIn);
+	public SwampMineRenderer(Context context) {
+		super(context);
 		shadowRadius = 0.5F;
 	}
 
 	@Override
 	public void render(SwampMineEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 		matrixStackIn.pushPose();
-		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.yRot);
-		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.xRot);
+		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.getYRot());
+		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
 		matrixStackIn.translate(0, -0.5, 0);
 		model.setupAnim(entityIn, 0, 0, 0, f, f1);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(TEXTURE));
