@@ -17,44 +17,42 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModEntities {
 	//Bosses
-	public static final EntityType<BellringerEntity> BELLRINGER = EntityType.Builder
-			.<BellringerEntity>of(BellringerEntity::new, MobCategory.MONSTER)
-			.sized(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
-			.build("");
-	public static final EntityType<DameFortunaEntity> DAME_FORTUNA = EntityType.Builder
-			.<DameFortunaEntity>of(DameFortunaEntity::new, MobCategory.MONSTER)
-			.sized(0.6f, 2.325f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
-			.build("");
-	public static final EntityType<SwampjawEntity> SWAMPJAW = EntityType.Builder
-			.<SwampjawEntity>of(SwampjawEntity::new, MobCategory.MONSTER)
-			.sized(2.6f, 1.6f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
-			.build("");
+	public static EntityType<BellringerEntity> BELLRINGER;
+	public static EntityType<DameFortunaEntity> DAME_FORTUNA;
+	public static EntityType<SwampjawEntity> SWAMPJAW;
 	
 	//Projectiles
-	public static final EntityType<ProjectileLineEntity> PROJECTILE_LINE = EntityType.Builder
-			.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC)
-			.sized(0.3125f, 0.3125f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
-			.build("");
-	public static final EntityType<SwampMineEntity> SWAMP_MINE = EntityType.Builder
-			.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC)
-			.sized(1, 1).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
-			.build("");
+	public static EntityType<ProjectileLineEntity> PROJECTILE_LINE;
+	public static EntityType<SwampMineEntity> SWAMP_MINE;
 
+	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public static void regsiterEntities(final RegistryEvent.Register<EntityType<?>> event) {
 		IForgeRegistry<EntityType<?>> reg = event.getRegistry();
-		
-		BELLRINGER.setRegistryName(MeetYourFight.MODID, "bellringer");
-		reg.register(BELLRINGER);
-		DAME_FORTUNA.setRegistryName(MeetYourFight.MODID, "dame_fortuna");
-		reg.register(DAME_FORTUNA);
-		SWAMPJAW.setRegistryName(MeetYourFight.MODID, "swampjaw");
-		reg.register(SWAMPJAW);
-		
-		PROJECTILE_LINE.setRegistryName(MeetYourFight.MODID, "projectile_line");
-		reg.register(PROJECTILE_LINE);
-		SWAMP_MINE.setRegistryName(MeetYourFight.MODID, "swamp_mine");
-		reg.register(SWAMP_MINE);
+		//Ductape round 2 for the 1.18.2 port, because apparently we were not supposed to initialize stuff in static
+		reg.registerAll(
+					EntityType.Builder.<BellringerEntity>of(BellringerEntity::new, MobCategory.MONSTER)
+					.sized(0.6f, 1.95f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+					.build("").setRegistryName(MeetYourFight.MODID, "bellringer"),
+					EntityType.Builder.<DameFortunaEntity>of(DameFortunaEntity::new, MobCategory.MONSTER)
+					.sized(0.6f, 2.325f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+					.build("").setRegistryName(MeetYourFight.MODID, "dame_fortuna"),
+					EntityType.Builder.<SwampjawEntity>of(SwampjawEntity::new, MobCategory.MONSTER)
+					.sized(2.6f, 1.6f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
+					.build("").setRegistryName(MeetYourFight.MODID, "swampjaw"),
+					EntityType.Builder
+					.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC)
+					.sized(0.3125f, 0.3125f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+					.build("").setRegistryName(MeetYourFight.MODID, "projectile_line"),
+					EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC)
+					.sized(1, 1).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+					.build("").setRegistryName(MeetYourFight.MODID, "swamp_mine")
+				);
+		BELLRINGER = (EntityType<BellringerEntity>) reg.getValue(MeetYourFight.rl("bellringer"));
+		DAME_FORTUNA = (EntityType<DameFortunaEntity>) reg.getValue(MeetYourFight.rl("dame_fortuna"));
+		SWAMPJAW = (EntityType<SwampjawEntity>) reg.getValue(MeetYourFight.rl("swampjaw"));
+		PROJECTILE_LINE = (EntityType<ProjectileLineEntity>) reg.getValue(MeetYourFight.rl("projectile_line"));
+		SWAMP_MINE = (EntityType<SwampMineEntity>) reg.getValue(MeetYourFight.rl("swamp_mine"));
 	}
 
 	@SubscribeEvent
