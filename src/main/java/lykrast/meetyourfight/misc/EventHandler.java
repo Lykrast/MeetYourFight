@@ -31,7 +31,7 @@ public class EventHandler {
 		if (attacked instanceof Player) {
 			Player pattacked = (Player)attacked;
 			//Ace of Iron
-			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.aceOfIron, pattacked).isPresent()) {
+			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findFirstCurio(pattacked, ModItems.aceOfIron).isPresent()) {
 				float luck = pattacked.getLuck();
 				double chance = 1.0 / 6.0;
 				if (luck >= 0) chance = (1.0 + luck) / (6.0 + 2 * luck);
@@ -51,7 +51,7 @@ public class EventHandler {
 		if (attacker != null && attacker instanceof Player) {
 			Player pattacker = (Player)attacker;
 			//Slicer's Dice
-			if (CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.slicersDice, pattacker).isPresent()) {
+			if (CuriosApi.getCuriosHelper().findFirstCurio(pattacker, ModItems.slicersDice).isPresent()) {
 				float luck = pattacker.getLuck();
 				double chance = 0.2;
 				if (luck >= 0) chance = (1.0 + luck) / (5.0 + luck);
@@ -68,7 +68,7 @@ public class EventHandler {
 		if (attacked instanceof Player) {
 			Player pattacked = (Player)attacked;
 			//Caged Heart
-			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findEquippedCurio(ModItems.cagedHeart, pattacked).isPresent()) {
+			if (!event.isCanceled() && CuriosApi.getCuriosHelper().findFirstCurio(pattacked, ModItems.cagedHeart).isPresent()) {
 				float treshold = pattacked.getMaxHealth() / 4.0f;
 				if (event.getAmount() > treshold) {
 					event.setAmount((event.getAmount() - treshold) * 0.5f + treshold);
