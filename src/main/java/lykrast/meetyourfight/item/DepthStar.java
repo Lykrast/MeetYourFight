@@ -29,7 +29,7 @@ public class DepthStar extends SwordItem {
 	private static final Tier TIER = new CustomTier(2, 693, 6, 2, 14, () -> Ingredient.of(ModItems.mossyTooth));
 
 	public DepthStar(Properties builderIn) {
-		super(TIER, 6, -3.1f, builderIn);
+		super(TIER, 7, -3.1f, builderIn);
 	}
 
 	@Override
@@ -44,12 +44,12 @@ public class DepthStar extends SwordItem {
 					BlockHitResult raytrace = world.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 					if (raytrace.getType() != HitResult.Type.MISS) end = raytrace.getLocation();
 
-					world.explode(player, end.x, end.y, end.z, strength * 1.5f, Explosion.BlockInteraction.NONE);
+					world.explode(player, end.x, end.y, end.z, strength * 2, Explosion.BlockInteraction.NONE);
 
 					stack.hurtAndBreak(2, player, (entity) -> entity.broadcastBreakEvent(player.getUsedItemHand()));
 				}
 				
-				player.causeFoodExhaustion(strength);
+				player.causeFoodExhaustion(strength*2);
 				world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1, 0.8F + strength * 0.5F);
 			}
 		}
