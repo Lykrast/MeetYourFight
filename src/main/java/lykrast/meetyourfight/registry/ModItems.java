@@ -48,7 +48,7 @@ public class ModItems {
 		cagedHeart = initItem(reg, new CurioBaseItem(bossNS(), true), "caged_heart");
 		marshyDelight = initItem(reg, new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))), "marshy_delight");
 		
-		discMagnum = initItem(reg, new RecordItem(1, ModSounds::supplyMagnum, noStack().rarity(Rarity.RARE)), "music_disc_magnum");
+		discMagnum = initItem(reg, new RecordItem(1, ModSounds::supplyMagnum, noStack().rarity(Rarity.RARE).fireResistant()), "music_disc_magnum");
 		
 		eggBellringer = initItem(reg, new ForgeSpawnEggItem(() -> ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()), "bellringer_spawn_egg");
 		eggDameFortuna = initItem(reg, new ForgeSpawnEggItem(() -> ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()), "dame_fortuna_spawn_egg");
@@ -63,7 +63,7 @@ public class ModItems {
 
 	public static Item.Properties boss() {
 		//Same rarity as Nether Star for boss drops
-		return new Item.Properties().tab(ItemGroupMeetYourFight.INSTANCE).rarity(Rarity.UNCOMMON);
+		return new Item.Properties().tab(ItemGroupMeetYourFight.INSTANCE).rarity(Rarity.UNCOMMON).fireResistant();
 	}
 
 	public static Item.Properties noStack() {
@@ -72,7 +72,7 @@ public class ModItems {
 
 	public static Item.Properties bossNS() {
 		//Same rarity as Nether Star for boss drops
-		return new Item.Properties().tab(ItemGroupMeetYourFight.INSTANCE).stacksTo(1).rarity(Rarity.UNCOMMON);
+		return new Item.Properties().tab(ItemGroupMeetYourFight.INSTANCE).stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant();
 	}
 
 	public static <I extends Item> I initItem(IForgeRegistry<Item> reg, I item, String name) {
