@@ -28,10 +28,10 @@ public class WaterBoulderRenderer extends EntityRenderer<WaterBoulderEntity> {
 		matrixStackIn.pushPose();
 		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.getYRot());
 		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
-		matrixStackIn.translate(0, -0.5, 0);
 		float scale = 3;
 		if (entityIn.tickCount < 40) scale = (entityIn.tickCount + partialTicks)*3 / 40F;
 		matrixStackIn.scale(scale, scale, scale);
+		matrixStackIn.translate(0, -0.5, 0);
 		model.setupAnim(entityIn, 0, 0, 0, f, f1);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(TEXTURE));
 		model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);

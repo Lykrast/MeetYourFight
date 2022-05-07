@@ -16,10 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -42,23 +39,18 @@ public class WaterBoulderEntity extends AbstractHurtingProjectile {
 		this.target = target;
 	}
 
-	@Override
-	protected void onHitEntity(EntityHitResult raytrace) {
-		super.onHitEntity(raytrace);
-		if (!level.isClientSide && fired) {
-			Entity hit = raytrace.getEntity();
-			Entity shooter = this.getOwner();
-			boolean wasHit;
-			if (shooter instanceof LivingEntity) {
-				LivingEntity livingentity = (LivingEntity) shooter;
-				wasHit = hit.hurt(DamageSource.indirectMobAttack(this, livingentity).setProjectile().setMagic(), 40);
-				if (wasHit) {
-					if (hit.isAlive()) doEnchantDamageEffects(livingentity, hit);
-				}
+	private void onHit(Entity hit) {
+		Entity shooter = this.getOwner();
+		boolean wasHit;
+		if (shooter instanceof LivingEntity) {
+			LivingEntity livingentity = (LivingEntity) shooter;
+			wasHit = hit.hurt(DamageSource.indirectMobAttack(this, livingentity).setProjectile().setMagic(), 35);
+			if (wasHit) {
+				if (hit.isAlive()) doEnchantDamageEffects(livingentity, hit);
 			}
-			else {
-				wasHit = hit.hurt(DamageSource.MAGIC, 5);
-			}
+		}
+		else {
+			wasHit = hit.hurt(DamageSource.MAGIC, 5);
 		}
 	}
 	
@@ -87,13 +79,11 @@ public class WaterBoulderEntity extends AbstractHurtingProjectile {
 				else {
 					fired = true;
 					timer = 40;
+					setDeltaMovement(dirX, dirY, dirZ);
 				}
 			}
 
-			if (fired) {
-				setDeltaMovement(dirX, dirY, dirZ);
-			}
-			else {
+			if (!fired) {
 				if (target != null && !target.isRemoved()) {
 					double scale = 1;
 					if (timer > 40) scale = 1.0/(timer - 40);
@@ -113,9 +103,13 @@ public class WaterBoulderEntity extends AbstractHurtingProjectile {
 		Entity shooter = this.getOwner();
 		if (level.isClientSide || (shooter == null || !shooter.isRemoved()) && level.hasChunkAt(blockPosition())) {
 			superTick();
-			HitResult raytraceresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-			if (raytraceresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-				onHit(raytraceresult);
+			
+			//Can't get the ProjectileUtil one to behave as I want so doing it by hand
+			//Since we only fire those projectiles in axis lines shouldn't have any issue
+			if (!level.isClientSide && fired) {
+				for (Entity e : level.getEntities(this, getBoundingBox().expandTowards(getDeltaMovement()).deflate(0.5), this::canHitEntity)) {
+					onHit(e);
+				}
 			}
 
 			checkInsideBlocks();

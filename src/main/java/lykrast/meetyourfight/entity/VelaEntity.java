@@ -8,6 +8,7 @@ import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -16,6 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -131,6 +133,13 @@ public class VelaEntity extends BossEntity {
 		return MeetYourFight.rl("vela");
 	}
 	
+	private WaterBoulderEntity readyBoulder(Entity target) {
+		WaterBoulderEntity boulder = new WaterBoulderEntity(level, this, target);
+		boulder.setOwner(this);
+		boulder.setPos(getX(), getY() + 1, getZ());
+		return boulder;
+	}
+	
 	private static class WaterAttack extends Goal {
 		private VelaEntity vela;
 		private LivingEntity target;
@@ -169,11 +178,30 @@ public class VelaEntity extends BossEntity {
 		}
 		
 		private void performAttack() {
-			WaterBoulderEntity boulder = new WaterBoulderEntity(vela.level, vela, target);
-			boulder.setOwner(vela);
-			boulder.setPos(vela.getX(), vela.getY() + 1, vela.getZ());
-			boulder.setUp(60, 0, -0.5, 0, 0, 5, 0);
-			vela.level.addFreshEntity(boulder);
+			switch (chosenAttack) {
+				case 0:
+					//Vertical attack
+					WaterBoulderEntity boulder = vela.readyBoulder(target);
+					boulder.setUp(60, 0, -0.5, 0, 0, 5, 0);
+					vela.level.addFreshEntity(boulder);
+					break;
+				case 1:
+					//Horizontal attack
+					Direction dir = Direction.getNearest(target.getX() - vela.getX(), 0, target.getZ() - vela.getZ());
+					//Can have any rotation except backwards
+					switch (vela.random.nextInt(3)) {
+						case 1:
+							dir = dir.getClockWise();
+							break;
+						case 2:
+							dir = dir.getCounterClockWise();
+							break;
+					}
+					boulder = vela.readyBoulder(target);
+					boulder.setUp(60, dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5, -dir.getStepX() * 5, 0, -dir.getStepZ() * 5);
+					vela.level.addFreshEntity(boulder);
+					break;
+			}
 		}
 
 		@Override
