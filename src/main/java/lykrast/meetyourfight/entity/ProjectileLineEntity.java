@@ -55,14 +55,14 @@ public class ProjectileLineEntity extends AbstractHurtingProjectile {
 			boolean wasHit;
 			if (shooter instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) shooter;
-				wasHit = hit.hurt(DamageSource.indirectMobAttack(this, livingentity).setProjectile().setMagic(), 8.0F);
+				wasHit = hit.hurt(DamageSource.indirectMobAttack(this, livingentity).setProjectile().setMagic(), 16);
 				if (wasHit) {
 					if (hit.isAlive()) doEnchantDamageEffects(livingentity, hit);
 				}
 				remove(RemovalReason.KILLED);
 			}
 			else {
-				wasHit = hit.hurt(DamageSource.MAGIC, 5.0F);
+				wasHit = hit.hurt(DamageSource.MAGIC, 5);
 			}
 		}
 	}
