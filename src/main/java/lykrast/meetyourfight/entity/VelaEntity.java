@@ -48,6 +48,7 @@ public class VelaEntity extends BossEntity {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(2, new WaterAttack(this));
+		goalSelector.addGoal(3, new AirAttack(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -140,6 +141,81 @@ public class VelaEntity extends BossEntity {
 		return boulder;
 	}
 	
+	private VelaVortexEntity readyVortex(double x, double y, double z) {
+		VelaVortexEntity vortex = new VelaVortexEntity(level, this);
+		vortex.setOwner(this);
+		vortex.setPos(x, y, z);
+		return vortex;
+	}
+	
+	private static class AirAttack extends Goal {
+		private VelaEntity vela;
+		private LivingEntity target;
+		private int attackDelay, chosenAttack;
+
+		public AirAttack(VelaEntity vela) {
+			this.vela = vela;
+		}
+
+		@Override
+		public boolean canUse() {
+			return vela.airCooldown <= 0 && vela.getTarget() != null && vela.getTarget().isAlive();
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
+		public void start() {
+			vela.airCooldown = 2;
+			attackDelay = 20;
+			target = vela.getTarget();
+			chosenAttack = vela.random.nextInt(2);
+		}
+
+		@Override
+		public void tick() {
+			vela.airCooldown = 2;
+			if (vela.waterCooldown <= 2) vela.waterCooldown = 2;
+			attackDelay--;
+			if (attackDelay <= 0) {
+				performAttack();
+				stop();
+			}
+		}
+		
+		private void performAttack() {
+			switch (chosenAttack) {
+				case 0:
+				case 1:
+					//Vortexes
+					double tx = target.getX();
+					double ty = target.getY();
+					double tz = target.getZ();
+					for (int i = 0; i < 3; i++) {
+						Vec3 offset = new Vec3(12 + vela.random.nextInt(7), 0, 0).yRot(vela.random.nextFloat() * 2 * (float)Math.PI);
+						VelaVortexEntity vortex = vela.readyVortex(tx + offset.x, ty + offset.y, tz + offset.z);
+						vortex.setUpTowards(tx, ty, tz, 0.1);
+						vela.level.addFreshEntity(vortex);
+					}
+					break;
+			}
+		}
+
+		@Override
+		public void stop() {
+			vela.airCooldown = 60 + vela.random.nextInt(21);
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return attackDelay > 0 && target.isAlive();
+		}
+		
+	}
+	
 	private static class WaterAttack extends Goal {
 		private VelaEntity vela;
 		private LivingEntity target;
@@ -162,6 +238,7 @@ public class VelaEntity extends BossEntity {
 		@Override
 		public void start() {
 			vela.waterCooldown = 2;
+			if (vela.airCooldown <= 2) vela.airCooldown = 2;
 			attackDelay = 20;
 			target = vela.getTarget();
 			chosenAttack = vela.random.nextInt(2);

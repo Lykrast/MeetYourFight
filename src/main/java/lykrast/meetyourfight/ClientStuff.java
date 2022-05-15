@@ -29,6 +29,7 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE, (context) -> new ProjectileLineRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE, (context) -> new SwampMineRenderer(context));
 		event.registerEntityRenderer(ModEntities.WATER_BOULDER, (context) -> new WaterBoulderRenderer(context));
+		event.registerEntityRenderer(ModEntities.VELA_VORTEX, (context) -> new VelaVortexRenderer(context));
     }
     
     @SubscribeEvent
@@ -41,6 +42,7 @@ public class ClientStuff {
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
     	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);
     	event.registerLayerDefinition(WaterBoulderModel.MODEL, WaterBoulderModel::createBodyLayer);
+    	event.registerLayerDefinition(VelaVortexModel.MODEL, VelaVortexModel::createBodyLayer);
     }
 
 	@SubscribeEvent

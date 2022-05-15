@@ -22,6 +22,7 @@ public class ModEntities {
 	public static EntityType<ProjectileLineEntity> PROJECTILE_LINE;
 	public static EntityType<SwampMineEntity> SWAMP_MINE;
 	public static EntityType<WaterBoulderEntity> WATER_BOULDER;
+	public static EntityType<VelaVortexEntity> VELA_VORTEX;
 
 	@SuppressWarnings("unchecked")
 	@SubscribeEvent
@@ -51,7 +52,10 @@ public class ModEntities {
 					.build("").setRegistryName(MeetYourFight.MODID, "swamp_mine"),
 					EntityType.Builder.<WaterBoulderEntity>of(WaterBoulderEntity::new, MobCategory.MISC)
 					.sized(3, 3).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
-					.build("").setRegistryName(MeetYourFight.MODID, "water_boulder")
+					.build("").setRegistryName(MeetYourFight.MODID, "water_boulder"),
+					EntityType.Builder.<VelaVortexEntity>of(VelaVortexEntity::new, MobCategory.MISC)
+					.sized(3, 0.5f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
+					.build("").setRegistryName(MeetYourFight.MODID, "vela_vortex")
 				);
 		BELLRINGER = (EntityType<BellringerEntity>) reg.getValue(MeetYourFight.rl("bellringer"));
 		DAME_FORTUNA = (EntityType<DameFortunaEntity>) reg.getValue(MeetYourFight.rl("dame_fortuna"));
@@ -61,6 +65,7 @@ public class ModEntities {
 		PROJECTILE_LINE = (EntityType<ProjectileLineEntity>) reg.getValue(MeetYourFight.rl("projectile_line"));
 		SWAMP_MINE = (EntityType<SwampMineEntity>) reg.getValue(MeetYourFight.rl("swamp_mine"));
 		WATER_BOULDER = (EntityType<WaterBoulderEntity>) reg.getValue(MeetYourFight.rl("water_boulder"));
+		VELA_VORTEX = (EntityType<VelaVortexEntity>) reg.getValue(MeetYourFight.rl("vela_vortex"));
 	}
 
 	@SubscribeEvent
