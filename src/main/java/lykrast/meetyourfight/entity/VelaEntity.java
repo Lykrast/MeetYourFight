@@ -194,10 +194,23 @@ public class VelaEntity extends BossEntity {
 					double tx = target.getX();
 					double ty = target.getY();
 					double tz = target.getZ();
-					for (int i = 0; i < 3; i++) {
-						Vec3 offset = new Vec3(12 + vela.random.nextInt(7), 0, 0).yRot(vela.random.nextFloat() * 2 * (float)Math.PI);
-						VelaVortexEntity vortex = vela.readyVortex(tx + offset.x, ty + offset.y, tz + offset.z);
-						vortex.setUpTowards(tx, ty, tz, 0.1);
+					Direction dir = Direction.getNearest(tx - vela.getX(), 0, tz - vela.getZ());
+					//Can have any rotation except backwards
+					switch (vela.random.nextInt(3)) {
+						case 1:
+							dir = dir.getClockWise();
+							break;
+						case 2:
+							dir = dir.getCounterClockWise();
+							break;
+					}
+					Direction perp = dir.getClockWise();
+					for (int i = -1; i <= 1; i++) {
+						double ox = -dir.getStepX()*12 + 12*i*perp.getStepX();
+						double oy = i*0.1;
+						double oz = -dir.getStepZ()*12 + 12*i*perp.getStepZ();
+						VelaVortexEntity vortex = vela.readyVortex(tx + ox, ty + oy, tz + oz);
+						vortex.setUpTowards(tx + 12*i*perp.getStepX(), ty, tz + 12*i*perp.getStepZ(), 0.1);
 						vela.level.addFreshEntity(vortex);
 					}
 					break;
