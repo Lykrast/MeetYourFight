@@ -29,7 +29,7 @@ public class VelaVortexEntity extends AbstractHurtingProjectile {
 	}
 
 	public VelaVortexEntity(Level worldIn, LivingEntity shooter) {
-		super(ModEntities.VELA_VORTEX, shooter, 0, 0, 0, worldIn);
+		super(ModEntities.VELA_VORTEX.get(), shooter, 0, 0, 0, worldIn);
 		timer = ACTIVATION;
 	}
 

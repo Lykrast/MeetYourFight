@@ -12,7 +12,7 @@ public class ItemGroupMeetYourFight extends CreativeModeTab {
 
 	@Override
 	public ItemStack makeIcon() {
-		return new ItemStack(ModItems.hauntedBell);
+		return new ItemStack(ModItems.hauntedBell.get());
 	}
 
 }

@@ -1,7 +1,5 @@
 package lykrast.meetyourfight.entity;
 
-import java.util.Random;
-
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
@@ -14,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -76,8 +75,8 @@ public class VelaEntity extends BossEntity {
 	}
 	
 	public static void spawn(Player player, Level world) {
-		Random rand = player.getRandom();
-		VelaEntity dame = ModEntities.VELA.create(world);
+		RandomSource rand = player.getRandom();
+		VelaEntity dame = ModEntities.VELA.get().create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.waterCooldown = 100;
 		dame.airCooldown = 150;
@@ -126,7 +125,7 @@ public class VelaEntity extends BossEntity {
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicMagnum;
+		return ModSounds.musicMagnum.get();
 	}
 	
 	@Override

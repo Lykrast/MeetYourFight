@@ -21,13 +21,13 @@ public class ClientStuff {
     @SubscribeEvent
     public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
 		//Entities
-    	event.registerEntityRenderer(ModEntities.BELLRINGER, (context) -> new BellringerRenderer(context));
-    	event.registerEntityRenderer(ModEntities.DAME_FORTUNA, (context) -> new DameFortunaRenderer(context));
-    	event.registerEntityRenderer(ModEntities.SWAMPJAW, (context) -> new SwampjawRenderer(context));
+    	event.registerEntityRenderer(ModEntities.BELLRINGER.get(), (context) -> new BellringerRenderer(context));
+    	event.registerEntityRenderer(ModEntities.DAME_FORTUNA.get(), (context) -> new DameFortunaRenderer(context));
+    	event.registerEntityRenderer(ModEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
     	//event.registerEntityRenderer(ModEntities.VELA, (context) -> new VelaRenderer(context));
 		
-    	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE, (context) -> new ProjectileLineRenderer(context));
-		event.registerEntityRenderer(ModEntities.SWAMP_MINE, (context) -> new SwampMineRenderer(context));
+    	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
+		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
 		//event.registerEntityRenderer(ModEntities.WATER_BOULDER, (context) -> new WaterBoulderRenderer(context));
 		//event.registerEntityRenderer(ModEntities.VELA_VORTEX, (context) -> new VelaVortexRenderer(context));
     }
@@ -49,13 +49,13 @@ public class ClientStuff {
 	public static void clientStuff(final FMLClientSetupEvent event) {
 		//Items
 		ItemColors icol = Minecraft.getInstance().getItemColors();
-		icol.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass);
-		if (MeetYourFight.loadedGunsWithoutRoses()) icol.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun);
+		icol.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass.get());
+		if (MeetYourFight.loadedGunsWithoutRoses()) icol.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun.get());
 
 		//Same as Bow
-		ItemProperties.register(ModItems.depthStar, MeetYourFight.rl("charge"),
+		ItemProperties.register(ModItems.depthStar.get(), MeetYourFight.rl("charge"),
 				(stack, world, entity, someint) -> entity == null || entity.getUseItem() != stack ? 0 : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F);
-		ItemProperties.register(ModItems.depthStar, MeetYourFight.rl("charging"),
+		ItemProperties.register(ModItems.depthStar.get(), MeetYourFight.rl("charging"),
 				(stack, world, entity, someint) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0);
 	}
 

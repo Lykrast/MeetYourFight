@@ -1,7 +1,6 @@
 package lykrast.meetyourfight.entity;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -9,31 +8,32 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.PhantomAttackPlayer;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 
 public class SwampjawEntity extends BossFlyingEntity {
 	private int behavior;
@@ -58,8 +58,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 	
 	public static void spawn(Player player, Level world) {
-		Random rand = player.getRandom();
-		SwampjawEntity fish = ModEntities.SWAMPJAW.create(world);
+		RandomSource rand = player.getRandom();
+		SwampjawEntity fish = ModEntities.SWAMPJAW.get().create(world);
 		fish.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(10) + 5, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		//fish.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) fish.setTarget(player);
@@ -131,22 +131,22 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSounds.swampjawIdle;
+		return ModSounds.swampjawIdle.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.swampjawHurt;
+		return ModSounds.swampjawHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.swampjawDeath;
+		return ModSounds.swampjawDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicMagnum;
+		return ModSounds.musicMagnum.get();
 	}
 
 	@Override
@@ -405,7 +405,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 						swampjaw.behavior = SWOOP;
 						updateOrbit();
 						tickDelay = (4 + swampjaw.random.nextInt(4)) * 20;
-						swampjaw.playSound(ModSounds.swampjawCharge, 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
+						swampjaw.playSound(ModSounds.swampjawCharge.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 					}
 					//Switch to bomb mode
 					else if (swampjaw.behavior == CIRCLE) {
@@ -418,7 +418,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 						if (bombLeft <= 0) tickDelay = 30 + swampjaw.random.nextInt(30);
 						else tickDelay = 20;
 						updateOrbit();
-						swampjaw.playSound(ModSounds.swampjawBomb, 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
+						swampjaw.playSound(ModSounds.swampjawBomb.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level, swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
 						//The ellpeck idea
 						Vec3 motion = swampjaw.getDeltaMovement();

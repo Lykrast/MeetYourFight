@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,7 +30,7 @@ public class SummonItem extends Item {
 		Player player = (Player)entityLiving;
 		if (!world.isClientSide) {
 			if (!world.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(32), e -> !e.canChangeDimensions() && e.isAlive()).isEmpty()) {
-				player.displayClientMessage(new TranslatableComponent("status.meetyourfight.boss_nearby"), true);
+				player.displayClientMessage(Component.translatable("status.meetyourfight.boss_nearby"), true);
 				return stack;
 			}
 			
@@ -64,7 +63,7 @@ public class SummonItem extends Item {
 	
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
 	}
 	
 	@FunctionalInterface

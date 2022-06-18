@@ -27,7 +27,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	public SwampMineEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
-		this(ModEntities.SWAMP_MINE, worldIn);
+		this(ModEntities.SWAMP_MINE.get(), worldIn);
 		this.setPos(x, y, z);
 		double angle = worldIn.random.nextDouble() * Math.PI * 2;
 		setDeltaMovement(-Math.sin(angle) * 0.06, 0.05, -Math.cos(angle) * 0.06);

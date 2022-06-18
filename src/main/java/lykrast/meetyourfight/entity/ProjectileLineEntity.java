@@ -37,7 +37,7 @@ public class ProjectileLineEntity extends AbstractHurtingProjectile {
 	}
 
 	public ProjectileLineEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ModEntities.PROJECTILE_LINE, shooter, accelX, accelY, accelZ, worldIn);
+		super(ModEntities.PROJECTILE_LINE.get(), shooter, accelX, accelY, accelZ, worldIn);
 	}
 	
 	@Override

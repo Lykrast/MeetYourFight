@@ -1,56 +1,43 @@
 package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.MeetYourFight;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModSounds {
-	public static SoundEvent bellringerIdle, bellringerHurt, bellringerDeath;
-	public static SoundEvent dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
-	public static SoundEvent swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
-	public static SoundEvent slicersDiceProc, aceOfIronProc, cagedHeartProc;
-	public static SoundEvent musicMagnum;
+	public static final DeferredRegister<SoundEvent> REG = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MeetYourFight.MODID);
+	public static RegistryObject<SoundEvent> bellringerIdle, bellringerHurt, bellringerDeath;
+	public static RegistryObject<SoundEvent> dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
+	public static RegistryObject<SoundEvent> swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
+	public static RegistryObject<SoundEvent> slicersDiceProc, aceOfIronProc, cagedHeartProc;
+	public static RegistryObject<SoundEvent> musicMagnum;
 	
-	@SubscribeEvent
-	public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
-		IForgeRegistry<SoundEvent> reg = event.getRegistry();
-		bellringerIdle = initSound(reg, "entity.bellringer.idle");
-		bellringerHurt = initSound(reg, "entity.bellringer.hurt");
-		bellringerDeath = initSound(reg, "entity.bellringer.death");
+	static {
+		bellringerIdle = initSound("entity.bellringer.idle");
+		bellringerHurt = initSound("entity.bellringer.hurt");
+		bellringerDeath = initSound("entity.bellringer.death");
 		
-		dameFortunaIdle = initSound(reg, "entity.dame_fortuna.idle");
-		dameFortunaHurt = initSound(reg, "entity.dame_fortuna.hurt");
-		dameFortunaDeath = initSound(reg, "entity.dame_fortuna.death");
-		dameFortunaAttack = initSound(reg, "entity.dame_fortuna.attack");
-		dameFortunaShoot = initSound(reg, "entity.dame_fortuna.shoot");
+		dameFortunaIdle = initSound("entity.dame_fortuna.idle");
+		dameFortunaHurt = initSound("entity.dame_fortuna.hurt");
+		dameFortunaDeath = initSound("entity.dame_fortuna.death");
+		dameFortunaAttack = initSound("entity.dame_fortuna.attack");
+		dameFortunaShoot = initSound("entity.dame_fortuna.shoot");
 		
-		swampjawIdle = initSound(reg, "entity.swampjaw.idle");
-		swampjawHurt = initSound(reg, "entity.swampjaw.hurt");
-		swampjawDeath = initSound(reg, "entity.swampjaw.death");
-		swampjawCharge = initSound(reg, "entity.swampjaw.charge");
-		swampjawBomb = initSound(reg, "entity.swampjaw.bomb");
+		swampjawIdle = initSound("entity.swampjaw.idle");
+		swampjawHurt = initSound("entity.swampjaw.hurt");
+		swampjawDeath = initSound("entity.swampjaw.death");
+		swampjawCharge = initSound("entity.swampjaw.charge");
+		swampjawBomb = initSound("entity.swampjaw.bomb");
 
-		slicersDiceProc = initSound(reg, "item.proc.slicers_dice");
-		aceOfIronProc = initSound(reg, "item.proc.ace_of_iron");
-		cagedHeartProc = initSound(reg, "item.proc.caged_heart");
+		slicersDiceProc = initSound("item.proc.slicers_dice");
+		aceOfIronProc = initSound("item.proc.ace_of_iron");
+		cagedHeartProc = initSound("item.proc.caged_heart");
 		
-		musicMagnum = initSound(reg, "music.magnum");
+		musicMagnum = initSound("music.magnum");
 	}
-	
-	//Supplier for the disc since I init the stuff during the registry event
-	public static SoundEvent supplyMagnum() {
-		return musicMagnum;
-	}
-
-	public static SoundEvent initSound(IForgeRegistry<SoundEvent> reg, String name) {
-		ResourceLocation loc = MeetYourFight.rl(name);
-		SoundEvent se = new SoundEvent(loc).setRegistryName(loc);
-		reg.register(se);
-		return se;
+	public static RegistryObject<SoundEvent> initSound(String name) {
+		return REG.register(name, () -> new SoundEvent(MeetYourFight.rl(name)));
 	}
 }

@@ -22,7 +22,7 @@ archivesBaseName = "meetyourfight"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19'
 
     // Default run configurations.
     runs {

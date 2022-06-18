@@ -8,7 +8,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import lykrast.meetyourfight.registry.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -24,7 +23,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 public class CocktailCutlass extends SwordItem {
-	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor));
+	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor.get()));
 	private static final List<Triple<MobEffect, Integer, Boolean>> EFFECTS = new ArrayList<>();
 	
 	public static void initEffects() {
@@ -78,8 +77,8 @@ public class CocktailCutlass extends SwordItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
-		tooltip.add(new TranslatableComponent(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 
 }

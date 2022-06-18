@@ -13,7 +13,6 @@ import lykrast.gunswithoutroses.item.ShotgunItem;
 import lykrast.meetyourfight.item.LuckCurio;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -81,8 +80,8 @@ public class CocktailShotgun extends ShotgunItem {
 	@Override
 	protected void addExtraStatsTooltip(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
 		super.addExtraStatsTooltip(stack, world, tooltip);
-		tooltip.add(new TranslatableComponent(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
-		tooltip.add(new TranslatableComponent(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 
 }

@@ -35,7 +35,7 @@ public class WaterBoulderEntity extends AbstractHurtingProjectile {
 	}
 
 	public WaterBoulderEntity(Level worldIn, LivingEntity shooter, Entity target) {
-		super(ModEntities.WATER_BOULDER, shooter, 0, 0, 0, worldIn);
+		super(ModEntities.WATER_BOULDER.get(), shooter, 0, 0, 0, worldIn);
 		this.target = target;
 	}
 

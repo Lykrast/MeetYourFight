@@ -1,9 +1,10 @@
 package lykrast.meetyourfight.misc;
 
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,7 +16,7 @@ public class BossMusic extends AbstractTickableSoundInstance {
 	private final LivingEntity boss;
 
 	public BossMusic(LivingEntity boss, SoundEvent sound) {
-		super(sound, SoundSource.RECORDS);
+		super(sound, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.boss = boss;
 		x = boss.getX();
 		y = boss.getY();

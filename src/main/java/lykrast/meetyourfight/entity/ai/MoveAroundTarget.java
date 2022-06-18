@@ -1,8 +1,8 @@
 package lykrast.meetyourfight.entity.ai;
 
 import java.util.EnumSet;
-import java.util.Random;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -26,7 +26,7 @@ public class MoveAroundTarget extends Goal {
 	@Override
 	public void start() {			
 		LivingEntity target = mob.getTarget();
-		Random rand = mob.getRandom();
+		RandomSource rand = mob.getRandom();
 		float angle = (rand.nextInt(4) + 2) * 10f * ((float)Math.PI / 180F);
 		if (rand.nextBoolean()) angle *= -1;
 		Vec3 offset = new Vec3(mob.getX() - target.getX(), 0, mob.getZ() - target.getZ()).normalize().yRot(angle);

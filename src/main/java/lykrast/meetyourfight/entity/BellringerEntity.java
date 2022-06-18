@@ -1,7 +1,6 @@
 package lykrast.meetyourfight.entity;
 
 import java.util.List;
-import java.util.Random;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveFrontOfTarget;
@@ -9,35 +8,36 @@ import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.Vec3;
 
 public class BellringerEntity extends BossEntity {
 	public int attackCooldown;
@@ -82,8 +82,8 @@ public class BellringerEntity extends BossEntity {
     }
 	
 	public static void spawn(Player player, Level world) {
-		Random rand = player.getRandom();
-		BellringerEntity bellringer = ModEntities.BELLRINGER.create(world);
+		RandomSource rand = player.getRandom();
+		BellringerEntity bellringer = ModEntities.BELLRINGER.get().create(world);
 		bellringer.moveTo(player.getX() + rand.nextInt(15) - 7, player.getY() + rand.nextInt(9) - 1, player.getZ() + rand.nextInt(15) - 7, rand.nextFloat() * 360 - 180, 0);
 		bellringer.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) bellringer.setTarget(player);
@@ -135,22 +135,22 @@ public class BellringerEntity extends BossEntity {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSounds.bellringerIdle;
+		return ModSounds.bellringerIdle.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.bellringerHurt;
+		return ModSounds.bellringerHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.bellringerDeath;
+		return ModSounds.bellringerDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicMagnum;
+		return ModSounds.musicMagnum.get();
 	}
 	
 	@Override
@@ -159,7 +159,7 @@ public class BellringerEntity extends BossEntity {
 	}
 
 	@Override
-	public float getBrightness() {
+	public float getLightLevelDependentMagicValue() {
 		return 1.0F;
 	}
 	
