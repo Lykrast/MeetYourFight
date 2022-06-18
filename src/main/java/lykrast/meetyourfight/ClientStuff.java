@@ -24,12 +24,12 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.BELLRINGER, (context) -> new BellringerRenderer(context));
     	event.registerEntityRenderer(ModEntities.DAME_FORTUNA, (context) -> new DameFortunaRenderer(context));
     	event.registerEntityRenderer(ModEntities.SWAMPJAW, (context) -> new SwampjawRenderer(context));
-    	event.registerEntityRenderer(ModEntities.VELA, (context) -> new VelaRenderer(context));
+    	//event.registerEntityRenderer(ModEntities.VELA, (context) -> new VelaRenderer(context));
 		
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE, (context) -> new ProjectileLineRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE, (context) -> new SwampMineRenderer(context));
-		event.registerEntityRenderer(ModEntities.WATER_BOULDER, (context) -> new WaterBoulderRenderer(context));
-		event.registerEntityRenderer(ModEntities.VELA_VORTEX, (context) -> new VelaVortexRenderer(context));
+		//event.registerEntityRenderer(ModEntities.WATER_BOULDER, (context) -> new WaterBoulderRenderer(context));
+		//event.registerEntityRenderer(ModEntities.VELA_VORTEX, (context) -> new VelaVortexRenderer(context));
     }
     
     @SubscribeEvent
