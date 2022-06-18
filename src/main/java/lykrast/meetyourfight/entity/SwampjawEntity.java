@@ -54,7 +54,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 7);
+		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 12);
 	}
 	
 	public static void spawn(Player player, Level world) {
