@@ -2,6 +2,7 @@ package lykrast.meetyourfight.entity;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
+import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -147,12 +147,13 @@ public class VelaEntity extends BossEntity {
 		return vortex;
 	}
 	
-	private static class AirAttack extends Goal {
+	private static class AirAttack extends StationaryAttack {
 		private VelaEntity vela;
 		private LivingEntity target;
 		private int attackDelay, chosenAttack;
 
 		public AirAttack(VelaEntity vela) {
+			super(vela);
 			this.vela = vela;
 		}
 
@@ -168,6 +169,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public void start() {
+			super.start();
 			vela.airCooldown = 2;
 			attackDelay = 20;
 			target = vela.getTarget();
@@ -176,6 +178,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public void tick() {
+			super.tick();
 			vela.airCooldown = 2;
 			if (vela.waterCooldown <= 2) vela.waterCooldown = 2;
 			attackDelay--;
@@ -193,23 +196,10 @@ public class VelaEntity extends BossEntity {
 					double tx = target.getX();
 					double ty = target.getY();
 					double tz = target.getZ();
-					Direction dir = Direction.getNearest(tx - vela.getX(), 0, tz - vela.getZ());
-					//Can have any rotation except backwards
-					switch (vela.random.nextInt(3)) {
-						case 1:
-							dir = dir.getClockWise();
-							break;
-						case 2:
-							dir = dir.getCounterClockWise();
-							break;
-					}
-					Direction perp = dir.getClockWise();
+					Vec3 perp = new Vec3(vela.getX() - tx, 0, vela.getZ() - tz).normalize().yRot((float)Math.PI / 2F).scale(12);
 					for (int i = -1; i <= 1; i++) {
-						double ox = -dir.getStepX()*12 + 12*i*perp.getStepX();
-						double oy = i*0.1;
-						double oz = -dir.getStepZ()*12 + 12*i*perp.getStepZ();
-						VelaVortexEntity vortex = vela.readyVortex(tx + ox, ty + oy, tz + oz);
-						vortex.setUpTowards(tx + 12*i*perp.getStepX(), ty, tz + 12*i*perp.getStepZ(), 0.1);
+						VelaVortexEntity vortex = vela.readyVortex(vela.getX(), vela.getY() + 2, vela.getZ());
+						vortex.setUpTowards(tx + i*perp.x, ty + 0.5 + i*0.1, tz + i*perp.z, 1.5);
 						vela.level.addFreshEntity(vortex);
 					}
 					break;
@@ -228,12 +218,13 @@ public class VelaEntity extends BossEntity {
 		
 	}
 	
-	private static class WaterAttack extends Goal {
+	private static class WaterAttack extends StationaryAttack {
 		private VelaEntity vela;
 		private LivingEntity target;
 		private int attackDelay, chosenAttack;
 
 		public WaterAttack(VelaEntity vela) {
+			super(vela);
 			this.vela = vela;
 		}
 
@@ -249,6 +240,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public void start() {
+			super.start();
 			vela.waterCooldown = 2;
 			if (vela.airCooldown <= 2) vela.airCooldown = 2;
 			attackDelay = 20;
@@ -258,6 +250,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public void tick() {
+			super.tick();
 			vela.waterCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
@@ -295,7 +288,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public void stop() {
-			vela.waterCooldown = 80 + vela.random.nextInt(41);
+			vela.waterCooldown = 100 + vela.random.nextInt(41);
 		}
 
 		@Override

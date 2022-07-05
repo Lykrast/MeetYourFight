@@ -1,9 +1,8 @@
 package lykrast.meetyourfight.entity;
 
-import java.util.EnumSet;
-
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
+import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
@@ -294,14 +293,13 @@ public class DameFortunaEntity extends BossEntity {
 	
 	//The regular attacks
 	//It's horribly ad hoc but it'll do "for now"
-	private static class RegularAttack extends Goal {
+	private static class RegularAttack extends StationaryAttack {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
 		private int attackRemaining, attackDelay, chosenAttack;
-		private double stationaryY;
 
 		public RegularAttack(DameFortunaEntity dame) {
-			setFlags(EnumSet.of(Goal.Flag.MOVE));
+			super(dame);
 			this.dame = dame;
 		}
 
@@ -317,6 +315,7 @@ public class DameFortunaEntity extends BossEntity {
 
 		@Override
 		public void start() {
+			super.start();
 			dame.attackCooldown = 2;
 			target = dame.getTarget();
 			chosenAttack = dame.random.nextInt(3);
@@ -326,7 +325,6 @@ public class DameFortunaEntity extends BossEntity {
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
-			stationaryY = target.getY() + 1 + dame.random.nextDouble() * 2;
 		}
 
 		//Horrible horrible ad hoc n�2
@@ -343,19 +341,13 @@ public class DameFortunaEntity extends BossEntity {
 
 		@Override
 		public void tick() {
+			super.tick();
 			dame.attackCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
 				attackRemaining--;
 				performAttack();
 				if (attackRemaining <= 0) stop();
-			}
-			
-			//Stay stationary
-			if (!dame.getMoveControl().hasWanted()) {
-				if (Math.abs(dame.getY() - stationaryY) >= 1) {
-					dame.getMoveControl().setWantedPosition(dame.getX(), stationaryY, dame.getZ(), 1);
-				}
 			}
 		}
 

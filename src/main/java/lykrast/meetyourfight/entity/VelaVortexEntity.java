@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 public class VelaVortexEntity extends AbstractHurtingProjectile {
-	public static final int ACTIVATION = 2*20, LIFESPAN = 10*20;
+	public static final int ACTIVATION = 1*20, LIFESPAN = 2*20;
 	private double dirX, dirY, dirZ;
 	private int timer;
 	private boolean fired;
@@ -51,16 +51,18 @@ public class VelaVortexEntity extends AbstractHurtingProjectile {
 		}
 	}
 	
-	public void setUp(double dirX, double dirY, double dirZ) {
+	private void setUp(double dirX, double dirY, double dirZ) {
 		fired = false;
 		this.dirX = dirX;
 		this.dirY = dirY;
 		this.dirZ = dirZ;
+		setDeltaMovement(-dirX*ACTIVATION/2.0, dirY, -dirZ*ACTIVATION/2.0);
 	}
 	
 	public void setUpTowards(double tX, double tY, double tZ, double speed) {
-		Vec3 direction = new Vec3(tX - getX(), tY - getY(), tZ - getZ()).normalize().scale(speed);
-		setUp(direction.x, direction.y, direction.z);
+		//We want this speed after ACTIVATION accelerations, but start backwards at that top speed
+		Vec3 direction = new Vec3(tX - getX(), 0, tZ - getZ()).normalize().scale(2 * speed / ACTIVATION);
+		setUp(direction.x, (tY - getY()) / ACTIVATION, direction.z);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -73,10 +75,11 @@ public class VelaVortexEntity extends AbstractHurtingProjectile {
 				else {
 					fired = true;
 					timer = LIFESPAN;
+					setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
 				}
 			}
-			else {
-				setDeltaMovement(dirX, dirY, dirZ);
+			else if (!fired) {
+				setDeltaMovement(getDeltaMovement().add(dirX, 0, dirZ));
 			}
 		}
 
