@@ -107,7 +107,7 @@ public class WaterBoulderEntity extends AbstractHurtingProjectile {
 			//Can't get the ProjectileUtil one to behave as I want so doing it by hand
 			//Since we only fire those projectiles in axis lines shouldn't have any issue
 			if (!level.isClientSide && fired) {
-				for (Entity e : level.getEntities(this, getBoundingBox().expandTowards(getDeltaMovement()).deflate(0.5), this::canHitEntity)) {
+				for (Entity e : level.getEntities(this, getBoundingBox().expandTowards(getDeltaMovement()).deflate(0.33), this::canHitEntity)) {
 					onHit(e);
 				}
 			}

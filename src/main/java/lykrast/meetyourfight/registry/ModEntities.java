@@ -40,26 +40,21 @@ public class ModEntities {
 				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMPJAW = REG.register("swampjaw", () -> EntityType.Builder.<SwampjawEntity>of(SwampjawEntity::new, MobCategory.MONSTER).sized(2.6f, 1.6f)
 				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
+		VELA = REG.register("vela", () -> EntityType.Builder.<VelaEntity>of(VelaEntity::new, MobCategory.MONSTER).sized(0.6f, 2.325f)
+				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 
 		PROJECTILE_LINE = REG.register("projectile_line", () -> EntityType.Builder.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMP_MINE = REG.register("swamp_mine", () -> EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+		WATER_BOULDER = REG.register("water_boulder", () -> EntityType.Builder.<WaterBoulderEntity>of(WaterBoulderEntity::new, MobCategory.MISC).sized(3,3).setUpdateInterval(1)
+				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		/*
-			EntityType.Builder.<VelaEntity>of(VelaEntity::new, MobCategory.MONSTER)
-			.sized(0.6f, 2.325f).setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true)
-			.build("").setRegistryName(MeetYourFight.MODID, "vela"),
 			
-			EntityType.Builder.<WaterBoulderEntity>of(WaterBoulderEntity::new, MobCategory.MISC)
-			.sized(3, 3).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
-			.build("").setRegistryName(MeetYourFight.MODID, "water_boulder"),
 			EntityType.Builder.<VelaVortexEntity>of(VelaVortexEntity::new, MobCategory.MISC)
 			.sized(3, 0.5f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
 			.build("").setRegistryName(MeetYourFight.MODID, "vela_vortex")
 		 */
-		//VELA = (EntityType<VelaEntity>) reg.getValue(MeetYourFight.rl("vela"));
-		
-		//WATER_BOULDER = (EntityType<WaterBoulderEntity>) reg.getValue(MeetYourFight.rl("water_boulder"));
 		//VELA_VORTEX = (EntityType<VelaVortexEntity>) reg.getValue(MeetYourFight.rl("vela_vortex"));
 	}
 
@@ -68,6 +63,6 @@ public class ModEntities {
 		event.put(BELLRINGER.get(), BellringerEntity.createAttributes().build());
 		event.put(DAME_FORTUNA.get(), DameFortunaEntity.createAttributes().build());
 		event.put(SWAMPJAW.get(), SwampjawEntity.createAttributes().build());
-		//event.put(VELA, VelaEntity.createAttributes().build());
+		event.put(VELA.get(), VelaEntity.createAttributes().build());
 	}
 }

@@ -208,9 +208,9 @@ public class VelaEntity extends BossEntity {
 						double ox = -dir.getStepX()*12 + 12*i*perp.getStepX();
 						double oy = i*0.1;
 						double oz = -dir.getStepZ()*12 + 12*i*perp.getStepZ();
-						VelaVortexEntity vortex = vela.readyVortex(tx + ox, ty + oy, tz + oz);
-						vortex.setUpTowards(tx + 12*i*perp.getStepX(), ty, tz + 12*i*perp.getStepZ(), 0.1);
-						vela.level.addFreshEntity(vortex);
+						//VelaVortexEntity vortex = vela.readyVortex(tx + ox, ty + oy, tz + oz);
+						//vortex.setUpTowards(tx + 12*i*perp.getStepX(), ty, tz + 12*i*perp.getStepZ(), 0.1);
+						//vela.level.addFreshEntity(vortex);
 					}
 					break;
 			}
