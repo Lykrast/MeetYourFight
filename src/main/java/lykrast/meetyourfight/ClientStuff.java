@@ -29,7 +29,7 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
 		event.registerEntityRenderer(ModEntities.WATER_BOULDER.get(), (context) -> new WaterBoulderRenderer(context));
-		//event.registerEntityRenderer(ModEntities.VELA_VORTEX, (context) -> new VelaVortexRenderer(context));
+		event.registerEntityRenderer(ModEntities.VELA_VORTEX.get(), (context) -> new VelaVortexRenderer(context));
     }
     
     @SubscribeEvent

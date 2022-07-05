@@ -49,13 +49,8 @@ public class ModEntities {
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		WATER_BOULDER = REG.register("water_boulder", () -> EntityType.Builder.<WaterBoulderEntity>of(WaterBoulderEntity::new, MobCategory.MISC).sized(3,3).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
-		/*
-			
-			EntityType.Builder.<VelaVortexEntity>of(VelaVortexEntity::new, MobCategory.MISC)
-			.sized(3, 0.5f).setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true)
-			.build("").setRegistryName(MeetYourFight.MODID, "vela_vortex")
-		 */
-		//VELA_VORTEX = (EntityType<VelaVortexEntity>) reg.getValue(MeetYourFight.rl("vela_vortex"));
+		VELA_VORTEX = REG.register("vela_vortex", () -> EntityType.Builder.<VelaVortexEntity>of(VelaVortexEntity::new, MobCategory.MISC).sized(3, 0.5f).setUpdateInterval(1)
+				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 	}
 
 	@SubscribeEvent
