@@ -29,11 +29,11 @@ public class VelaVortexRenderer extends EntityRenderer<VelaVortexEntity> {
 		matrixStackIn.pushPose();
 		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.getYRot());
 		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
-		float scale = 3;
-		if (entityIn.tickCount < VelaVortexEntity.ACTIVATION) scale = (entityIn.tickCount + partialTicks)*3f / VelaVortexEntity.ACTIVATION;
+		float scale = 2.5f;
+		if (entityIn.tickCount < VelaVortexEntity.ACTIVATION) scale = (entityIn.tickCount + partialTicks)*2.5f / VelaVortexEntity.ACTIVATION;
 		matrixStackIn.scale(scale, 1, scale);
 		matrixStackIn.translate(0, -1, 0);
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees((entityIn.tickCount + partialTicks) * 0.2F * 180.0F));
+		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees((entityIn.tickCount + partialTicks) * 0.25F * 180.0F));
 		model.setupAnim(entityIn, 0, 0, 0, f, f1);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(TEXTURE));
 		model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);

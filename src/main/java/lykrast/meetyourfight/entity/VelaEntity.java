@@ -1,7 +1,7 @@
 package lykrast.meetyourfight.entity;
 
 import lykrast.meetyourfight.MeetYourFight;
-import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
+import lykrast.meetyourfight.entity.ai.MoveAroundTargetOrthogonal;
 import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
@@ -48,7 +48,7 @@ public class VelaEntity extends BossEntity {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(2, new WaterAttack(this));
 		goalSelector.addGoal(3, new AirAttack(this));
-		goalSelector.addGoal(7, new MoveAroundTarget(this));
+		goalSelector.addGoal(7, new MoveAroundTargetOrthogonal(this));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
@@ -159,7 +159,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public boolean canUse() {
-			return vela.airCooldown <= 0 && vela.getTarget() != null && vela.getTarget().isAlive();
+			return vela.airCooldown <= 0 && vela.getTarget() != null && vela.getTarget().isAlive() && !vela.getMoveControl().hasWanted();
 		}
 
 		@Override
@@ -230,7 +230,7 @@ public class VelaEntity extends BossEntity {
 
 		@Override
 		public boolean canUse() {
-			return vela.waterCooldown <= 0 && vela.getTarget() != null && vela.getTarget().isAlive();
+			return vela.waterCooldown <= 0 && vela.getTarget() != null && vela.getTarget().isAlive() && !vela.getMoveControl().hasWanted();
 		}
 
 		@Override
@@ -279,11 +279,21 @@ public class VelaEntity extends BossEntity {
 							dir = dir.getCounterClockWise();
 							break;
 					}
-					boulder = vela.readyBoulder(target);
-					boulder.setUp(60, dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5, -dir.getStepX() * 5, 0, -dir.getStepZ() * 5);
-					vela.level.addFreshEntity(boulder);
+					horizontalBoulder(dir, 0);
+					//When rage do that but with an easier wind attack
+					//int skip = vela.random.nextInt(3) - 1;
+					//for (int i = -1; i <= 1; i++) {
+					//	if (i != skip) horizontalBoulder(dir, i);
+					//}
 					break;
 			}
+		}
+		
+		private void horizontalBoulder(Direction dir, int offset) {
+			Direction perp = dir.getClockWise();
+			WaterBoulderEntity boulder = vela.readyBoulder(target);
+			boulder.setUp(60, dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5, perp.getStepX()*offset*3 -dir.getStepX() * 5, 0, perp.getStepZ()*offset*3 -dir.getStepZ() * 5);
+			vela.level.addFreshEntity(boulder);
 		}
 
 		@Override

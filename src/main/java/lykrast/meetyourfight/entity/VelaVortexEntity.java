@@ -90,7 +90,7 @@ public class VelaVortexEntity extends AbstractHurtingProjectile {
 			
 			//Well the issue here is that diagonal movement will feel different, but I'll see how it goes in game
 			if (!level.isClientSide && fired) {
-				for (Entity e : level.getEntities(this, getBoundingBox().expandTowards(getDeltaMovement()).deflate(0.5), this::canHitEntity)) {
+				for (Entity e : level.getEntities(this, getBoundingBox().expandTowards(getDeltaMovement()).deflate(0.33), this::canHitEntity)) {
 					onHit(e);
 				}
 			}

@@ -49,7 +49,7 @@ public class ModEntities {
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		WATER_BOULDER = REG.register("water_boulder", () -> EntityType.Builder.<WaterBoulderEntity>of(WaterBoulderEntity::new, MobCategory.MISC).sized(3,3).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
-		VELA_VORTEX = REG.register("vela_vortex", () -> EntityType.Builder.<VelaVortexEntity>of(VelaVortexEntity::new, MobCategory.MISC).sized(3, 0.5f).setUpdateInterval(1)
+		VELA_VORTEX = REG.register("vela_vortex", () -> EntityType.Builder.<VelaVortexEntity>of(VelaVortexEntity::new, MobCategory.MISC).sized(2.5f, 0.5f).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 	}
 
