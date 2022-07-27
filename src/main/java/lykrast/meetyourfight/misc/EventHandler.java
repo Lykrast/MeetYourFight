@@ -19,7 +19,7 @@ public class EventHandler {
 	@SubscribeEvent
 	public static void entityDamage(final LivingHurtEvent event) {
 		//Full damage prevention
-		LivingEntity attacked = event.getEntityLiving();
+		LivingEntity attacked = event.getEntity();
 		if (attacked instanceof Player) {
 			Player pattacked = (Player)attacked;
 			//Ace of Iron

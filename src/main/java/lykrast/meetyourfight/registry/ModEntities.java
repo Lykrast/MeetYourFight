@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
 public class ModEntities {
-	public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITIES, MeetYourFight.MODID);
+	public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MeetYourFight.MODID);
 	//Bosses
 	public static RegistryObject<EntityType<BellringerEntity>> BELLRINGER;
 	public static RegistryObject<EntityType<DameFortunaEntity>> DAME_FORTUNA;

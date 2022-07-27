@@ -4,13 +4,12 @@ import lykrast.meetyourfight.registry.CompatGWRItems;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModItems;
 import lykrast.meetyourfight.renderer.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.Util;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -46,11 +45,13 @@ public class ClientStuff {
     }
 
 	@SubscribeEvent
+    public static void itemColors(final RegisterColorHandlersEvent.Item event) {
+		event.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass.get());
+		if (MeetYourFight.loadedGunsWithoutRoses()) event.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun.get());
+    }
+
+	@SubscribeEvent
 	public static void clientStuff(final FMLClientSetupEvent event) {
-		//Items
-		ItemColors icol = Minecraft.getInstance().getItemColors();
-		icol.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass.get());
-		if (MeetYourFight.loadedGunsWithoutRoses()) icol.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun.get());
 
 		//Same as Bow
 		ItemProperties.register(ModItems.depthStar.get(), MeetYourFight.rl("charge"),
