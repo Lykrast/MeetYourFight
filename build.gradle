@@ -83,10 +83,11 @@ repositories {
         name "curios"
         url "https://maven.theillusivec4.top/"
     }
-    maven {
-        url "https://cursemaven.com"
+	maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
         content {
-            includeGroup "curse.maven"
+            includeGroup "maven.modrinth"
         }
     }
 }
@@ -96,7 +97,7 @@ dependencies {
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}")
-    implementation fg.deobf("curse.maven:gunswithoutroses-405077:${project.gwr_file}")
+	implementation fg.deobf("maven.modrinth:guns-without-roses:${project.gwr_file}")
 }
 
 jar {
