@@ -23,12 +23,13 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.BELLRINGER.get(), (context) -> new BellringerRenderer(context));
     	event.registerEntityRenderer(ModEntities.DAME_FORTUNA.get(), (context) -> new DameFortunaRenderer(context));
     	event.registerEntityRenderer(ModEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
-    	event.registerEntityRenderer(ModEntities.VELA.get(), (context) -> new VelaRenderer(context));
+    	//TODO Vela
+    	//event.registerEntityRenderer(ModEntities.VELA.get(), (context) -> new VelaRenderer(context));
 		
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
-		event.registerEntityRenderer(ModEntities.WATER_BOULDER.get(), (context) -> new WaterBoulderRenderer(context));
-		event.registerEntityRenderer(ModEntities.VELA_VORTEX.get(), (context) -> new VelaVortexRenderer(context));
+		//event.registerEntityRenderer(ModEntities.WATER_BOULDER.get(), (context) -> new WaterBoulderRenderer(context));
+		//event.registerEntityRenderer(ModEntities.VELA_VORTEX.get(), (context) -> new VelaVortexRenderer(context));
     }
     
     @SubscribeEvent
@@ -36,12 +37,13 @@ public class ClientStuff {
     	event.registerLayerDefinition(BellringerModel.MODEL, BellringerModel::createBodyLayer);
     	event.registerLayerDefinition(DameFortunaModel.MODEL, DameFortunaModel::createBodyLayer);
     	event.registerLayerDefinition(SwampjawModel.MODEL, SwampjawModel::createBodyLayer);
-    	event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
+    	//TODO Vela
+    	//event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
     	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);
-    	event.registerLayerDefinition(WaterBoulderModel.MODEL, WaterBoulderModel::createBodyLayer);
-    	event.registerLayerDefinition(VelaVortexModel.MODEL, VelaVortexModel::createBodyLayer);
+    	//event.registerLayerDefinition(WaterBoulderModel.MODEL, WaterBoulderModel::createBodyLayer);
+    	//event.registerLayerDefinition(VelaVortexModel.MODEL, VelaVortexModel::createBodyLayer);
     }
 
 	@SubscribeEvent
