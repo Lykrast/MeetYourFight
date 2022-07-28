@@ -44,7 +44,8 @@ public class ModItems {
 		cagedHeart = REG.register("caged_heart", () -> new CurioBaseItem(bossNS(), true));
 		marshyDelight = REG.register("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
 		
-		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, noStack().rarity(Rarity.RARE).fireResistant()));
+		//Lasts 1:30.92
+		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, noStack().rarity(Rarity.RARE).fireResistant(), 1818));
 		
 		eggBellringer = REG.register("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
 		eggDameFortuna = REG.register("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
