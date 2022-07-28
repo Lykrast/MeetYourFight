@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[42,)"
 issueTrackerURL="https://github.com/Lykrast/MeetYourFight/issues"
 license="MIT License https://github.com/Lykrast/MeetYourFight/blob/master/LICENSE"
 
@@ -17,13 +17,13 @@ Adds several bosses to fight, each giving you access to unique goodies, such as 
 [[dependencies.meetyourfight]]
     modId="forge"
     mandatory=true
-    versionRange="[41,)"
+    versionRange="[42,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.meetyourfight]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,]"
+    versionRange="[1.19.1,]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.meetyourfight]]
