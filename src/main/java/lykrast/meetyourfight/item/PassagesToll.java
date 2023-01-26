@@ -39,7 +39,7 @@ public class PassagesToll extends Item {
 		for (int i = 0; i < 16; i++) {
 			mut.move(dir);
 			//Prevent players getting in the void
-			if (mut.getY() <= 0) break;
+			if (mut.getY() <= world.getMinBuildHeight()) break;
 			if (!world.getBlockState(mut).getMaterial().blocksMotion()) {
 				found = true;
 				//Bring down to player's height as much as possible
