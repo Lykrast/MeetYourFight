@@ -383,7 +383,7 @@ public class VelaEntity extends BossEntity {
 		private void horizontalBoulder(Direction dir, int offset) {
 			Direction perp = dir.getClockWise();
 			WaterBoulderEntity boulder = vela.readyBoulder(target);
-			boulder.setUp(60, dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5, perp.getStepX()*offset*3 -dir.getStepX() * 5, 0, perp.getStepZ()*offset*3 -dir.getStepZ() * 5);
+			boulder.setUp(60, dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5, perp.getStepX()*offset*3 -dir.getStepX() * 5, 0.5, perp.getStepZ()*offset*3 -dir.getStepZ() * 5);
 			vela.level.addFreshEntity(boulder);
 		}
 
