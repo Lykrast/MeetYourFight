@@ -7,8 +7,12 @@ import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -34,12 +38,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class VelaEntity extends BossEntity {
+	//Copied from Fortuna, because 2 attack and 3 phases
+	//0x0000RRAA with R for rage (0-2) and A for attack (0-2)
+	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(VelaEntity.class, EntityDataSerializers.BYTE);
+	public static final int NO_ATTACK = 0, WATER_ATTACK = 1, AIR_ATTACK = 2;
+	private static final int ATTACK_MASK = 0b11, RAGE_MASK = ~ATTACK_MASK;
+	
 	public int waterCooldown, airCooldown;
+	private int rage;
 	
 	public VelaEntity(EntityType<? extends VelaEntity> type, Level worldIn) {
 		super(type, worldIn);
 		moveControl = new VexMovementController(this);
 		xpReward = 150;
+		rage = 0;
 	}
 
 	@Override
@@ -86,11 +98,49 @@ public class VelaEntity extends BossEntity {
 		dame.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
 	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(STATUS, (byte)0);
+	}
+	
+	public int getAttack() {
+		return entityData.get(STATUS) & ATTACK_MASK;
+	}
+	
+	public void setAttack(int attack) {
+		int rage = entityData.get(STATUS) & RAGE_MASK;
+		entityData.set(STATUS, (byte)(rage | attack));
+	}
+	
+	public int getRage() {
+		return (entityData.get(STATUS) & RAGE_MASK) >> 2;
+	}
+	
+	public void setRage(int rage) {
+		int attack = entityData.get(STATUS) & ATTACK_MASK;
+		entityData.set(STATUS, (byte)((rage << 2) | attack));
+	}
+	
+	private int getRageTarget() {
+		//+1 rage every 1/3 of life lost
+		float health = getHealth();
+		float third = getMaxHealth() / 3f;
+		if (health <= third) return 2;
+		else if (health >= third * 2) return 0;
+		else return 1;
+	}
 	
 	@Override
 	public void customServerAiStep() {
 		if (waterCooldown > 0) waterCooldown--;
 		if (airCooldown > 0) airCooldown--;
+		int newrage = getRageTarget();
+		if (newrage > rage) {
+			rage = newrage;
+			setRage(rage);
+		}
 		super.customServerAiStep();
 	}
 	
@@ -150,7 +200,9 @@ public class VelaEntity extends BossEntity {
 	private static class AirAttack extends StationaryAttack {
 		private VelaEntity vela;
 		private LivingEntity target;
-		private int attackDelay, chosenAttack;
+		private int attackDelay, interval, remaining, pattern;
+		//Pattern: each digit is one attack, 0 for all 3, 1 for left, 2 for middle, 3 for right, 4 for left + right
+		//And we divide so it's right to left :(
 
 		public AirAttack(VelaEntity vela) {
 			super(vela);
@@ -173,7 +225,35 @@ public class VelaEntity extends BossEntity {
 			vela.airCooldown = 2;
 			attackDelay = 20;
 			target = vela.getTarget();
-			chosenAttack = vela.random.nextInt(2);
+			switch (vela.rage) {
+				default:
+				case 0:
+					//0
+					remaining = 2;
+					pattern = 0;
+					interval = 30;
+					break;
+				case 1:
+					switch (vela.random.nextInt(3)) {
+						case 0:
+							remaining = 3;
+							pattern = 0;
+							interval = 20;
+							break;
+						case 1:
+							remaining = 9;
+							pattern = 123123123;
+							interval = 7;
+							break;
+						case 2:
+							remaining = 6;
+							pattern = 242422;
+							interval = 10;
+							break;
+					}
+					break;
+			}
+			vela.setAttack(AIR_ATTACK);
 		}
 
 		@Override
@@ -183,32 +263,42 @@ public class VelaEntity extends BossEntity {
 			if (vela.waterCooldown <= 2) vela.waterCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
-				performAttack();
-				stop();
+				performAttack(pattern % 10);
+				remaining--;
+				if (remaining <= 0) stop();
+				else {
+					attackDelay = interval;
+					pattern /= 10;
+				}
 			}
 		}
 		
-		private void performAttack() {
-			switch (chosenAttack) {
-				case 0:
-				case 1:
-					//Vortexes
-					double tx = target.getX();
-					double ty = target.getY();
-					double tz = target.getZ();
-					Vec3 perp = new Vec3(vela.getX() - tx, 0, vela.getZ() - tz).normalize().yRot((float)Math.PI / 2F).scale(12);
-					for (int i = -1; i <= 1; i++) {
-						VelaVortexEntity vortex = vela.readyVortex(vela.getX(), vela.getY() + 2, vela.getZ());
-						vortex.setUpTowards(tx + i*perp.x, ty + 0.5 + i*0.1, tz + i*perp.z, 1.5);
-						vela.level.addFreshEntity(vortex);
-					}
-					break;
+		private void performAttack(int attack) {
+			//BlockPos rounds values so +0.5 for center of block
+			BlockPos tgt = target.blockPosition();
+			double tx = tgt.getX() + 0.5;
+			double tz = tgt.getZ() + 0.5;
+			double ty = tgt.getY() + 0.1;
+			Vec3 perp = new Vec3(vela.getX() - tx, 0, vela.getZ() - tz).normalize().yRot((float)Math.PI / 2F).scale(8);
+			//Prevents lines being unjumpable if an attack is launched mid jump
+			if (!target.isOnGround() && !target.isInWater() && !vela.level.getBlockState(tgt.below()).getMaterial().blocksMotion()) ty -= 1;
+
+			//0 for all 3, 1 for left, 2 for middle, 3 for right, 4 for left + right
+			for (int i = -1; i <= 1; i++) {
+				//Yep it's ad hoc and ugly
+				if (i == -1 && (attack == 2 || attack == 3)) continue;
+				if (i == 0 && (attack == 1 || attack == 3 || attack == 4)) continue;
+				if (i == 1 && (attack == 1 || attack == 2)) continue;
+				VelaVortexEntity vortex = vela.readyVortex(vela.getX(), vela.getY() + 2, vela.getZ());
+				vortex.setUpTowards(tx + i*perp.x, ty + 0.5 + i*0.1, tz + i*perp.z, 1.5);
+				vela.level.addFreshEntity(vortex);
 			}
 		}
 
 		@Override
 		public void stop() {
 			vela.airCooldown = 60 + vela.random.nextInt(21);
+			vela.setAttack(NO_ATTACK);
 		}
 
 		@Override
@@ -246,6 +336,7 @@ public class VelaEntity extends BossEntity {
 			attackDelay = 20;
 			target = vela.getTarget();
 			chosenAttack = vela.random.nextInt(2);
+			vela.setAttack(WATER_ATTACK);
 		}
 
 		@Override
@@ -299,6 +390,7 @@ public class VelaEntity extends BossEntity {
 		@Override
 		public void stop() {
 			vela.waterCooldown = 100 + vela.random.nextInt(41);
+			vela.setAttack(NO_ATTACK);
 		}
 
 		@Override
