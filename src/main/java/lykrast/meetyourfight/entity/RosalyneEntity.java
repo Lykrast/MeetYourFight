@@ -1,5 +1,6 @@
 package lykrast.meetyourfight.entity;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import lykrast.meetyourfight.MeetYourFight;
@@ -18,16 +19,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -58,7 +62,7 @@ public class RosalyneEntity extends BossEntity {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new PhaseTransition(this));
-		//goalSelector.addGoal(2, new WaterAttack(this));
+		goalSelector.addGoal(2, new MainAttack(this));
 		goalSelector.addGoal(7, new MoveFrontOfTarget(this, 0.5));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -70,7 +74,8 @@ public class RosalyneEntity extends BossEntity {
 	public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 600)
         		.add(Attributes.ARMOR, 10).add(Attributes.ARMOR_TOUGHNESS, 4)
-        		.add(Attributes.KNOCKBACK_RESISTANCE, 0.5)
+        		.add(Attributes.KNOCKBACK_RESISTANCE, 1)
+        		.add(Attributes.ATTACK_DAMAGE, 24)
         		.add(Attributes.FOLLOW_RANGE, 64);
     }
 
@@ -135,6 +140,14 @@ public class RosalyneEntity extends BossEntity {
 		entityData.set(STATUS, (byte)status);
 	}
 	
+	public void swing() {
+        for(LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(2, 0.2, 2))) {
+        	if (!(entity instanceof RosalyneEntity) && !(entity instanceof RoseSpiritEntity) && entity.isAlive()) doHurtTarget(entity);
+        }
+        playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1, 1);
+        swing(InteractionHand.MAIN_HAND);
+	}
+	
 	@Override
 	public void aiStep() {
 		super.aiStep();
@@ -175,12 +188,14 @@ public class RosalyneEntity extends BossEntity {
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("Cooldown")) attackCooldown = compound.getInt("Cooldown");
+		if (compound.contains("Phase")) setStatus(compound.getInt("Phase"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("Cooldown", attackCooldown);
+		compound.putInt("Phase", getStatus());
 	}
 	
 	@Override
@@ -206,6 +221,87 @@ public class RosalyneEntity extends BossEntity {
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
 		return MeetYourFight.rl("rosalyne");
+	}
+	
+	private static class MainAttack extends Goal {
+		private RosalyneEntity rosalyne;
+		private int timer, swingsLeft, attackPhase;
+		private double holdx, holdy, holdz;
+		//attackPhase 0 = approaching, 1 = preparing to swing, 2 = swinging
+		
+		public MainAttack(RosalyneEntity rosalyne) {
+			this.rosalyne = rosalyne;
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+		
+		@Override
+		public void start() {
+			timer = 100;
+			swingsLeft = 3;
+			attackPhase = 0;
+			LivingEntity target = rosalyne.getTarget();
+			rosalyne.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 4);
+		}
+		
+		@Override
+		public void tick() {
+			timer--;
+			LivingEntity target = rosalyne.getTarget();
+			//Approaching target
+			if (attackPhase == 0) {
+				if (timer <= 0 || rosalyne.distanceToSqr(target) < 2) {
+					holdx = rosalyne.getX();
+					holdy = target.getY();
+					holdz = rosalyne.getZ();
+					rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
+					attackPhase = 1;
+					timer = 25;
+				}
+				else {
+					rosalyne.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 4);
+				}
+			}
+			//Preparing to swing
+			else if (attackPhase == 1) {
+				rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
+				if (timer <= 0) {
+					attackPhase = 2;
+					rosalyne.swing();
+					swingsLeft--;
+					timer = 20;
+				}
+			}
+			//Swinging wildly
+			else {
+				rosalyne.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 0.45);
+				if (timer <= 0) {
+					rosalyne.swing();
+					swingsLeft--;
+					timer = 20;
+				}
+			}
+		}
+		
+		@Override
+		public void stop() {
+			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
+		}
+
+		@Override
+		public boolean canUse() {
+			return (rosalyne.phase == PHASE_1 || rosalyne.phase == PHASE_2 || rosalyne.phase == PHASE_3) && rosalyne.getTarget() != null && rosalyne.getTarget().isAlive() && rosalyne.attackCooldown <= 0;
+		}
+		
+		@Override
+		public boolean canContinueToUse() {
+			return canUse() && swingsLeft > 0;
+		}
+		
 	}
 	
 	private static class PhaseTransition extends StationaryAttack {

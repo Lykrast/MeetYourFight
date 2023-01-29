@@ -22,7 +22,8 @@ public abstract class StationaryAttack extends Goal {
 	
 	@Override
 	public void start() {
-		stationaryY = boss.getTarget().getY() + 1 + boss.getRandom().nextDouble() * 2;
+		if (boss.getTarget() != null) stationaryY = boss.getTarget().getY() + 1 + boss.getRandom().nextDouble() * 2;
+		else stationaryY = boss.getY();
 	}
 
 	@Override
