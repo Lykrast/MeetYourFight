@@ -1,14 +1,7 @@
 package lykrast.meetyourfight.registry;
 
 import lykrast.meetyourfight.MeetYourFight;
-import lykrast.meetyourfight.entity.BellringerEntity;
-import lykrast.meetyourfight.entity.DameFortunaEntity;
-import lykrast.meetyourfight.entity.ProjectileLineEntity;
-import lykrast.meetyourfight.entity.SwampMineEntity;
-import lykrast.meetyourfight.entity.SwampjawEntity;
-import lykrast.meetyourfight.entity.VelaEntity;
-import lykrast.meetyourfight.entity.VelaVortexEntity;
-import lykrast.meetyourfight.entity.WaterBoulderEntity;
+import lykrast.meetyourfight.entity.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -26,6 +19,8 @@ public class ModEntities {
 	public static RegistryObject<EntityType<DameFortunaEntity>> DAME_FORTUNA;
 	public static RegistryObject<EntityType<SwampjawEntity>> SWAMPJAW;
 	public static RegistryObject<EntityType<VelaEntity>> VELA;
+	//Summons
+	public static RegistryObject<EntityType<RoseSpiritEntity>> ROSE_SPIRIT;
 	
 	//Projectiles
 	public static RegistryObject<EntityType<ProjectileLineEntity>> PROJECTILE_LINE;
@@ -43,6 +38,9 @@ public class ModEntities {
 		//TODO Vela
 		VELA = REG.register("vela", () -> EntityType.Builder.<VelaEntity>of(VelaEntity::new, MobCategory.MONSTER).sized(0.6f, 2.325f)
 				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
+		//TODO Rose
+		ROSE_SPIRIT = REG.register("rose_spirit", () -> EntityType.Builder.<RoseSpiritEntity>of(RoseSpiritEntity::new, MobCategory.MONSTER).sized(0.75f, 1.3125f)
+				.setUpdateInterval(2).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 
 		PROJECTILE_LINE = REG.register("projectile_line", () -> EntityType.Builder.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
@@ -61,5 +59,7 @@ public class ModEntities {
 		event.put(SWAMPJAW.get(), SwampjawEntity.createAttributes().build());
 		//TODO Vela
 		event.put(VELA.get(), VelaEntity.createAttributes().build());
+		//TODO Rose
+		event.put(ROSE_SPIRIT.get(), RoseSpiritEntity.createAttributes().build());
 	}
 }

@@ -17,7 +17,8 @@ import net.minecraft.util.Mth;
 public class ProjectileLineRenderer extends EntityRenderer<ProjectileLineEntity> {
 	private static final ResourceLocation[] TEXTURES = {
 			MeetYourFight.rl("textures/entity/projectile_bellringer.png"),
-			MeetYourFight.rl("textures/entity/projectile_dame_fortuna.png")
+			MeetYourFight.rl("textures/entity/projectile_dame_fortuna.png"),
+			MeetYourFight.rl("textures/entity/projectile_rose.png")
 			};
 	private static final RenderType[] OVERLAYS;
 	static {

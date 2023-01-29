@@ -25,6 +25,8 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
     	//TODO Vela
     	event.registerEntityRenderer(ModEntities.VELA.get(), (context) -> new VelaRenderer(context));
+    	//TODO Rose
+    	event.registerEntityRenderer(ModEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
 		
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
@@ -39,6 +41,8 @@ public class ClientStuff {
     	event.registerLayerDefinition(SwampjawModel.MODEL, SwampjawModel::createBodyLayer);
     	//TODO Vela
     	event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
+    	//TODO Rose
+    	event.registerLayerDefinition(RoseSpiritModel.MODEL, RoseSpiritModel::createBodyLayer);
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
     	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);

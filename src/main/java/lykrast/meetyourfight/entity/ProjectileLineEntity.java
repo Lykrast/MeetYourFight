@@ -25,7 +25,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class ProjectileLineEntity extends AbstractHurtingProjectile {
 	//Projectile goes to a point over a set duration, then activates and accelerates in a given straight line
 	private static final EntityDataAccessor<Integer> PROJECTILE_VARIANT = SynchedEntityData.defineId(ProjectileLineEntity.class, EntityDataSerializers.INT);
-	public static final int VAR_BELLRINGER = 0, VAR_DAME_FORTUNA = 1;
+	public static final int VAR_BELLRINGER = 0, VAR_DAME_FORTUNA = 1, VAR_ROSE = 2;
 	
 	private double dirX, dirY, dirZ;
 	private double startX, startY, startZ;
