@@ -15,6 +15,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -119,11 +120,15 @@ public class RoseSpiritEntity extends Monster {
 			if (prevStatus != getStatus()) {
 				prevStatus = getStatus();
 				animProg = 0;
-				if (prevStatus == RISING || prevStatus == RETRACTING) animDur = 10;
-				else if (prevStatus == RETRACTING_HURT) animDur = 5;
+				if (prevStatus == RISING || prevStatus == RETRACTING || prevStatus == RETRACTING_HURT) animDur = 10;
+				//else if (prevStatus == RETRACTING_HURT) animDur = 5;
 			}
 			else if (animProg < animDur) animProg++;
 		}
+	}
+	
+	public float getAnimProgress(float partial) {
+		return Mth.clamp((animProg + partial) / animDur, 0, 1);
 	}
 
 	@Override
@@ -202,14 +207,31 @@ public class RoseSpiritEntity extends Monster {
 		@Override
 		public void start() {
 			mob.attackCooldown = 100 + mob.random.nextInt(61);
-			timer = 45;
+			timer = 50;
+			mob.playSound(SoundEvents.GHAST_HURT, 1, 1);
 		}
 		
 		@Override
 		public void tick() {
 			timer--;
 			if (timer <= 0) mob.setStatus(HIDING);
-			else if (timer == 5) mob.setStatus(RETRACTING_HURT);
+			else if (timer == 10) {
+				mob.setStatus(RETRACTING_HURT);
+				double sx = mob.getX();
+				double sy = mob.getY();
+				double sz = mob.getZ();
+				Vec3 dir = null;
+				if (mob.getTarget() != null) dir = new Vec3(mob.getTarget().getX() - sx,  mob.getTarget().getY()+1 - sy, mob.getTarget().getZ() - sz);
+				else dir = new Vec3(1,  -0.25, 0);
+				dir.normalize().scale(0.8);
+				for (int i = 0; i < 8; i++) {
+					ProjectileLineEntity ghost = mob.readyAttack();
+					ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
+					mob.level.addFreshEntity(ghost);
+					mob.playSound(SoundEvents.GHAST_SHOOT, 1, 1);
+					dir = dir.yRot(Mth.HALF_PI / 2);
+				}
+			}
 		}
 		
 		@Override
@@ -259,12 +281,13 @@ public class RoseSpiritEntity extends Monster {
 		public void start() {
 			LivingEntity target = mob.owner;
 			RandomSource rand = mob.getRandom();
-			float angle = (rand.nextInt(4) + 2) * 10f * ((float) Math.PI / 180F);
+			float angle = (rand.nextInt(7) + 2) * 10f * ((float) Math.PI / 180F);
 			if (rand.nextBoolean()) angle *= -1;
 			Vec3 offset = new Vec3(mob.getX() - target.getX(), 0, mob.getZ() - target.getZ()).normalize().yRot(angle);
 			double distance = rand.nextDouble() * 2 + 4;
-
-			mob.getMoveControl().setWantedPosition(target.getX() + offset.x * distance, target.getY() + 1 + rand.nextDouble() * 2, target.getZ() + offset.z * distance, speed);
+			
+			double actSpeed = mob.distanceToSqr(mob.owner) > 100 ? 4 : speed;
+			mob.getMoveControl().setWantedPosition(target.getX() + offset.x * distance, target.getY() + rand.nextDouble() * 2, target.getZ() + offset.z * distance, actSpeed);
 		}
 
 		@Override

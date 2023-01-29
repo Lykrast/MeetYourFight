@@ -14,7 +14,6 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.util.Mth;
 
 //Made with Blockbench 4.1.5
 //Exported for Minecraft version 1.17 with Mojang mappings
@@ -46,7 +45,7 @@ public class RoseSpiritModel extends EntityModel<RoseSpiritEntity> {
 	@Override
 	public void setupAnim(RoseSpiritEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		float partial = ageInTicks - entity.tickCount;
-		float animProgress = Mth.clamp((entity.animProg + partial) / entity.animDur, 0, 1);
+		float animProgress = entity.getAnimProgress(partial);
 		int status = entity.prevStatus;
 		switch (status) {
 			default:
