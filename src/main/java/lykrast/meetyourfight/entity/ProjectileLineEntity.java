@@ -25,7 +25,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class ProjectileLineEntity extends AbstractHurtingProjectile {
 	//Projectile goes to a point over a set duration, then activates and accelerates in a given straight line
 	private static final EntityDataAccessor<Integer> PROJECTILE_VARIANT = SynchedEntityData.defineId(ProjectileLineEntity.class, EntityDataSerializers.INT);
-	public static final int VAR_BELLRINGER = 0, VAR_DAME_FORTUNA = 1, VAR_ROSE = 2;
+	public static final int VAR_BELLRINGER = 0, VAR_DAME_FORTUNA = 1, VAR_ROSALYNE = 2;
 	
 	private double dirX, dirY, dirZ;
 	private double startX, startY, startZ;
@@ -81,6 +81,12 @@ public class ProjectileLineEntity extends AbstractHurtingProjectile {
 	public void setUpTowards(int delay, double startX, double startY, double startZ, double endX, double endY, double endZ, double speed) {
 		Vec3 vec = new Vec3(endX - startX, endY - startY, endZ - startZ).normalize().scale(speed);
 		setUp(delay, vec.x, vec.y, vec.z, startX, startY, startZ);
+	}
+
+	@Override
+	protected boolean canHitEntity(Entity target) {
+		if (getVariant() == VAR_ROSALYNE && (target instanceof RoseSpiritEntity || target instanceof RosalyneEntity)) return false;
+		return super.canHitEntity(target);
 	}
 
 	@SuppressWarnings("deprecation")

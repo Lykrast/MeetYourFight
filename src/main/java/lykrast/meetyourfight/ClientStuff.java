@@ -26,6 +26,7 @@ public class ClientStuff {
     	//TODO Vela
     	event.registerEntityRenderer(ModEntities.VELA.get(), (context) -> new VelaRenderer(context));
     	//TODO Rose
+    	event.registerEntityRenderer(ModEntities.ROSALYNE.get(), (context) -> new RosalyneRenderer(context));
     	event.registerEntityRenderer(ModEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
 		
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
@@ -42,6 +43,7 @@ public class ClientStuff {
     	//TODO Vela
     	event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
     	//TODO Rose
+    	event.registerLayerDefinition(RosalyneModel.MODEL, RosalyneModel::createBodyLayer);
     	event.registerLayerDefinition(RoseSpiritModel.MODEL, RoseSpiritModel::createBodyLayer);
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);

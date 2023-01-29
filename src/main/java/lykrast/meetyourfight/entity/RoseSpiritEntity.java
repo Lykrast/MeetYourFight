@@ -1,5 +1,9 @@
 package lykrast.meetyourfight.entity;
 
+import java.util.EnumSet;
+
+import javax.annotation.Nullable;
+
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
@@ -11,6 +15,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +28,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -31,6 +38,8 @@ import net.minecraft.world.phys.Vec3;
 public class RoseSpiritEntity extends Monster {
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RoseSpiritEntity.class, EntityDataSerializers.BYTE);
 	public static final int HIDING = 0, RISING = 1, OUT = 2, ATTACKING = 3, RETRACTING = 4, HURT = 5, RETRACTING_HURT = 6;
+	@Nullable
+	private Mob owner;
 	
 	public int attackCooldown;
 	//Client side animation
@@ -44,6 +53,12 @@ public class RoseSpiritEntity extends Monster {
 		animDur = 1;
 		animProg = 1;
 	}
+	
+	@Override
+	public void aiStep() {
+		super.aiStep();
+		if (owner != null && !owner.isAlive()) setOwner(null);
+	}
 
 	@Override
 	protected void registerGoals() {
@@ -51,17 +66,27 @@ public class RoseSpiritEntity extends Monster {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(2, new HideAfterHit(this));
 		goalSelector.addGoal(3, new BurstAttack(this));
+		goalSelector.addGoal(6, new MoveAroundOwner(this, 0.35));
 		goalSelector.addGoal(7, new MoveAroundTarget(this, 0.35));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
-		targetSelector.addGoal(2, new HurtByTargetGoal(this));
+		targetSelector.addGoal(1, new CopyOwnerTargetGoal(this));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
+		targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 40).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
     }
+
+	public Mob getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Mob owner) {
+		this.owner = owner;
+	}
 
 	@Override
 	public void move(MoverType typeIn, Vec3 pos) {
@@ -71,8 +96,8 @@ public class RoseSpiritEntity extends Monster {
 	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source != DamageSource.OUT_OF_WORLD && getStatus() == HIDING && amount > 0) {
-			playSound(SoundEvents.ANVIL_LAND, 1, 1);
+		if (source != DamageSource.OUT_OF_WORLD && getStatus() == HIDING) {
+			if (amount > 0) playSound(SoundEvents.ANVIL_LAND, 1, 1);
 			return false;
 		}
 		if (super.hurt(source, amount)) {
@@ -157,7 +182,7 @@ public class RoseSpiritEntity extends Monster {
 		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this, 0, 0, 0);
 		ghost.setOwner(this);
 		ghost.setPos(getX(), getY()+0.625, getZ());
-		ghost.setVariant(ProjectileLineEntity.VAR_ROSE);
+		ghost.setVariant(ProjectileLineEntity.VAR_ROSALYNE);
 		return ghost;
 	}
 	
@@ -191,6 +216,62 @@ public class RoseSpiritEntity extends Monster {
 		public boolean canUse() {
 			return mob.getStatus() == HURT || mob.getStatus() == RETRACTING_HURT;
 		}
+	}
+
+	//Copied from vex
+	private static class CopyOwnerTargetGoal extends TargetGoal {
+		private RoseSpiritEntity spirit;
+		private final TargetingConditions copyOwnerTargeting = TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
+
+		public CopyOwnerTargetGoal(RoseSpiritEntity spirit) {
+			super(spirit, false);
+			this.spirit = spirit;
+		}
+
+		@Override
+		public boolean canUse() {
+			return spirit.owner != null && spirit.owner.getTarget() != null && canAttack(spirit.owner.getTarget(), copyOwnerTargeting);
+		}
+
+		@Override
+		public void start() {
+			spirit.setTarget(spirit.owner.getTarget());
+			super.start();
+		}
+	}
+	
+	private static class MoveAroundOwner extends Goal {
+		private RoseSpiritEntity mob;
+		private double speed;
+
+		public MoveAroundOwner(RoseSpiritEntity mob, double speed) {
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+			this.mob = mob;
+			this.speed = speed;
+		}
+
+		@Override
+		public boolean canUse() {
+			return mob.owner != null && !mob.getMoveControl().hasWanted();
+		}
+
+		@Override
+		public void start() {
+			LivingEntity target = mob.owner;
+			RandomSource rand = mob.getRandom();
+			float angle = (rand.nextInt(4) + 2) * 10f * ((float) Math.PI / 180F);
+			if (rand.nextBoolean()) angle *= -1;
+			Vec3 offset = new Vec3(mob.getX() - target.getX(), 0, mob.getZ() - target.getZ()).normalize().yRot(angle);
+			double distance = rand.nextDouble() * 2 + 4;
+
+			mob.getMoveControl().setWantedPosition(target.getX() + offset.x * distance, target.getY() + 1 + rand.nextDouble() * 2, target.getZ() + offset.z * distance, speed);
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return false;
+		}
+
 	}
 	
 	//The regular attacks

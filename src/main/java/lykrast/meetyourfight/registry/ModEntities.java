@@ -19,6 +19,7 @@ public class ModEntities {
 	public static RegistryObject<EntityType<DameFortunaEntity>> DAME_FORTUNA;
 	public static RegistryObject<EntityType<SwampjawEntity>> SWAMPJAW;
 	public static RegistryObject<EntityType<VelaEntity>> VELA;
+	public static RegistryObject<EntityType<RosalyneEntity>> ROSALYNE;
 	//Summons
 	public static RegistryObject<EntityType<RoseSpiritEntity>> ROSE_SPIRIT;
 	
@@ -36,9 +37,11 @@ public class ModEntities {
 		SWAMPJAW = REG.register("swampjaw", () -> EntityType.Builder.<SwampjawEntity>of(SwampjawEntity::new, MobCategory.MONSTER).sized(2.6f, 1.6f)
 				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		//TODO Vela
-		VELA = REG.register("vela", () -> EntityType.Builder.<VelaEntity>of(VelaEntity::new, MobCategory.MONSTER).sized(0.6f, 2.325f)
+		VELA = REG.register("vela", () -> EntityType.Builder.<VelaEntity>of(VelaEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
 				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		//TODO Rose
+		ROSALYNE = REG.register("rosalyne", () -> EntityType.Builder.<RosalyneEntity>of(RosalyneEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
+				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		ROSE_SPIRIT = REG.register("rose_spirit", () -> EntityType.Builder.<RoseSpiritEntity>of(RoseSpiritEntity::new, MobCategory.MONSTER).sized(0.75f, 1.3125f)
 				.setUpdateInterval(2).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 
@@ -60,6 +63,7 @@ public class ModEntities {
 		//TODO Vela
 		event.put(VELA.get(), VelaEntity.createAttributes().build());
 		//TODO Rose
+		event.put(ROSALYNE.get(), RosalyneEntity.createAttributes().build());
 		event.put(ROSE_SPIRIT.get(), RoseSpiritEntity.createAttributes().build());
 	}
 }
