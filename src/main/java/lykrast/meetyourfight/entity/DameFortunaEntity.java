@@ -79,7 +79,7 @@ public class DameFortunaEntity extends BossEntity {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(2, new RegularAttack(this));
 		goalSelector.addGoal(3, new RageEvokerLines(this));
-		goalSelector.addGoal(7, new MoveAroundTarget(this));
+		goalSelector.addGoal(7, new MoveAroundTarget(this, 1));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));

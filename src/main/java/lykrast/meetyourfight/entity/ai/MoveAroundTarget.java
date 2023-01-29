@@ -12,10 +12,12 @@ import net.minecraft.world.phys.Vec3;
 //Used first by Dame Fortuna
 public class MoveAroundTarget extends Goal {
 	private Mob mob;
+	private double speed;
 
-	public MoveAroundTarget(Mob mob) {
+	public MoveAroundTarget(Mob mob, double speed) {
 		setFlags(EnumSet.of(Goal.Flag.MOVE));
 		this.mob = mob;
+		this.speed = speed;
 	}
 
 	@Override
@@ -36,7 +38,7 @@ public class MoveAroundTarget extends Goal {
 				target.getX() + offset.x * distance, 
 				target.getY() + 1 + rand.nextDouble() * 2, 
 				target.getZ() + offset.z * distance,
-				1);
+				speed);
 	}
 
 	@Override

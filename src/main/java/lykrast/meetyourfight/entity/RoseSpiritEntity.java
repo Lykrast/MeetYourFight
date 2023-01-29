@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class RoseSpiritEntity extends Monster {
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RoseSpiritEntity.class, EntityDataSerializers.BYTE);
-	public static final int HIDING = 0, RISING = 1, OUT = 2, ATTACKING = 3, RETRACTING = 4, HURT = 5, RECTRACTING_HURT = 6;
+	public static final int HIDING = 0, RISING = 1, OUT = 2, ATTACKING = 3, RETRACTING = 4, HURT = 5, RETRACTING_HURT = 6;
 	
 	public int attackCooldown;
 	//Client side animation
@@ -49,8 +49,9 @@ public class RoseSpiritEntity extends Monster {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
-		goalSelector.addGoal(2, new BurstAttack(this));
-		goalSelector.addGoal(7, new MoveAroundTarget(this));
+		goalSelector.addGoal(2, new HideAfterHit(this));
+		goalSelector.addGoal(3, new BurstAttack(this));
+		goalSelector.addGoal(7, new MoveAroundTarget(this, 0.5));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
@@ -67,6 +68,19 @@ public class RoseSpiritEntity extends Monster {
 		super.move(typeIn, pos);
 		checkInsideBlocks();
 	}
+	
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		if (source != DamageSource.OUT_OF_WORLD && getStatus() == HIDING && amount > 0) {
+			playSound(SoundEvents.ANVIL_LAND, 1, 1);
+			return false;
+		}
+		if (super.hurt(source, amount)) {
+			if (amount >= 3) setStatus(HURT);
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void tick() {
@@ -79,6 +93,9 @@ public class RoseSpiritEntity extends Monster {
 		if (level.isClientSide) {
 			if (prevStatus != getStatus()) {
 				prevStatus = getStatus();
+				animProg = 0;
+				if (prevStatus == RISING || prevStatus == RETRACTING) animDur = 10;
+				else if (prevStatus == RETRACTING_HURT) animDur = 5;
 			}
 			else if (animProg < animDur) animProg++;
 		}
@@ -144,6 +161,38 @@ public class RoseSpiritEntity extends Monster {
 		return ghost;
 	}
 	
+	private static class HideAfterHit extends Goal {
+		private RoseSpiritEntity mob;
+		private int timer;
+		
+		public HideAfterHit(RoseSpiritEntity mob) {
+			this.mob = mob;
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
+		public void start() {
+			mob.attackCooldown = 100 + mob.random.nextInt(61);
+			timer = 45;
+		}
+		
+		@Override
+		public void tick() {
+			timer--;
+			if (timer <= 0) mob.setStatus(HIDING);
+			else if (timer == 5) mob.setStatus(RETRACTING_HURT);
+		}
+		
+		@Override
+		public boolean canUse() {
+			return mob.getStatus() == HURT || mob.getStatus() == RETRACTING_HURT;
+		}
+	}
+	
 	//The regular attacks
 	private static class BurstAttack extends Goal {
 		private RoseSpiritEntity mob;
@@ -169,7 +218,7 @@ public class RoseSpiritEntity extends Monster {
 		public void start() {
 			mob.attackCooldown = 2;
 			attackDelay = 10;
-			attackRemaining = 1 + mob.random.nextInt(4);
+			attackRemaining = 3 + mob.random.nextInt(8);
 			target = mob.getTarget();
 			phase = 0;
 			mob.setStatus(RISING);
@@ -231,12 +280,11 @@ public class RoseSpiritEntity extends Monster {
 		@Override
 		public void stop() {
 			mob.attackCooldown = 60 + mob.random.nextInt(41);
-			mob.setStatus(HIDING);
 		}
 
 		@Override
 		public boolean canContinueToUse() {
-			return phase <= 4 && target.isAlive();
+			return phase <= 4 && target.isAlive() && mob.getStatus() != HURT && mob.getStatus() != RETRACTING_HURT;
 		}
 		
 	}

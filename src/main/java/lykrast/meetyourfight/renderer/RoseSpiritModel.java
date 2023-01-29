@@ -14,6 +14,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 
 //Made with Blockbench 4.1.5
 //Exported for Minecraft version 1.17 with Mojang mappings
@@ -44,14 +45,34 @@ public class RoseSpiritModel extends EntityModel<RoseSpiritEntity> {
 
 	@Override
 	public void setupAnim(RoseSpiritEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		int status = entity.getStatus();
-		if (status != RoseSpiritEntity.HIDING) {
-			blob.y = 10;
-			hat.y = 6;
-		}
-		else {
-			blob.y = 18;
-			hat.y = 14;
+		float partial = ageInTicks - entity.tickCount;
+		float animProgress = Mth.clamp((entity.animProg + partial) / entity.animDur, 0, 1);
+		int status = entity.prevStatus;
+		switch (status) {
+			default:
+			case RoseSpiritEntity.HIDING:
+				blob.y = 18;
+				hat.y = 14;
+				break;
+			case RoseSpiritEntity.OUT:
+			case RoseSpiritEntity.ATTACKING:
+			case RoseSpiritEntity.HURT:
+				blob.y = 10;
+				hat.y = 6;
+				break;
+			case RoseSpiritEntity.RISING:
+				blob.y = 18 - 8*animProgress;
+				hat.y = 14 - 8*animProgress;
+				break;
+			case RoseSpiritEntity.RETRACTING:
+				blob.y = 10 + 8*animProgress;
+				hat.y = 6 + 8*animProgress;
+				break;
+			case RoseSpiritEntity.RETRACTING_HURT:
+				if (animProgress < 0.5) blob.y = 10 + 16*animProgress;
+				else blob.y = 18;
+				hat.y = 6 + 8*animProgress*animProgress;
+				break;
 		}
 	}
 

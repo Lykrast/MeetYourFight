@@ -19,7 +19,7 @@ public class RoseSpiritRenderer extends MobRenderer<RoseSpiritEntity, RoseSpirit
 	public ResourceLocation getTextureLocation(RoseSpiritEntity entity) {
 		int status = entity.getStatus();
 		if (status == RoseSpiritEntity.ATTACKING) return TEXTURE_SHOOT;
-		else if (status == RoseSpiritEntity.HURT || status == RoseSpiritEntity.RECTRACTING_HURT) return TEXTURE_HURT;
+		else if (status == RoseSpiritEntity.HURT || status == RoseSpiritEntity.RETRACTING_HURT) return TEXTURE_HURT;
 		else return TEXTURE;
 	}
 
