@@ -13,10 +13,12 @@ import net.minecraft.world.phys.Vec3;
 public class MoveFrontOfTarget extends Goal {
 	private Mob mob;
 	private int moveCooldown;
+	private double speed;
 
-	public MoveFrontOfTarget(Mob mob) {
+	public MoveFrontOfTarget(Mob mob, double speed) {
 		setFlags(EnumSet.of(Goal.Flag.MOVE));
 		this.mob = mob;
+		this.speed = speed;
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class MoveFrontOfTarget extends Goal {
 				targetP.getX() + look.x * 4 - 0.5 + mob.getRandom().nextDouble() * 2, 
 				targetP.getY() + 2 + mob.getRandom().nextDouble() * 2, 
 				targetP.getZ() + look.z * 4 - 0.5 + mob.getRandom().nextDouble() * 2,
-				1);
+				speed);
 	}
 
 	@Override

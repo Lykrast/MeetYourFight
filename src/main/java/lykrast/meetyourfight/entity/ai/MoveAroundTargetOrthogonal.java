@@ -13,10 +13,12 @@ import net.minecraft.world.entity.ai.goal.Goal;
 public class MoveAroundTargetOrthogonal extends Goal {
 	private Mob mob;
 	private int moveCooldown;
+	private double speed;
 
-	public MoveAroundTargetOrthogonal(Mob mob) {
+	public MoveAroundTargetOrthogonal(Mob mob, double speed) {
 		setFlags(EnumSet.of(Goal.Flag.MOVE));
 		this.mob = mob;
+		this.speed = speed;
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class MoveAroundTargetOrthogonal extends Goal {
 				target.getX() + dir.getStepX() * distance, 
 				target.getY() + 1 + rand.nextDouble() * 2, 
 				target.getZ() + dir.getStepZ() * distance,
-				1);
+				speed);
 	}
 
 	@Override

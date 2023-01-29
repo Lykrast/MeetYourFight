@@ -69,8 +69,8 @@ public class BellringerEntity extends BossEntity {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new RageAttack(this));
 		goalSelector.addGoal(2, new BurstAttack(this));
-		goalSelector.addGoal(7, new MoveFrontOfTarget(this));
-		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
+		goalSelector.addGoal(7, new MoveFrontOfTarget(this, 1));
+		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
 		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));

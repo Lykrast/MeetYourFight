@@ -9,10 +9,12 @@ import net.minecraft.core.BlockPos;
 public class VexMoveRandomGoal extends Goal {
 	//The Vex's MoveRandom but separated
 	private Mob mob;
+	private double speed;
 
-    public VexMoveRandomGoal(Mob mob) {
+    public VexMoveRandomGoal(Mob mob, double speed) {
        setFlags(EnumSet.of(Goal.Flag.MOVE));
        this.mob = mob;
+       this.speed = speed;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class VexMoveRandomGoal extends Goal {
        for(int i = 0; i < 3; ++i) {
           BlockPos blockpos1 = blockpos.offset(mob.getRandom().nextInt(15) - 7, mob.getRandom().nextInt(11) - 5, mob.getRandom().nextInt(15) - 7);
           if (mob.level.isEmptyBlock(blockpos1)) {
-             mob.getMoveControl().setWantedPosition(blockpos1.getX() + 0.5, blockpos1.getY() + 0.5, blockpos1.getZ() + 0.5, 0.25);
+             mob.getMoveControl().setWantedPosition(blockpos1.getX() + 0.5, blockpos1.getY() + 0.5, blockpos1.getZ() + 0.5, speed);
              if (mob.getTarget() == null) {
                 mob.getLookControl().setLookAt(blockpos1.getX() + 0.5, blockpos1.getY() + 0.5, blockpos1.getZ() + 0.5, 180.0F, 20.0F);
              }

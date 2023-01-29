@@ -60,8 +60,8 @@ public class VelaEntity extends BossEntity {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(2, new WaterAttack(this));
 		goalSelector.addGoal(3, new AirAttack(this));
-		goalSelector.addGoal(7, new MoveAroundTargetOrthogonal(this));
-		goalSelector.addGoal(8, new VexMoveRandomGoal(this));
+		goalSelector.addGoal(7, new MoveAroundTargetOrthogonal(this, 1));
+		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
 		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
