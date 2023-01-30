@@ -59,7 +59,7 @@ public class ModItems {
 		eggVela = REG.register("vela_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.VELA, 0xFFF9F5, 0xD3ECF1, defP()));
 		//TODO Rose
 		eggRosalyne = REG.register("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
-		REG.register("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
+		//REG.register("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems();
 	}
