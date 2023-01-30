@@ -55,7 +55,7 @@ public class RosalyneEntity extends BossEntity {
 	
 	public RosalyneEntity(EntityType<? extends RosalyneEntity> type, Level worldIn) {
 		super(type, worldIn);
-		moveControl = new VexMovementController(this);
+		moveControl = new VexMovementController(this).slowdown(0.15);
 		xpReward = 200;
 		phase = 0;
 		clientAnim = ANIM_NEUTRAL;

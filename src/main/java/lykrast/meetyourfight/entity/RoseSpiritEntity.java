@@ -48,7 +48,7 @@ public class RoseSpiritEntity extends Monster {
 	
 	public RoseSpiritEntity(EntityType<? extends RoseSpiritEntity> type, Level worldIn) {
 		super(type, worldIn);
-		moveControl = new VexMovementController(this);
+		moveControl = new VexMovementController(this).slowdown(0.2);
 		xpReward = 5;
 		prevStatus = getStatus();
 		animDur = 1;

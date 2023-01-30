@@ -6,9 +6,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class VexMovementController extends MoveControl {
-	//This is just the Vex's movement controller but separated
+	//Speed multiplied by this every tick when we reach the destination
+	private double slowdown = 0.5;
+	//This is just the Vex's movement controller but separated and a bit cleaned up
 	public VexMovementController(Mob mob) {
 		super(mob);
+	}
+	
+	public VexMovementController slowdown(double slowdown) {
+		this.slowdown = slowdown;
+		return this;
 	}
 
     @Override
@@ -18,7 +25,7 @@ public class VexMovementController extends MoveControl {
           double d0 = vector3d.length();
           if (d0 < mob.getBoundingBox().getSize()) {
              operation = MoveControl.Operation.WAIT;
-             mob.setDeltaMovement(mob.getDeltaMovement().scale(0.5D));
+             mob.setDeltaMovement(mob.getDeltaMovement().scale(slowdown));
           } else {
              mob.setDeltaMovement(mob.getDeltaMovement().add(vector3d.scale(this.speedModifier * 0.05D / d0)));
              if (mob.getTarget() == null) {
