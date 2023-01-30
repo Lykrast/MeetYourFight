@@ -223,7 +223,7 @@ public class RoseSpiritEntity extends Monster {
 				Vec3 dir = null;
 				if (mob.getTarget() != null) dir = new Vec3(mob.getTarget().getX() - sx,  mob.getTarget().getY()+1 - sy, mob.getTarget().getZ() - sz);
 				else dir = new Vec3(1,  -0.25, 0);
-				dir.normalize().scale(0.8);
+				dir = dir.normalize().scale(2);
 				for (int i = 0; i < 8; i++) {
 					ProjectileLineEntity ghost = mob.readyAttack();
 					ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
@@ -281,12 +281,12 @@ public class RoseSpiritEntity extends Monster {
 		public void start() {
 			LivingEntity target = mob.owner;
 			RandomSource rand = mob.getRandom();
-			float angle = (rand.nextInt(7) + 2) * 10f * ((float) Math.PI / 180F);
-			if (rand.nextBoolean()) angle *= -1;
+			float angle = (rand.nextInt(4) + 2) * 10f * ((float) Math.PI / 180F);
+			//if (rand.nextBoolean()) angle *= -1;
 			Vec3 offset = new Vec3(mob.getX() - target.getX(), 0, mob.getZ() - target.getZ()).normalize().yRot(angle);
 			double distance = rand.nextDouble() * 2 + 4;
 			
-			double actSpeed = mob.distanceToSqr(mob.owner) > 100 ? 4 : speed;
+			double actSpeed = mob.distanceToSqr(mob.owner) > 100 ? 6 : speed;
 			mob.getMoveControl().setWantedPosition(target.getX() + offset.x * distance, target.getY() + rand.nextDouble() * 2, target.getZ() + offset.z * distance, actSpeed);
 		}
 

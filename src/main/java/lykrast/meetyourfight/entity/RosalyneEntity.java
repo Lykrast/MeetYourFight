@@ -21,8 +21,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -51,6 +49,7 @@ public class RosalyneEntity extends BossEntity {
 	
 	public int attackCooldown;
 	private int phase;
+	private int nextAttack;
 	
 	public int clientAnim, prevAnim, animProg, animDur;
 	
@@ -70,7 +69,8 @@ public class RosalyneEntity extends BossEntity {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new PhaseTransition(this));
-		goalSelector.addGoal(2, new MainAttack(this));
+		goalSelector.addGoal(2, new AdvanceAndSwingAttack(this));
+		goalSelector.addGoal(3, new CircleAndDashAttack(this));
 		goalSelector.addGoal(7, new MoveFrontOfTarget(this, 0.5));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -122,7 +122,6 @@ public class RosalyneEntity extends BossEntity {
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) dame.setTarget(player);
-		dame.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
 		dame.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
@@ -222,6 +221,7 @@ public class RosalyneEntity extends BossEntity {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("Cooldown")) attackCooldown = compound.getInt("Cooldown");
 		if (compound.contains("Phase")) setPhase(compound.getInt("Phase"));
+		if (compound.contains("NxtAt")) nextAttack = compound.getInt("NxtAt");
 	}
 
 	@Override
@@ -229,6 +229,7 @@ public class RosalyneEntity extends BossEntity {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("Cooldown", attackCooldown);
 		compound.putInt("Phase", getPhase());
+		compound.putInt("NxtAt", nextAttack);
 	}
 	
 	@Override
@@ -256,13 +257,65 @@ public class RosalyneEntity extends BossEntity {
 		return MeetYourFight.rl("rosalyne");
 	}
 	
-	private static class MainAttack extends Goal {
+	private void rollNextAttack(int ignore) {
+		//For now it's just 2 attacks
+		if (ignore == 0) nextAttack = 1;
+		else if (ignore == 1) nextAttack = 0;
+		else nextAttack = random.nextInt(2);
+	}
+	
+	private static class PhaseTransition extends StationaryAttack {
+		private RosalyneEntity rosalyne;
+		private int timer;
+
+		public PhaseTransition(RosalyneEntity rosalyne) {
+			super(rosalyne);
+			this.rosalyne = rosalyne;
+		}
+		
+		@Override
+		public void start() {
+			super.start();
+			timer = 60;
+		}
+
+		@Override
+		public void tick() {
+			super.tick();
+			timer--;
+			if (timer <= 0) {
+				switch (rosalyne.phase) {
+					case BREAKING_OUT:
+						rosalyne.setPhase(PHASE_1);
+						rosalyne.level.explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 6, Explosion.BlockInteraction.NONE);
+						break;
+					case SUMMONING:
+						rosalyne.setPhase(PHASE_2);
+						rosalyne.createSpirits();
+						break;
+					case MADDENING:
+						rosalyne.setPhase(PHASE_3);
+						break;
+				}
+				rosalyne.attackCooldown = 100;
+			}
+		}
+
+		@Override
+		public boolean canUse() {
+			return rosalyne.phase == BREAKING_OUT || rosalyne.phase == SUMMONING || rosalyne.phase == MADDENING;
+		}
+		
+	}
+	
+	private static class AdvanceAndSwingAttack extends Goal {
+		//This is attack 0
 		private RosalyneEntity rosalyne;
 		private int timer, swingsLeft, attackPhase;
 		private double holdx, holdy, holdz;
 		//attackPhase 0 = approaching, 1 = preparing to swing, 2 = swinging
 		
-		public MainAttack(RosalyneEntity rosalyne) {
+		public AdvanceAndSwingAttack(RosalyneEntity rosalyne) {
 			this.rosalyne = rosalyne;
 			setFlags(EnumSet.of(Goal.Flag.MOVE));
 		}
@@ -312,7 +365,7 @@ public class RosalyneEntity extends BossEntity {
 					timer = rosalyne.phase == PHASE_3 ? 12 : 20;
 				}
 			}
-			//Swinging wildly
+			//Swinging wildly while approaching
 			else {
 				rosalyne.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 0.5);
 				if (timer <= 0) {
@@ -330,11 +383,12 @@ public class RosalyneEntity extends BossEntity {
 			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
 			if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
 			rosalyne.setAnimation(ANIM_NEUTRAL);
+			rosalyne.rollNextAttack(0);
 		}
 
 		@Override
 		public boolean canUse() {
-			return (rosalyne.phase == PHASE_1 || rosalyne.phase == PHASE_2 || rosalyne.phase == PHASE_3) && rosalyne.getTarget() != null && rosalyne.getTarget().isAlive() && rosalyne.attackCooldown <= 0;
+			return rosalyne.nextAttack == 0 && (rosalyne.phase == PHASE_1 || rosalyne.phase == PHASE_2 || rosalyne.phase == PHASE_3) && rosalyne.getTarget() != null && rosalyne.getTarget().isAlive() && rosalyne.attackCooldown <= 0;
 		}
 		
 		@Override
@@ -344,46 +398,127 @@ public class RosalyneEntity extends BossEntity {
 		
 	}
 	
-	private static class PhaseTransition extends StationaryAttack {
+	private static class CircleAndDashAttack extends Goal {
+		//This is attack 1
 		private RosalyneEntity rosalyne;
-		private int timer;
-
-		public PhaseTransition(RosalyneEntity rosalyne) {
-			super(rosalyne);
+		private int timer, swingsLeft, attackPhase;
+		private double holdx, holdy, holdz;
+		private Vec3 offset;
+		//attackPhase 0 = approaching, 1 = circling, 2 = preparing to dash, 3 = dash, 4 = hold pose
+		
+		public CircleAndDashAttack(RosalyneEntity rosalyne) {
 			this.rosalyne = rosalyne;
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
 		}
 		
 		@Override
 		public void start() {
-			super.start();
-			timer = 60;
+			timer = 100;
+			swingsLeft = 1 + rosalyne.random.nextInt(2);
+			if (rosalyne.phase == PHASE_2) swingsLeft = 2 + rosalyne.random.nextInt(2);
+			else if (rosalyne.phase == PHASE_3) swingsLeft = 3 + rosalyne.random.nextInt(3);
+			startCircling();
 		}
-
+		
+		private void startCircling() {
+			attackPhase = 0;
+			LivingEntity target = rosalyne.getTarget();
+			offset = new Vec3(rosalyne.getX() - target.getX(), 1, rosalyne.getZ() - target.getZ()).normalize().scale(4);
+			rosalyne.moveControl.setWantedPosition(target.getX() + offset.x, target.getY() + offset.y, target.getZ() + offset.z, 4);
+			rosalyne.setAnimation(ANIM_ARM_UP);
+		}
+		
 		@Override
 		public void tick() {
-			super.tick();
 			timer--;
-			if (timer <= 0) {
-				switch (rosalyne.phase) {
-					case BREAKING_OUT:
-						rosalyne.setPhase(PHASE_1);
-						rosalyne.level.explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 6, Explosion.BlockInteraction.NONE);
-						break;
-					case SUMMONING:
-						rosalyne.setPhase(PHASE_2);
-						rosalyne.createSpirits();
-						break;
-					case MADDENING:
-						rosalyne.setPhase(PHASE_3);
-						break;
+			LivingEntity target = rosalyne.getTarget();
+			//Approaching
+			if (attackPhase == 0) {
+				double tx = target.getX() + offset.x;
+				double ty = target.getY() + offset.y;
+				double tz = target.getZ() + offset.z;
+				if (timer <= 0 || rosalyne.distanceToSqr(tx, ty, tz) < 1) {
+					attackPhase = 1;
+					//5° per tick, but also we need to not take too long or it's boring, so right now it's between 90° and 270°
+					timer = 18 + rosalyne.random.nextInt(36);
 				}
-				rosalyne.attackCooldown = 100;
+				rosalyne.moveControl.setWantedPosition(tx, ty, tz, 4);
 			}
+			//Circling
+			else if (attackPhase == 1) {
+				offset = offset.yRot(5*Mth.DEG_TO_RAD);
+				double tx = target.getX() + offset.x;
+				double ty = target.getY() + offset.y;
+				double tz = target.getZ() + offset.z;
+				rosalyne.moveControl.setWantedPosition(tx, ty, tz, 4);
+				if (timer <= 0) {
+					attackPhase = 2;
+					holdx = tx;
+					holdy = ty;
+					holdz = tz;
+					timer = rosalyne.phase == PHASE_3 ? 10 : 20;
+					rosalyne.setAnimation(ANIM_ARM_OUT);
+					rosalyne.playSound(SoundEvents.ARMOR_EQUIP_IRON, 1, 1);
+				}
+			}
+			//Holding still before the swing
+			else if (attackPhase == 2) {
+				if (timer <= 0) {
+					attackPhase = 3;
+					timer = 20;
+					//Overshoot the target by 4 blocks
+					double tx = target.getX();
+					double ty = target.getY();
+					double tz = target.getZ();
+					Vec3 tpos = new Vec3(tx - holdx, ty - holdy, tz - holdz).normalize();
+					holdx = tx + 4*tpos.x;
+					holdy = ty + 4*tpos.y;
+					holdz = tz + 4*tpos.z;
+				}
+				rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
+			}
+			//Charging
+			else if (attackPhase == 3) {
+				if (timer <= 0 || rosalyne.distanceToSqr(target) < 2 || rosalyne.distanceToSqr(holdx, holdy, holdz) < 1) {
+					//Got to the target, get ready to hold the pose
+					rosalyne.swing();
+					swingsLeft--;
+					holdx = rosalyne.getX();
+					holdy = target.getY();
+					holdz = rosalyne.getZ();
+					attackPhase = 4;
+					timer = (swingsLeft > 0 && rosalyne.phase == PHASE_3) ? 10 : 20;
+				}
+				rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 3);
+			}
+			//Holding still after the strike
+			else if (attackPhase == 4) {
+				if (timer <= 0 && swingsLeft > 0) startCircling();
+				else rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
+			}
+		}
+		
+		@Override
+		public void stop() {
+			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
+			if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
+			rosalyne.setAnimation(ANIM_NEUTRAL);
+			rosalyne.rollNextAttack(1);
 		}
 
 		@Override
 		public boolean canUse() {
-			return rosalyne.phase == BREAKING_OUT || rosalyne.phase == SUMMONING || rosalyne.phase == MADDENING;
+			return rosalyne.nextAttack == 1 && (rosalyne.phase == PHASE_1 || rosalyne.phase == PHASE_2 || rosalyne.phase == PHASE_3) && rosalyne.getTarget() != null && rosalyne.getTarget().isAlive() && rosalyne.attackCooldown <= 0;
+		}
+		
+		@Override
+		public boolean canContinueToUse() {
+			return canUse() && (swingsLeft > 0 || timer > 0);
 		}
 		
 	}

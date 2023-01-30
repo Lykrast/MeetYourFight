@@ -41,7 +41,7 @@ public class ModEntities {
 				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		//TODO Rose
 		ROSALYNE = REG.register("rosalyne", () -> EntityType.Builder.<RosalyneEntity>of(RosalyneEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
-				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
+				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		ROSE_SPIRIT = REG.register("rose_spirit", () -> EntityType.Builder.<RoseSpiritEntity>of(RoseSpiritEntity::new, MobCategory.MONSTER).sized(0.75f, 1.3125f)
 				.setUpdateInterval(2).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 
