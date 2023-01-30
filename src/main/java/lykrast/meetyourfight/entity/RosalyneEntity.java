@@ -328,9 +328,8 @@ public class RosalyneEntity extends BossEntity {
 		@Override
 		public void start() {
 			timer = 100;
-			swingsLeft = 3;
-			if (rosalyne.phase == PHASE_2) swingsLeft = 4 + rosalyne.random.nextInt(2);
-			else if (rosalyne.phase == PHASE_3) swingsLeft = 8 + rosalyne.random.nextInt(5);
+			swingsLeft = 3 + rosalyne.random.nextInt(2);
+			if (rosalyne.phase == PHASE_3) swingsLeft = 8 + rosalyne.random.nextInt(5);
 			attackPhase = 0;
 			LivingEntity target = rosalyne.getTarget();
 			rosalyne.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 4);
@@ -420,8 +419,7 @@ public class RosalyneEntity extends BossEntity {
 		public void start() {
 			timer = 100;
 			swingsLeft = 1 + rosalyne.random.nextInt(2);
-			if (rosalyne.phase == PHASE_2) swingsLeft = 2 + rosalyne.random.nextInt(2);
-			else if (rosalyne.phase == PHASE_3) swingsLeft = 3 + rosalyne.random.nextInt(3);
+			if (rosalyne.phase == PHASE_3) swingsLeft = 3 + rosalyne.random.nextInt(3);
 			startCircling();
 		}
 		
