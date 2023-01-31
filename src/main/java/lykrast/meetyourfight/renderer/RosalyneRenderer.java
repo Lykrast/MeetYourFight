@@ -21,7 +21,7 @@ public class RosalyneRenderer extends MobRenderer<RosalyneEntity, RosalyneModel>
 		int phase = entity.getPhase();
 		if (phase == RosalyneEntity.BREAKING_OUT || phase == RosalyneEntity.MADDENING) {
 			//Lifted from the being frozen part of living render
-			rotationYaw += (float)(Math.cos(entity.tickCount * 3.25) * Math.PI * 0.4);
+			rotationYaw += (float)(Math.cos(entity.tickCount * 3.25) * Math.PI * 0.6);
 		}
 		super.setupRotations(entity, stack, ageInTicks, rotationYaw, partialTicks);
 	}

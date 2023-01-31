@@ -2,7 +2,6 @@ package lykrast.meetyourfight.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.RosalyneEntity;
@@ -30,15 +29,19 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	private final ModelPart rightLeg;
 	private final ModelPart leftLeg;
 	private final ModelPart coffin;
-	//x, y, z rotations for the right arm for each animation
-	private static final Vector3f[] animRotations = {
-			new Vector3f(0,0,0), 
-			new Vector3f(0,0,2.3561945F), 
-			new Vector3f(-15*Mth.DEG_TO_RAD,0,75*Mth.DEG_TO_RAD), 
-			new Vector3f(-135*Mth.DEG_TO_RAD,0,75*Mth.DEG_TO_RAD)
+	//Right arm pose for each animation they take degrees from blockbench for readability
+	//ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5;
+	private static final Pose[] RARM_POSE = {
+			new Pose(-5,0,0, 30,0,0, 15,0,0, false),
+			new Pose(-10,0,100, -25,0,0, -25,0,0),
+			new Pose(105,0,95, 80,0,0, 30,0,0),
+			new Pose(-10,0,80, -25,0,0, -25,0,0),
+			new Pose(100,0,120, 80,0,0, 30,0,0),
+			new Pose(-5,0,50, 30,0,0, 30,0,0)
 			};
 	private float animProgress;
 	private int phase;
+	private Pose pose, prevPose;
 
 	public RosalyneModel(ModelPart root) {
 		head = root.getChild("Head");
@@ -83,15 +86,17 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	@Override
 	public void prepareMobModel(RosalyneEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
 		super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
+		phase = entityIn.getPhase();
+		pose = RARM_POSE[entityIn.clientAnim];
+		prevPose = RARM_POSE[entityIn.prevAnim];
 		animProgress = entityIn.getAnimProgress(partialTick);
-		if (entityIn.clientAnim != RosalyneEntity.ANIM_NEUTRAL) {
+		if (pose.fast) {
 			//Fast initial then slows down
 			animProgress = 1-animProgress;
 			animProgress *= animProgress;
 			animProgress *= animProgress;
 			animProgress = 1-animProgress;
 		}
-		phase = entityIn.getPhase();
 	}
 
 	@Override
@@ -112,25 +117,37 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	@Override
 	public void setupAnim(RosalyneEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		//Head
+		//TODO maddening animation
 		head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
 		head.xRot = headPitch * Mth.DEG_TO_RAD;
 		coffin.yRot = netHeadYaw * Mth.DEG_TO_RAD;
 		//Legs, lifted from HumanoidModel
+		//TODO summoning animation
 		leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
 		rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 		leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
 		//Arms
-		Vector3f anim = animRotations[entityIn.clientAnim];
 		if (animProgress >= 0.99) {
-			rightArm.xRot = anim.x();
-			rightArm.yRot = anim.y();
-			rightArm.zRot = anim.z();
+			rightArm.xRot = pose.armX;
+			rightArm.yRot = pose.armY;
+			rightArm.zRot = pose.armZ;
+			forearm.xRot = pose.foreX;
+			forearm.yRot = pose.foreY;
+			forearm.zRot = pose.foreZ;
+			blade.xRot = pose.bladeX;
+			blade.yRot = pose.bladeY;
+			blade.zRot = pose.bladeZ;
 		}
 		else {
-			Vector3f prev = animRotations[entityIn.prevAnim];
-			rightArm.xRot = rotlerpRad(animProgress, prev.x(), anim.x());
-			rightArm.yRot = rotlerpRad(animProgress, prev.y(), anim.y());
-			rightArm.zRot = rotlerpRad(animProgress, prev.z(), anim.z());
+			rightArm.xRot = rotlerpRad(animProgress, prevPose.armX, pose.armX);
+			rightArm.yRot = rotlerpRad(animProgress, prevPose.armY, pose.armY);
+			rightArm.zRot = rotlerpRad(animProgress, prevPose.armZ, pose.armZ);
+			forearm.xRot = rotlerpRad(animProgress, prevPose.foreX, pose.foreX);
+			forearm.yRot = rotlerpRad(animProgress, prevPose.foreY, pose.foreY);
+			forearm.zRot = rotlerpRad(animProgress, prevPose.foreZ, pose.foreZ);
+			blade.xRot = rotlerpRad(animProgress, prevPose.bladeX, pose.bladeX);
+			blade.yRot = rotlerpRad(animProgress, prevPose.bladeY, pose.bladeY);
+			blade.zRot = rotlerpRad(animProgress, prevPose.bladeZ, pose.bladeZ);
 		}
 	}
 
@@ -141,6 +158,29 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 		if (diff < -Mth.PI) diff += Mth.TWO_PI;
 		if (diff >= Mth.PI) diff -= Mth.TWO_PI;
 		return start + progress * diff;
+	}
+	
+	private static class Pose {
+		public final float armX, armY, armZ, foreX, foreY, foreZ, bladeX, bladeY, bladeZ;
+		public final boolean fast;
+		
+		public Pose(float armX, float armY, float armZ, float foreX, float foreY, float foreZ, float bladeX, float bladeY, float bladeZ) {
+			this(armX, armY, armZ, foreX, foreY, foreZ, bladeX, bladeY, bladeZ, true);
+		}
+
+		public Pose(float armX, float armY, float armZ, float foreX, float foreY, float foreZ, float bladeX, float bladeY, float bladeZ, boolean fast) {
+			//Don't know why some of the blockbench angles are reversed so that's why there are -
+			this.armX = armX * -Mth.DEG_TO_RAD;
+			this.armY = armY * Mth.DEG_TO_RAD;
+			this.armZ = armZ * Mth.DEG_TO_RAD;
+			this.foreX = foreX * -Mth.DEG_TO_RAD;
+			this.foreY = foreY * Mth.DEG_TO_RAD;
+			this.foreZ = foreZ * Mth.DEG_TO_RAD;
+			this.bladeX = bladeX * -Mth.DEG_TO_RAD;
+			this.bladeY = bladeY * Mth.DEG_TO_RAD;
+			this.bladeZ = bladeZ * Mth.DEG_TO_RAD;
+			this.fast = fast;
+		}
 	}
 
 }

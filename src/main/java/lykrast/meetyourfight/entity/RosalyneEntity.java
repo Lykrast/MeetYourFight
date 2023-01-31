@@ -43,7 +43,7 @@ public class RosalyneEntity extends BossEntity {
 	//Phase is lowest 3 bits, rest is animation 0xAAAAAPPP
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RosalyneEntity.class, EntityDataSerializers.BYTE);
 	public static final int ENCASED = 0, BREAKING_OUT = 1, PHASE_1 = 2, SUMMONING = 3, PHASE_2 = 4, MADDENING = 5, PHASE_3 = 6;
-	public static final int ANIM_NEUTRAL = 0, ANIM_ARM_UP = 1, ANIM_ARM_OUT = 2, ANIM_ARM_IN = 3;
+	public static final int ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5;
 	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
 	private final TargetingConditions spiritCountTargeting = TargetingConditions.forNonCombat().range(32).ignoreLineOfSight().ignoreInvisibilityTesting();
 	
@@ -177,7 +177,21 @@ public class RosalyneEntity extends BossEntity {
         	if (!(entity instanceof RosalyneEntity) && !(entity instanceof RoseSpiritEntity) && entity.isAlive()) doHurtTarget(entity);
         }
         playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1, 1);
-        setAnimation(getAnimation() == ANIM_ARM_OUT ? ANIM_ARM_IN : ANIM_ARM_OUT);
+        //attack cycle goes OUTDN, INUP, OUTUP, INDN, repeat
+        switch (getAnimation()) {
+        	case ANIM_ARM_OUT_DN:
+        		setAnimation(ANIM_ARM_IN_UP);
+        		break;
+        	case ANIM_ARM_IN_UP:
+        		setAnimation(ANIM_ARM_OUT_UP);
+        		break;
+        	case ANIM_ARM_OUT_UP:
+        		setAnimation(ANIM_ARM_IN_DN);
+        		break;
+        	default:
+        		setAnimation(ANIM_ARM_OUT_DN);
+        		break;
+        }
 	}
 	
 	@Override
@@ -348,7 +362,7 @@ public class RosalyneEntity extends BossEntity {
 					rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
 					attackPhase = 1;
 					timer = 25;
-					rosalyne.setAnimation(ANIM_ARM_OUT);
+					rosalyne.setAnimation(ANIM_ARM_OUT_DN);
 				}
 				else {
 					rosalyne.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 4);
@@ -428,7 +442,7 @@ public class RosalyneEntity extends BossEntity {
 			LivingEntity target = rosalyne.getTarget();
 			offset = new Vec3(rosalyne.getX() - target.getX(), 1, rosalyne.getZ() - target.getZ()).normalize().scale(4);
 			rosalyne.moveControl.setWantedPosition(target.getX() + offset.x, target.getY() + offset.y, target.getZ() + offset.z, 4);
-			rosalyne.setAnimation(ANIM_ARM_UP);
+			rosalyne.setAnimation(ANIM_PREPARE_DASH);
 		}
 		
 		@Override
@@ -459,8 +473,8 @@ public class RosalyneEntity extends BossEntity {
 					holdx = tx;
 					holdy = ty;
 					holdz = tz;
-					timer = rosalyne.phase == PHASE_3 ? 10 : 20;
-					rosalyne.setAnimation(ANIM_ARM_OUT);
+					timer = rosalyne.phase == PHASE_3 ? 15 : 20;
+					rosalyne.setAnimation(ANIM_ARM_OUT_DN);
 					rosalyne.playSound(SoundEvents.ARMOR_EQUIP_IRON, 1, 1);
 				}
 			}
