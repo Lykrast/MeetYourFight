@@ -21,7 +21,7 @@ public class ModItems {
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> duskKey, violetBloom;
 	public static RegistryObject<Item> discMagnum;
-	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggVela, eggRosalyne;
+	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne, eggVela;
 	
 	static {
 		hauntedBell = REG.register("haunted_bell", () -> new SummonItem(noStack(), BellringerEntity::spawn));
@@ -55,11 +55,11 @@ public class ModItems {
 		eggBellringer = REG.register("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
 		eggDameFortuna = REG.register("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
 		eggSwampjaw = REG.register("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
-		//TODO Vela
-		eggVela = REG.register("vela_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.VELA, 0xFFF9F5, 0xD3ECF1, defP()));
 		//TODO Rose
 		eggRosalyne = REG.register("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
 		//REG.register("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
+		//TODO Vela
+		//eggVela = REG.register("vela_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.VELA, 0xFFF9F5, 0xD3ECF1, defP()));
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems();
 	}
