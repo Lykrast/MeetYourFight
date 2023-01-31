@@ -81,7 +81,7 @@ public class RosalyneEntity extends BossEntity {
 	
 	public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 500)
-        		.add(Attributes.ARMOR, 10).add(Attributes.ARMOR_TOUGHNESS, 4)
+        		.add(Attributes.ARMOR, 8).add(Attributes.ARMOR_TOUGHNESS, 4)
         		.add(Attributes.KNOCKBACK_RESISTANCE, 1)
         		.add(Attributes.ATTACK_DAMAGE, 24)
         		.add(Attributes.FOLLOW_RANGE, 64);
@@ -276,7 +276,7 @@ public class RosalyneEntity extends BossEntity {
 		@Override
 		public void start() {
 			super.start();
-			timer = 60;
+			timer = 80;
 		}
 
 		@Override
