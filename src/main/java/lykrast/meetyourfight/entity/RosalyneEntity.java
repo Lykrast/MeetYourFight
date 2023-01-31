@@ -449,7 +449,7 @@ public class RosalyneEntity extends BossEntity {
 			}
 			//Circling
 			else if (attackPhase == 1) {
-				offset = offset.yRot(5*Mth.DEG_TO_RAD);
+				offset = offset.yRot(-5*Mth.DEG_TO_RAD);
 				double tx = target.getX() + offset.x;
 				double ty = target.getY() + offset.y;
 				double tz = target.getZ() + offset.z;
