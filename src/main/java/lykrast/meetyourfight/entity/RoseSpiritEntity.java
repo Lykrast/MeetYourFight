@@ -223,7 +223,7 @@ public class RoseSpiritEntity extends Monster {
 				Vec3 dir = null;
 				if (mob.getTarget() != null) dir = new Vec3(mob.getTarget().getX() - sx,  mob.getTarget().getY()+1 - sy, mob.getTarget().getZ() - sz);
 				else dir = new Vec3(1,  -0.25, 0);
-				dir = dir.normalize().scale(2);
+				dir = dir.normalize();
 				for (int i = 0; i < 8; i++) {
 					ProjectileLineEntity ghost = mob.readyAttack();
 					ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
@@ -374,7 +374,7 @@ public class RoseSpiritEntity extends Monster {
 			double sy = mob.getY();
 			double sz = mob.getZ();
 
-			Vec3 dir = new Vec3(target.getX() - sx,  target.getY()+1 - sy, target.getZ() - sz).normalize().scale(2);
+			Vec3 dir = new Vec3(target.getX() - sx,  target.getY()+1 - sy, target.getZ() - sz).normalize();
 			ProjectileLineEntity ghost = mob.readyAttack();
 			ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
 			mob.level.addFreshEntity(ghost);

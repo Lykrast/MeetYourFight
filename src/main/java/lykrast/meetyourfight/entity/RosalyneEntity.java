@@ -43,7 +43,8 @@ public class RosalyneEntity extends BossEntity {
 	//Phase is lowest 3 bits, rest is animation 0xAAAAAPPP
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RosalyneEntity.class, EntityDataSerializers.BYTE);
 	public static final int ENCASED = 0, BREAKING_OUT = 1, PHASE_1 = 2, SUMMONING = 3, PHASE_2 = 4, MADDENING = 5, PHASE_3 = 6;
-	public static final int ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5;
+	public static final int ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5,
+			ANIM_BROKE_OUT = 6, ANIM_SUMMONING = 7, ANIM_MADDENING = 8;
 	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
 	private final TargetingConditions spiritCountTargeting = TargetingConditions.forNonCombat().range(32).ignoreLineOfSight().ignoreInvisibilityTesting();
 	
@@ -107,6 +108,10 @@ public class RosalyneEntity extends BossEntity {
 				clientAnim = newanim;
 				animProg = 0;
 				animDur = 5;
+				//Animations with slower transitions
+				if (prevAnim == ANIM_BROKE_OUT) animDur = 60;
+				else if (clientAnim == ANIM_SUMMONING) animDur = 10;
+				else if (prevAnim == ANIM_SUMMONING) animDur = 20;
 			}
 			else if (animProg < animDur) animProg++;
 		}
@@ -202,7 +207,8 @@ public class RosalyneEntity extends BossEntity {
 			for (RoseSpiritEntity spirit : list) {
 				spirit.setOwner(this);
 			}
-			if (!list.isEmpty()) setHealth(getHealth() + 1);
+			//Healing can mess up a /kill so putting a check here
+			if (!list.isEmpty() && !isRemoved()) setHealth(getHealth() + 1);
 		}
 	}
 	
@@ -281,6 +287,8 @@ public class RosalyneEntity extends BossEntity {
 	private static class PhaseTransition extends StationaryAttack {
 		private RosalyneEntity rosalyne;
 		private int timer;
+		//Putting that as a constant so that I write DURATION-20 instead of 60 so clearer
+		private static final int DURATION = 80;
 
 		public PhaseTransition(RosalyneEntity rosalyne) {
 			super(rosalyne);
@@ -297,6 +305,21 @@ public class RosalyneEntity extends BossEntity {
 		public void tick() {
 			super.tick();
 			timer--;
+			//Start the custom animation a bit after stopping
+			if (timer == DURATION-10) {
+				switch (rosalyne.phase) {
+					case BREAKING_OUT:
+						//Actually we won't see this one but the transition to neutral is slow
+						rosalyne.setAnimation(ANIM_BROKE_OUT);
+						break;
+					case SUMMONING:
+						rosalyne.setAnimation(ANIM_SUMMONING);
+						break;
+					case MADDENING:
+						rosalyne.setAnimation(ANIM_MADDENING);
+						break;
+				}
+			}
 			if (timer <= 0) {
 				switch (rosalyne.phase) {
 					case BREAKING_OUT:
@@ -309,8 +332,10 @@ public class RosalyneEntity extends BossEntity {
 						break;
 					case MADDENING:
 						rosalyne.setPhase(PHASE_3);
+						rosalyne.level.explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 4, Explosion.BlockInteraction.NONE);
 						break;
 				}
+				rosalyne.setAnimation(ANIM_NEUTRAL);
 				rosalyne.attackCooldown = 100;
 			}
 		}
@@ -394,7 +419,8 @@ public class RosalyneEntity extends BossEntity {
 		@Override
 		public void stop() {
 			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
-			if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
+			if (rosalyne.phase == PHASE_2) rosalyne.attackCooldown += 20;
+			else if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
 			rosalyne.setAnimation(ANIM_NEUTRAL);
 			rosalyne.rollNextAttack(0);
 		}
@@ -518,7 +544,8 @@ public class RosalyneEntity extends BossEntity {
 		@Override
 		public void stop() {
 			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
-			if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
+			if (rosalyne.phase == PHASE_2) rosalyne.attackCooldown += 20;
+			else if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
 			rosalyne.setAnimation(ANIM_NEUTRAL);
 			rosalyne.rollNextAttack(1);
 		}
