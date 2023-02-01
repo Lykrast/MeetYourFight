@@ -33,9 +33,9 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	//ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5;
 	private static final Pose[] RARM_POSE = {
 			new Pose(-5,0,0, 30,0,0, 15,0,0, false),
-			new Pose(-10,0,100, -25,0,0, -25,0,0),
+			new Pose(-10,0,100, 0,0,0, 0,0,0),
 			new Pose(105,0,95, 80,0,0, 30,0,0),
-			new Pose(-10,0,80, -25,0,0, -25,0,0),
+			new Pose(-10,0,80, 0,0,0, 0,0,0),
 			new Pose(100,0,120, 80,0,0, 30,0,0),
 			new Pose(-5,0,50, 30,0,0, 30,0,0)
 			};
