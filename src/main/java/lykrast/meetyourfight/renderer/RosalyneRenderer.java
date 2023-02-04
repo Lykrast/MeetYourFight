@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class RosalyneRenderer extends MobRenderer<RosalyneEntity, RosalyneModel> {
-	//TODO PLACEHOLDER
 	private static final ResourceLocation BASE = MeetYourFight.rl("textures/entity/rosalyne.png"), COFFIN = MeetYourFight.rl("textures/entity/rosalyne_coffin.png");
 
 	public RosalyneRenderer(Context context) {
 		super(context, new RosalyneModel(context.bakeLayer(RosalyneModel.MODEL)), 0.5F);
+		addLayer(new RosalyneArmorLayer(this, context.getModelSet()));
 	}
 	
 	@Override
@@ -21,7 +21,7 @@ public class RosalyneRenderer extends MobRenderer<RosalyneEntity, RosalyneModel>
 		int phase = entity.getPhase();
 		if (phase == RosalyneEntity.BREAKING_OUT || phase == RosalyneEntity.MADDENING) {
 			//Lifted from the being frozen part of living render
-			rotationYaw += (float)(Math.cos(entity.tickCount * 3.25) * Math.PI * 0.6);
+			rotationYaw += (float)(Math.cos(entity.tickCount * 3.25) * Math.PI * 0.8);
 		}
 		super.setupRotations(entity, stack, ageInTicks, rotationYaw, partialTicks);
 	}

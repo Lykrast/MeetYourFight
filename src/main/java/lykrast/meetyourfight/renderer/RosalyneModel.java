@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 //Exported for Minecraft version 1.17 with Mojang mappings
 public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("rosalyne"), "main");
+	public static final ModelLayerLocation MODEL_ARMOR = new ModelLayerLocation(MeetYourFight.rl("rosalyne"), "armor");
 	private final ModelPart head;
 	private final ModelPart body;
 	private final ModelPart rightArm;
@@ -59,30 +60,33 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 		coffin = root.getChild("Coffin");
 	}
 	
-	public static LayerDefinition createBodyLayer() {
+	public static LayerDefinition createBodyLayer(CubeDeformation deform, boolean hat) {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		//Head
-		partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
-		.texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		CubeListBuilder headcubes = CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, deform);
+		if (hat) {
+			headcubes.texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, deform.extend(0.25f));
+		}
+		partdefinition.addOrReplaceChild("Head", headcubes, PartPose.offset(0.0F, 0.0F, 0.0F));
 		//Body
-		partdefinition.addOrReplaceChild("Body", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		partdefinition.addOrReplaceChild("Body", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deform), PartPose.offset(0.0F, 0.0F, 0.0F));
 		
 		//Right arm (the one with the blade)
-		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 14.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-5.0F, 2.0F, 0.0F));
-		PartDefinition Forearm = RightArm.addOrReplaceChild("Forearm", CubeListBuilder.create().texOffs(0, 34).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 14.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, 10.0F, 0.0F));
-		Forearm.addOrReplaceChild("Blade", CubeListBuilder.create().texOffs(16, 32).addBox(-0.5F, -6.0F, -3.0F, 1.0F, 20.0F, 6.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 52).addBox(-3.0F, -1.0F, -1.0F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 10.0F, 0.0F));
+		PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 14.0F, 4.0F, deform.extend(0.25f)), PartPose.offset(-5.0F, 2.0F, 0.0F));
+		PartDefinition Forearm = RightArm.addOrReplaceChild("Forearm", CubeListBuilder.create().texOffs(0, 34).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 14.0F, 4.0F, deform), PartPose.offset(-1.0F, 10.0F, 0.0F));
+		Forearm.addOrReplaceChild("Blade", CubeListBuilder.create().texOffs(16, 32).addBox(-0.5F, -6.0F, -3.0F, 1.0F, 20.0F, 6.0F, deform)
+		.texOffs(0, 52).addBox(-3.0F, -1.0F, -1.0F, 6.0F, 2.0F, 2.0F, deform), PartPose.offset(0.0F, 10.0F, 0.0F));
 
 		//Left arm
-		partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(40, 16).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 2.0F, 0.0F));
+		partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(40, 16).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, deform), PartPose.offset(5.0F, 2.0F, 0.0F));
 		//Right leg
-		partdefinition.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(40, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
+		partdefinition.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(40, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, deform), PartPose.offset(-1.9F, 12.0F, 0.0F));
 		//Left leg
-		partdefinition.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(40, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(1.9F, 12.0F, 0.0F));
+		partdefinition.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(40, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, deform), PartPose.offset(1.9F, 12.0F, 0.0F));
 		//Coffin
-		partdefinition.addOrReplaceChild("Coffin", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -32.0F, -8.0F, 16.0F, 32.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+		partdefinition.addOrReplaceChild("Coffin", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -32.0F, -8.0F, 16.0F, 32.0F, 16.0F, deform), PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}

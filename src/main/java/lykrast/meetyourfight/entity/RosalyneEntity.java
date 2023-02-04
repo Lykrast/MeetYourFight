@@ -26,6 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -39,7 +40,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class RosalyneEntity extends BossEntity {
+public class RosalyneEntity extends BossEntity implements PowerableMob {
 	//Phase is lowest 3 bits, rest is animation 0xAAAAAPPP
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RosalyneEntity.class, EntityDataSerializers.BYTE);
 	public static final int ENCASED = 0, BREAKING_OUT = 1, PHASE_1 = 2, SUMMONING = 3, PHASE_2 = 4, MADDENING = 5, PHASE_3 = 6;
@@ -56,7 +57,7 @@ public class RosalyneEntity extends BossEntity {
 	
 	public RosalyneEntity(EntityType<? extends RosalyneEntity> type, Level worldIn) {
 		super(type, worldIn);
-		moveControl = new VexMovementController(this).slowdown(0.15);
+		moveControl = new VexMovementController(this).slowdown(0.1);
 		xpReward = 200;
 		phase = 0;
 		clientAnim = ANIM_NEUTRAL;
@@ -176,6 +177,13 @@ public class RosalyneEntity extends BossEntity {
 		int phase = entityData.get(STATUS) & PHASE_MASK;
 		entityData.set(STATUS, (byte)((anim << 3) | phase));
 	}
+
+	@Override
+	public boolean isPowered() {
+		//For the EnergySwirl (wither armor) layer
+		int phase = getPhase();
+		return phase == SUMMONING || phase == PHASE_2 || phase == MADDENING;
+	}
 	
 	public void swing() {
         for(LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(2, 0.2, 2))) {
@@ -201,6 +209,7 @@ public class RosalyneEntity extends BossEntity {
 	
 	@Override
 	public void aiStep() {
+		//That's where the ender dragon detects crystals so copying that
 		super.aiStep();
 		if ((phase == ENCASED || phase == PHASE_2) && tickCount % 20 == 0) {
 			List<RoseSpiritEntity> list = level.getNearbyEntities(RoseSpiritEntity.class, spiritCountTargeting, this, getBoundingBox().inflate(32));

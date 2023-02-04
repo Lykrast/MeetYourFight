@@ -5,6 +5,8 @@ import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModItems;
 import lykrast.meetyourfight.renderer.*;
 import net.minecraft.Util;
+import net.minecraft.client.model.geom.LayerDefinitions;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,8 +42,8 @@ public class ClientStuff {
     	event.registerLayerDefinition(BellringerModel.MODEL, BellringerModel::createBodyLayer);
     	event.registerLayerDefinition(DameFortunaModel.MODEL, DameFortunaModel::createBodyLayer);
     	event.registerLayerDefinition(SwampjawModel.MODEL, SwampjawModel::createBodyLayer);
-    	//TODO Rose
-    	event.registerLayerDefinition(RosalyneModel.MODEL, RosalyneModel::createBodyLayer);
+    	event.registerLayerDefinition(RosalyneModel.MODEL, () -> RosalyneModel.createBodyLayer(CubeDeformation.NONE, true));
+    	event.registerLayerDefinition(RosalyneModel.MODEL_ARMOR, () -> RosalyneModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION, false));
     	event.registerLayerDefinition(RoseSpiritModel.MODEL, RoseSpiritModel::createBodyLayer);
     	//TODO Vela
     	//event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
