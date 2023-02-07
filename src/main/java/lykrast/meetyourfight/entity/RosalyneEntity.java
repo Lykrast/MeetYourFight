@@ -329,6 +329,16 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 						break;
 				}
 			}
+			if (timer <= DURATION-30 && timer % 20 == 10) {
+				switch (rosalyne.phase) {
+					case BREAKING_OUT:
+						rosalyne.playSound(SoundEvents.STONE_BREAK);
+						break;
+					case MADDENING:
+						rosalyne.playSound(SoundEvents.GLASS_BREAK);
+						break;
+				}
+			}
 			if (timer <= 0) {
 				switch (rosalyne.phase) {
 					case BREAKING_OUT:
