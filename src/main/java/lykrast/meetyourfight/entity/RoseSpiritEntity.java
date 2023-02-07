@@ -207,7 +207,7 @@ public class RoseSpiritEntity extends Monster {
 		@Override
 		public void start() {
 			mob.attackCooldown = 100 + mob.random.nextInt(61);
-			timer = 50;
+			timer = 60;
 			mob.playSound(SoundEvents.GHAST_HURT, 1, 1);
 		}
 		
@@ -228,9 +228,9 @@ public class RoseSpiritEntity extends Monster {
 					ProjectileLineEntity ghost = mob.readyAttack();
 					ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
 					mob.level.addFreshEntity(ghost);
-					mob.playSound(SoundEvents.GHAST_SHOOT, 1, 1);
 					dir = dir.yRot(Mth.HALF_PI / 2);
 				}
+				mob.playSound(SoundEvents.GHAST_SHOOT, 1, 1);
 			}
 		}
 		
@@ -322,7 +322,7 @@ public class RoseSpiritEntity extends Monster {
 		public void start() {
 			mob.attackCooldown = 2;
 			attackDelay = 10;
-			attackRemaining = 3 + mob.random.nextInt(8);
+			attackRemaining = 2 + mob.random.nextInt(5);
 			target = mob.getTarget();
 			phase = 0;
 			mob.setStatus(RISING);
@@ -342,17 +342,17 @@ public class RoseSpiritEntity extends Monster {
 					case 1:
 						mob.setStatus(ATTACKING);
 						phase = 2;
-						attackDelay = 20;
+						attackDelay = 25;
 						mob.playSound(SoundEvents.GHAST_WARN, 1, 1);
 						break;
 					case 2:
-						attackDelay = 20;
+						attackDelay = 25;
 						attackRemaining--;
 						performAttack();
 						if (attackRemaining <= 0) {
 							phase = 3;
 							mob.setStatus(OUT);
-							attackDelay = 20 + mob.random.nextInt(41);
+							attackDelay = 40 + mob.random.nextInt(41);
 						}
 						break;
 					case 3:
@@ -363,7 +363,6 @@ public class RoseSpiritEntity extends Monster {
 					case 4:
 						phase = 5;
 						mob.setStatus(HIDING);
-						stop();
 						break;
 				}
 			}
