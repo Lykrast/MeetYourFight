@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:entity",
+	"pools": [
+		{
+			"name": "bloom",
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"name": "meetyourfight:violet_bloom",
+					"weight": 1
+				}
+			]
+		}
+	]
+}
