@@ -36,16 +36,23 @@
 	"item.meetyourfight.caged_heart.desc": "Reduces damage that exceeds 1/4 of max health",
 	"item.meetyourfight.marshy_delight": "Marshy Delight",
 	
+	"item.meetyourfight.dusk_key": "Dusk Key",
+	"item.meetyourfight.dusk_key.desc": "Summons Rosalyne, Blade of Dusk",
+	"item.meetyourfight.violet_bloom": "Violet Bloom",
+	
 	"item.meetyourfight.music_disc_magnum": "Music Disc",
 	"item.meetyourfight.music_disc_magnum.desc": "Monkey Warhol - Magnum",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Dame Fortuna Spawn Egg",
 	"item.meetyourfight.swampjaw_spawn_egg": "Swampjaw Spawn Egg",
+	"item.meetyourfight.rosalyne_spawn_egg": "Rosalyne Spawn Egg",
 	
 	"entity.meetyourfight.bellringer": "Bellringer",
 	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
 	"entity.meetyourfight.swampjaw": "Swampjaw",
+	"entity.meetyourfight.rosalyne": "Rosalyne, Blade of Dusk",
+	"entity.meetyourfight.rose_spirit": "Rose Spirit",
 	
 	"status.meetyourfight.boss_nearby": "Another boss is too close",
 	
@@ -81,6 +88,10 @@
 	"advancements.meetyourfight.swampjaw_summon.description": "Get a Fossil Bait to summon Swampjaw",
 	"advancements.meetyourfight.swampjaw_kill.title": "Bog Champion",
 	"advancements.meetyourfight.swampjaw_kill.description": "Defeat Swampjaw to get a Mossy Tooth",
+	"advancements.meetyourfight.rosalyne_summon.title": "PLACEHODER DON'T FORGET TO CHANGE",
+	"advancements.meetyourfight.rosalyne_summon.description": "Get a Dusk Key to summon Rosalyne, Blade of Dusk",
+	"advancements.meetyourfight.rosalyne_kill.title": "Great Enemy Felled",
+	"advancements.meetyourfight.rosalyne_kill.description": "Defeat Rosalyne, Blade of Dusk to get a Violet Bloom",
 	
 	"itemGroup.meetyourfight": "Meet Your Fight"
 }

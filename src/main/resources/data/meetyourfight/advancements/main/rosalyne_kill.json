@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/rosalyne_summon",
+	"display": {
+		"icon": { "item": "meetyourfight:violet_bloom" },
+		"title": { "translate": "advancements.meetyourfight.rosalyne_kill.title" },
+		"description": { "translate": "advancements.meetyourfight.rosalyne_kill.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "items": ["meetyourfight:violet_bloom"] }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}

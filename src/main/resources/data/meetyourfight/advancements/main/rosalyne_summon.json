@@ -1,0 +1,19 @@
+{
+	"parent": "meetyourfight:main/root",
+	"display": {
+		"icon": { "item": "meetyourfight:dusk_key" },
+		"title": { "translate": "advancements.meetyourfight.rosalyne_summon.title" },
+		"description": { "translate": "advancements.meetyourfight.rosalyne_summon.description" },
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"get_item": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": { "items": [{ "items": ["meetyourfight:dusk_key"] }] }
+		}
+	},
+	"requirements": [["get_item"]]
+}
