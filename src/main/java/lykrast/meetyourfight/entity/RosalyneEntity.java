@@ -147,7 +147,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source != DamageSource.OUT_OF_WORLD && getPhase() != PHASE_1 && getPhase() != PHASE_3) {
+		if (!source.isBypassInvul() && getPhase() != PHASE_1 && getPhase() != PHASE_3) {
 			if (amount > 0) playSound(SoundEvents.ANVIL_LAND, 1, 1);
 			return false;
 		}

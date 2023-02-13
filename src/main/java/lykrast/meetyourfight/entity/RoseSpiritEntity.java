@@ -97,7 +97,7 @@ public class RoseSpiritEntity extends Monster {
 	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source != DamageSource.OUT_OF_WORLD && getStatus() == HIDING) {
+		if (!source.isBypassInvul() && getStatus() == HIDING) {
 			if (amount > 0) playSound(SoundEvents.ANVIL_LAND, 1, 1);
 			return false;
 		}
