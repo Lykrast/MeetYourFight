@@ -19,7 +19,7 @@ public class ModItems {
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
-	public static RegistryObject<Item> duskKey, violetBloom;
+	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn;
 	public static RegistryObject<Item> discMagnum;
 	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne, eggVela;
 	
@@ -45,9 +45,9 @@ public class ModItems {
 		cagedHeart = REG.register("caged_heart", () -> new CurioBaseItem(bossNS(), true));
 		marshyDelight = REG.register("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
 		
-		//TODO Rosalyne
 		duskKey = REG.register("dusk_key", () -> new SummonItem(noStack(), RosalyneEntity::spawn));
 		violetBloom = REG.register("violet_bloom", () -> new Item(boss()));
+		twilightsThorn = REG.register("twilights_thorn", () -> new TwilightsThorn(bossNS()));
 		
 		//Lasts 1:30.92
 		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, noStack().rarity(Rarity.RARE).fireResistant(), 1818));
