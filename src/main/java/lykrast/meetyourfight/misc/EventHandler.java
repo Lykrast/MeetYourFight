@@ -54,6 +54,10 @@ public class EventHandler {
 					((ServerLevel)pattacker.level).sendParticles(ParticleTypes.CRIT, attacked.getX(), attacked.getEyeY(), attacked.getZ(), 15, 0.2, 0.2, 0.2, 0);
 				}
 			}
+			//Wilted Ideals
+			if (CuriosApi.getCuriosHelper().findFirstCurio(pattacker, ModItems.wiltedIdeals.get()).isPresent()) {
+				event.setAmount(event.getAmount() * 1.5f);
+			}
 		}
 		
 		//Damage decreases
