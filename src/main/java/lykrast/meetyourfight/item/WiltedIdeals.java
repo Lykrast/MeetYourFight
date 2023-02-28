@@ -27,6 +27,7 @@ public class WiltedIdeals extends CurioBaseItem {
 	
 	@Override
 	public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
+		//That should help the health update on the UI
 		if (prevStack != stack && slotContext.entity() != null) slotContext.entity().hurt(DamageSource.STARVE, 1);
 	}
 

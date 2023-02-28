@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"SS ",
+		"SBD",
+		" DD"
+	],
+	"key": {
+		"S": { "tag": "forge:string" },
+		"D": { "tag": "forge:dyes/black" },
+		"B": { "item": "meetyourfight:violet_bloom" }
+	},
+	"result": { "item": "meetyourfight:wilted_ideals" }
+}

@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"ADA",
+		"ABA",
+		" I "
+	],
+	"key": {
+		"I": { "tag": "forge:ingots/iron" },
+		"A": { "tag": "forge:gems/amethyst" },
+		"D": { "tag": "forge:gems/diamond" },
+		"B": { "item": "meetyourfight:violet_bloom" }
+	},
+	"result": { "item": "meetyourfight:twilights_thorn" }
+}
