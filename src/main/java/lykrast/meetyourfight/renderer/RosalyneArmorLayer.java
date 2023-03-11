@@ -20,8 +20,8 @@ public class RosalyneArmorLayer extends EnergySwirlLayer<RosalyneEntity, Rosalyn
 
 	@Override
 	protected float xOffset(float ticks) {
-		//Copied from the WitherArmor
-		return Mth.cos(ticks * 0.02F) * 3;
+		//Copied and adapted from the WitherArmor
+		return Mth.cos(ticks * 0.02F) * 2;
 	}
 
 	@Override
