@@ -1,5 +1,6 @@
 package lykrast.meetyourfight.renderer;
 
+import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.RosalyneEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -9,9 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class RosalyneArmorLayer extends EnergySwirlLayer<RosalyneEntity, RosalyneModel> {
-	//TODO texture
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/wither/wither_armor.png");
-	//private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/rosalyne.png");
+	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/rosalyne_armor.png");
 	private final RosalyneModel model;
 
 	public RosalyneArmorLayer(RenderLayerParent<RosalyneEntity, RosalyneModel> parent, EntityModelSet modelSet) {

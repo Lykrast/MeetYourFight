@@ -10,6 +10,7 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.RoseSpiritEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -86,6 +87,12 @@ public class RoseSpiritRenderer extends MobRenderer<RoseSpiritEntity, RoseSpirit
 		if (status == RoseSpiritEntity.ATTACKING) return TEXTURE_SHOOT;
 		else if (status == RoseSpiritEntity.HURT || status == RoseSpiritEntity.RETRACTING_HURT) return TEXTURE_HURT;
 		else return TEXTURE;
+	}
+
+	@Override
+	public boolean shouldRender(RoseSpiritEntity entity, Frustum frustrum, double p_114171_, double p_114172_, double p_114173_) {
+		//Copied from End Crystals, should do the trick since I don't expect too many of them to be in world without a rosalyne
+		return super.shouldRender(entity, frustrum, p_114171_, p_114172_, p_114173_) || entity.getOwner() != null;
 	}
 
 }
