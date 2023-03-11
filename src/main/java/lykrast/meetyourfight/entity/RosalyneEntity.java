@@ -45,7 +45,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RosalyneEntity.class, EntityDataSerializers.BYTE);
 	public static final int ENCASED = 0, BREAKING_OUT = 1, PHASE_1 = 2, SUMMONING = 3, PHASE_2 = 4, MADDENING = 5, PHASE_3 = 6;
 	public static final int ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5,
-			ANIM_BROKE_OUT = 6, ANIM_SUMMONING = 7, ANIM_MADDENING = 8;
+			ANIM_BROKE_OUT = 6, ANIM_SUMMONING = 7, ANIM_MADDENING = 8, ANIM_PREPARE_CRASH = 9, ANIM_SWING_CRASH = 10;
 	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
 	private final TargetingConditions spiritCountTargeting = TargetingConditions.forNonCombat().range(32).ignoreLineOfSight().ignoreInvisibilityTesting();
 	
@@ -72,7 +72,8 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new PhaseTransition(this));
 		goalSelector.addGoal(2, new AdvanceAndSwingAttack(this));
-		goalSelector.addGoal(3, new CircleAndDashAttack(this));
+		goalSelector.addGoal(2, new CircleAndDashAttack(this));
+		goalSelector.addGoal(2, new VerticalCrashAttack(this));
 		goalSelector.addGoal(7, new MoveFrontOfTarget(this, 0.5));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -192,6 +193,10 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
         playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1, 1);
         //attack cycle goes OUTDN, INUP, OUTUP, INDN, repeat
         switch (getAnimation()) {
+            //special case for the vertical swing of the crash attack
+        	case ANIM_PREPARE_CRASH:
+        		setAnimation(ANIM_SWING_CRASH);
+        		break;
         	case ANIM_ARM_OUT_DN:
         		setAnimation(ANIM_ARM_IN_UP);
         		break;
@@ -263,7 +268,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.WITHER_AMBIENT;
+		return null;
 	}
 
 	@Override
@@ -287,10 +292,17 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	}
 	
 	private void rollNextAttack(int ignore) {
-		//For now it's just 2 attacks
-		if (ignore == 0) nextAttack = 1;
-		else if (ignore == 1) nextAttack = 0;
-		else nextAttack = random.nextInt(2);
+		if (ignore >= 0) {
+			nextAttack = random.nextInt(2);
+			if (nextAttack >= ignore) nextAttack++;
+		}
+		else nextAttack = random.nextInt(3);
+	}
+	
+	private void cooldownNextAttack() {
+		attackCooldown = 60 + random.nextInt(21);
+		if (phase == PHASE_2) attackCooldown += 20;
+		else if (phase == PHASE_3) attackCooldown -= 40;
 	}
 	
 	private static class PhaseTransition extends StationaryAttack {
@@ -437,9 +449,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		
 		@Override
 		public void stop() {
-			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
-			if (rosalyne.phase == PHASE_2) rosalyne.attackCooldown += 20;
-			else if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
+			rosalyne.cooldownNextAttack();
 			rosalyne.setAnimation(ANIM_NEUTRAL);
 			rosalyne.rollNextAttack(0);
 		}
@@ -562,9 +572,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		
 		@Override
 		public void stop() {
-			rosalyne.attackCooldown = 60 + rosalyne.random.nextInt(21);
-			if (rosalyne.phase == PHASE_2) rosalyne.attackCooldown += 20;
-			else if (rosalyne.phase == PHASE_3) rosalyne.attackCooldown -= 40;
+			rosalyne.cooldownNextAttack();
 			rosalyne.setAnimation(ANIM_NEUTRAL);
 			rosalyne.rollNextAttack(1);
 		}
@@ -572,6 +580,105 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		@Override
 		public boolean canUse() {
 			return rosalyne.nextAttack == 1 && (rosalyne.phase == PHASE_1 || rosalyne.phase == PHASE_2 || rosalyne.phase == PHASE_3) && rosalyne.getTarget() != null && rosalyne.getTarget().isAlive() && rosalyne.attackCooldown <= 0;
+		}
+		
+		@Override
+		public boolean canContinueToUse() {
+			return canUse() && (swingsLeft > 0 || timer > 0);
+		}
+		
+	}
+	
+	private static class VerticalCrashAttack extends Goal {
+		//This is attack 2
+		private RosalyneEntity rosalyne;
+		private int timer, swingsLeft, attackPhase;
+		private double holdx, holdy, holdz;
+		private Vec3 offset;
+		//attackPhase 0 = jumping, 1 = dash, 2 = hold pose
+		
+		public VerticalCrashAttack(RosalyneEntity rosalyne) {
+			this.rosalyne = rosalyne;
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+		
+		@Override
+		public void start() {
+			swingsLeft = 1 + rosalyne.random.nextInt(2);
+			if (rosalyne.phase == PHASE_3) swingsLeft = 3 + rosalyne.random.nextInt(3);
+			startJump();
+		}
+		
+		private void startJump() {
+			timer = rosalyne.phase == PHASE_3 ? 25 : 40;
+			attackPhase = 0;
+			LivingEntity target = rosalyne.getTarget();
+			offset = new Vec3(rosalyne.getX() - target.getX(), 0, rosalyne.getZ() - target.getZ()).normalize();
+			holdx = target.getX() + offset.x*3;
+			holdy = target.getY() + 4;
+			holdz = target.getZ() + offset.z*3;
+			rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
+			rosalyne.setAnimation(ANIM_PREPARE_CRASH);
+		}
+		
+		@Override
+		public void tick() {
+			timer--;
+			LivingEntity target = rosalyne.getTarget();
+			//Approaching
+			if (attackPhase == 0) {
+				//go up slightly as the pose is held for some movement
+				holdy += 0.1;
+				if (timer <= 0) {
+					attackPhase = 1;
+					timer = 20;
+					//Overshoot the target slightly
+					double tx = target.getX();
+					double ty = target.getY();
+					double tz = target.getZ();
+					Vec3 tpos = new Vec3(tx - holdx, ty - holdy, tz - holdz).normalize();
+					holdx = tx + 1*tpos.x;
+					holdy = ty;
+					holdz = tz + 1*tpos.z;
+				}
+				rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
+			}
+			//Charging
+			else if (attackPhase == 1) {
+				if (timer <= 0 || rosalyne.distanceToSqr(target) < 2 || rosalyne.distanceToSqr(holdx, holdy, holdz) < 1) {
+					//Got to the target, get ready to hold the pose
+					rosalyne.swing();
+					swingsLeft--;
+					holdx = rosalyne.getX();
+					holdy = target.getY();
+					holdz = rosalyne.getZ();
+					attackPhase = 2;
+					timer = (swingsLeft > 0 && rosalyne.phase == PHASE_3) ? 10 : 20;
+				}
+				rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 3);
+			}
+			//Holding still after the strike
+			else if (attackPhase == 2) {
+				if (timer <= 0 && swingsLeft > 0) startJump();
+				else rosalyne.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
+			}
+		}
+		
+		@Override
+		public void stop() {
+			rosalyne.cooldownNextAttack();
+			rosalyne.setAnimation(ANIM_NEUTRAL);
+			rosalyne.rollNextAttack(2);
+		}
+
+		@Override
+		public boolean canUse() {
+			return rosalyne.nextAttack == 2 && (rosalyne.phase == PHASE_1 || rosalyne.phase == PHASE_2 || rosalyne.phase == PHASE_3) && rosalyne.getTarget() != null && rosalyne.getTarget().isAlive() && rosalyne.attackCooldown <= 0;
 		}
 		
 		@Override

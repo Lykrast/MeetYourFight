@@ -32,7 +32,7 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	private final ModelPart coffin;
 	//Right arm pose for each animation they take degrees from blockbench for readability
 	//ANIM_NEUTRAL = 0, ANIM_ARM_OUT_UP = 1, ANIM_ARM_IN_UP = 2, ANIM_ARM_OUT_DN = 3, ANIM_ARM_IN_DN = 4, ANIM_PREPARE_DASH = 5;
-	//ANIM_BROKE_OUT = 6, ANIM_SUMMONING = 7, ANIM_MADDENING = 8
+	//ANIM_BROKE_OUT = 6, ANIM_SUMMONING = 7, ANIM_MADDENING = 8, ANIM_PREPARE_CRASH = 9, ANIM_SWING_CRASH = 10
 	private static final Pose[] RARM_POSE = {
 			new Pose(-5,0,0, 30,0,0, 15,0,0, false), //ANIM_NEUTRAL
 			new Pose(-10,0,100, 0,0,0, 0,0,0), //ANIM_ARM_OUT_UP
@@ -42,7 +42,9 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 			new Pose(-5,0,40, 30,0,0, 30,0,0), //ANIM_PREPARE_DASH
 			new Pose(-30,0,0, 130,0,0, -100,0,0, false), //ANIM_BROKE_OUT
 			new Pose(-5,0,0, 30,0,0, 15,0,0, false), //ANIM_SUMMONING same for the arm as neutral
-			new Pose(30,35,0, 110,0,0, 85,0,0, false) //ANIM_MADDENING
+			new Pose(30,35,0, 110,0,0, 85,0,0, false), //ANIM_MADDENING
+			new Pose(150,-10,0, 35,0,0, 5,0,0), //ANIM_PREPARE_CRASH
+			new Pose(20,20,0, 15,0,0, 0,0,0) //ANIM_SWING_CRASH
 			};
 	private float animProgress;
 	private int phase;
