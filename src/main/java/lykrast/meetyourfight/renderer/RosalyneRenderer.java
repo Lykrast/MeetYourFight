@@ -15,6 +15,7 @@ public class RosalyneRenderer extends MobRenderer<RosalyneEntity, RosalyneModel>
 
 	public RosalyneRenderer(Context context) {
 		super(context, new RosalyneModel(context.bakeLayer(RosalyneModel.MODEL)), 0.5F);
+		addLayer(new RosalyneGlowLayer(this));
 		addLayer(new RosalyneArmorLayer(this, context.getModelSet()));
 	}
 	

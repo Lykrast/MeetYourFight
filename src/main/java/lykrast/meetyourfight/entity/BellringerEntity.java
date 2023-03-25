@@ -157,11 +157,6 @@ public class BellringerEntity extends BossEntity {
 	protected ResourceLocation getDefaultLootTable() {
 		return MeetYourFight.rl("bellringer");
 	}
-
-	@Override
-	public float getLightLevelDependentMagicValue() {
-		return 1.0F;
-	}
 	
 	//The regular attacks
 	private static class BurstAttack extends Goal {
