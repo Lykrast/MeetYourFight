@@ -19,7 +19,7 @@ public class ModItems {
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
-	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals;
+	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, tombPlanter;
 	public static RegistryObject<Item> discMagnum;
 	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne, eggVela;
 	
@@ -49,6 +49,7 @@ public class ModItems {
 		violetBloom = REG.register("violet_bloom", () -> new Item(boss()));
 		twilightsThorn = REG.register("twilights_thorn", () -> new TwilightsThorn(bossNS()));
 		wiltedIdeals = REG.register("wilted_ideals", () -> new WiltedIdeals(bossNS()));
+		tombPlanter = REG.register("tomb_planter", () -> new CurioBaseItem(bossNS(), true));
 		
 		//Lasts 1:30.92
 		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, noStack().rarity(Rarity.RARE).fireResistant(), 1818));

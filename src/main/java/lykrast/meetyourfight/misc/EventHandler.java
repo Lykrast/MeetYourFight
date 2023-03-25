@@ -3,12 +3,18 @@ package lykrast.meetyourfight.misc;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.registry.ModItems;
 import lykrast.meetyourfight.registry.ModSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BoneMealItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -69,6 +75,30 @@ public class EventHandler {
 				if (event.getAmount() > treshold) {
 					event.setAmount((event.getAmount() - treshold) * 0.5f + treshold);
 					pattacked.level.playSound(null, attacked.blockPosition(), ModSounds.cagedHeartProc.get(), SoundSource.PLAYERS, 1, 1);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void entityDamage(final LivingDeathEvent event) {
+		if (event.isCanceled()) return;
+		Entity killer = event.getSource().getEntity();
+		if (killer != null && killer instanceof Player) {
+			Player pkiller = (Player)killer;
+			LivingEntity killed = event.getEntity();
+			//Tomb Planter
+			if (CuriosApi.getCuriosHelper().findFirstCurio(pkiller, ModItems.tombPlanter.get()).isPresent()) {
+				Level lvl = killed.level;
+				BlockPos pos = killed.blockPosition();
+				//Only works if the target is at most 1 block above bonemealabe ground
+				if (!lvl.isEmptyBlock(pos) || !lvl.isEmptyBlock(pos = pos.below())) {
+					//Dummy stack just in case one of the events expected actual bonemeal
+					ItemStack dummy = new ItemStack(Items.BONE_MEAL);
+					//Mostly copied from villagers' UseBonemeal
+					if (BoneMealItem.applyBonemeal(dummy, lvl, pos, pkiller) || BoneMealItem.growWaterPlant(dummy, lvl, pos, null)) {
+						if (!lvl.isClientSide) lvl.levelEvent(1505, pos, 0);
+					}
 				}
 			}
 		}

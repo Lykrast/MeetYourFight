@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" B ",
+		"ODO",
+		" O "
+	],
+	"key": {
+		"O": { "tag": "forge:bones" },
+		"D": { "tag": "minecraft:dirt" },
+		"B": { "item": "meetyourfight:violet_bloom" }
+	},
+	"result": { "item": "meetyourfight:tomb_planter" }
+}
