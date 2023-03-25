@@ -273,12 +273,12 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.WITHER_HURT;
+		return ModSounds.rosalyneHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.WITHER_DEATH;
+		return ModSounds.rosalyneHurt.get();
 	}
 
 	@Override
@@ -347,7 +347,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 						rosalyne.playSound(SoundEvents.STONE_BREAK);
 						break;
 					case MADDENING:
-						rosalyne.playSound(SoundEvents.GLASS_BREAK);
+						rosalyne.playSound(ModSounds.rosalyneCrack.get());
 						break;
 				}
 			}

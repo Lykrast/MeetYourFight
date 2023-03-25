@@ -108,6 +108,36 @@
 			"random/fuse"
 		]
 	},
+	"entity.rosalyne.hurt": {
+		"subtitle": "subtitles.meetyourfight.entity.rosalyne.hurt",
+		"sounds": [
+			"meetyourfight:rosalyne/hurt1",
+			"meetyourfight:rosalyne/hurt2",
+			"meetyourfight:rosalyne/hurt3",
+			"meetyourfight:rosalyne/hurt4",
+			"meetyourfight:rosalyne/hurt5",
+			"meetyourfight:rosalyne/hurt6",
+			"meetyourfight:rosalyne/hurt7",
+			"meetyourfight:rosalyne/hurt8",
+			"meetyourfight:rosalyne/hurt9"
+		]
+	},
+	"entity.rosalyne.death": {
+		"subtitle": "subtitles.meetyourfight.entity.rosalyne.death",
+		"sounds": [
+			"meetyourfight:rosalyne/death"
+		]
+	},
+	"entity.rosalyne.crack": {
+		"subtitle": "subtitles.meetyourfight.entity.rosalyne.crack",
+		"sounds": [
+			"meetyourfight:rosalyne/crack1",
+			"meetyourfight:rosalyne/crack2",
+			"meetyourfight:rosalyne/crack3",
+			"meetyourfight:rosalyne/crack4",
+			"meetyourfight:rosalyne/crack5"
+		]
+	},
 	
 	"item.proc.slicers_dice": {
 		"subtitle": "subtitles.meetyourfight.item.bonus_damage",
