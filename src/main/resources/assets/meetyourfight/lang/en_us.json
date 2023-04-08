@@ -78,6 +78,9 @@
 	"subtitles.meetyourfight.entity.swampjaw.death": "Swampjaw dies",
 	"subtitles.meetyourfight.entity.swampjaw.charge": "Swampjaw charges",
 	"subtitles.meetyourfight.entity.swampjaw.bomb": "Bomb dropped",
+	"subtitles.meetyourfight.entity.rosalyne.hurt": "Rosalyne hurt",
+	"subtitles.meetyourfight.entity.rosalyne.death": "Rosalyne dies",
+	"subtitles.meetyourfight.entity.rosalyne.crack": "Rosalyne cracks",
 	
 	"subtitles.meetyourfight.item.bonus_damage": "Damage amplified",
 	"subtitles.meetyourfight.item.damage_negated": "Damage negated",
