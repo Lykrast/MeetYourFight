@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" B ",
+		"ALA",
+		"ALA"
+	],
+	"key": {
+		"A": { "tag": "forge:gems/amethyst" },
+		"L": { "tag": "forge:gems/lapis" },
+		"B": { "item": "meetyourfight:violet_bloom" }
+	},
+	"result": { "item": "meetyourfight:blossoming_mind" }
+}

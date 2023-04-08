@@ -42,6 +42,8 @@
 	"item.meetyourfight.twilights_thorn": "Twilight's Thorn",
 	"item.meetyourfight.wilted_ideals": "Wilted Ideals",
 	"item.meetyourfight.wilted_ideals.desc": "Increases all damage dealt",
+	"item.meetyourfight.blossoming_mind": "Blossoming Mind",
+	"item.meetyourfight.blossoming_mind.desc": "Increases experience from mobs",
 	"item.meetyourfight.tomb_planter": "Tomb Planter",
 	"item.meetyourfight.tomb_planter.desc": "Fertilizes where you slain grounded mobs",
 	
@@ -93,7 +95,7 @@
 	"advancements.meetyourfight.swampjaw_summon.description": "Get a Fossil Bait to summon Swampjaw",
 	"advancements.meetyourfight.swampjaw_kill.title": "Bog Champion",
 	"advancements.meetyourfight.swampjaw_kill.description": "Defeat Swampjaw to get a Mossy Tooth",
-	"advancements.meetyourfight.rosalyne_summon.title": "PLACEHODER DON'T FORGET TO CHANGE",
+	"advancements.meetyourfight.rosalyne_summon.title": "Flowering Knight",
 	"advancements.meetyourfight.rosalyne_summon.description": "Get a Dusk Key to summon Rosalyne, Blade of Dusk",
 	"advancements.meetyourfight.rosalyne_kill.title": "Great Enemy Felled",
 	"advancements.meetyourfight.rosalyne_kill.description": "Defeat Rosalyne, Blade of Dusk to get a Violet Bloom",

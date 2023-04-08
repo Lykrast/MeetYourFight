@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.ForgeMod;
 
 public class TwilightsThorn extends SwordItem {
-	private static final Tier TIER = new CustomTier(3, 3873, 8, 4, 16, () -> Ingredient.of(ModItems.violetBloom.get()));
+	private static final Tier TIER = new CustomTier(3, 3873, 10, 4, 16, () -> Ingredient.of(ModItems.violetBloom.get()));
 	// Well it's private and final in the constructor, so gotta remake it to add my own stuff
 	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 	public static final UUID RANGE = UUID.fromString("3080eef9-4ab7-4f8b-9a90-774208857fc9");
