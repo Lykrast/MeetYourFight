@@ -12,7 +12,9 @@ public class GenericGlowLayer<T extends Entity, M extends EntityModel<T>> extend
 
 	public GenericGlowLayer(RenderLayerParent<T, M> parent, ResourceLocation texture) {
 		super(parent);
-		TYPE = RenderType.eyes(texture);
+		TYPE = RenderType.entityTranslucentEmissive(texture, false);
+		//I the emissive one requires actual transparency but I think it looks better, cause eyes makes it too bright
+		//TYPE = RenderType.eyes(texture);
 	}
 
 	@Override

@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 
 public class RosalyneGlowLayer extends RenderLayer<RosalyneEntity, RosalyneModel> {
 	// I need to copy paste the render method anyway so that it's aware of Rosalyne's phases, so no need to extend the actual EyesLayer
-	private static final RenderType COFFIN_GLOW = RenderType.eyes(MeetYourFight.rl("textures/entity/rosalyne_coffin_glow.png")), 
-			BASE_GLOW = RenderType.eyes(MeetYourFight.rl("textures/entity/rosalyne_glow.png"));
+	private static final RenderType COFFIN_GLOW = RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/rosalyne_coffin_glow.png"), false), 
+			BASE_GLOW = RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/rosalyne_glow.png"), false);
 
 	public RosalyneGlowLayer(RenderLayerParent<RosalyneEntity, RosalyneModel> parent) {
 		super(parent);
