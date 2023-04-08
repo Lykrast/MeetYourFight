@@ -16,7 +16,7 @@ public class ModSounds {
 	//Items
 	public static RegistryObject<SoundEvent> slicersDiceProc, aceOfIronProc, cagedHeartProc;
 	//Music
-	public static RegistryObject<SoundEvent> musicMagnum;
+	public static RegistryObject<SoundEvent> musicMagnum, musicFrogPunch;
 	
 	static {
 		//Bosses
@@ -47,6 +47,7 @@ public class ModSounds {
 
 		//Music
 		musicMagnum = initSound("music.magnum");
+		musicFrogPunch = initSound("music.frog_punch");
 	}
 	public static RegistryObject<SoundEvent> initSound(String name) {
 		return REG.register(name, () -> new SoundEvent(MeetYourFight.rl(name)));

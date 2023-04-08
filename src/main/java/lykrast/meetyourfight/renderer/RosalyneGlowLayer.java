@@ -24,7 +24,7 @@ public class RosalyneGlowLayer extends RenderLayer<RosalyneEntity, RosalyneModel
 	public void render(PoseStack poseStack, MultiBufferSource buffer, int p_117351_, RosalyneEntity entity, float p_117353_, float p_117354_, float p_117355_, float p_117356_, float p_117357_, float p_117358_) {
 		int phase = entity.getPhase();
 		//Copied from EyesLayer, so lots of numbers I don't know what they mean
-		VertexConsumer vertexconsumer = buffer.getBuffer((phase == RosalyneEntity.BREAKING_OUT || phase == RosalyneEntity.MADDENING) ? COFFIN_GLOW : BASE_GLOW);
+		VertexConsumer vertexconsumer = buffer.getBuffer((phase == RosalyneEntity.ENCASED || phase == RosalyneEntity.BREAKING_OUT) ? COFFIN_GLOW : BASE_GLOW);
 		getParentModel().renderToBuffer(poseStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 	}
 

@@ -20,7 +20,7 @@ public class ModItems {
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter;
-	public static RegistryObject<Item> discMagnum;
+	public static RegistryObject<Item> discMagnum, discFrogPunch;
 	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne, eggVela;
 	
 	static {
@@ -53,7 +53,9 @@ public class ModItems {
 		tombPlanter = REG.register("tomb_planter", () -> new CurioBaseItem(bossNS(), true));
 		
 		//Lasts 1:30.92
-		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, noStack().rarity(Rarity.RARE).fireResistant(), 1818));
+		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, disc(), 1818));
+		//Lasts 3:40.44
+		discFrogPunch = REG.register("music_disc_frogpunch", () -> new RecordItem(1, ModSounds.musicFrogPunch, disc(), 4408));
 		
 		eggBellringer = REG.register("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
 		eggDameFortuna = REG.register("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
@@ -83,5 +85,9 @@ public class ModItems {
 	public static Item.Properties bossNS() {
 		//Same rarity as Nether Star for boss drops
 		return new Item.Properties().tab(ItemGroupMeetYourFight.INSTANCE).stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant();
+	}
+
+	public static Item.Properties disc() {
+		return noStack().rarity(Rarity.RARE).fireResistant();
 	}
 }
