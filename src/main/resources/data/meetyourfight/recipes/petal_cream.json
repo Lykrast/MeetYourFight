@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{ "item": "meetyourfight:violet_bloom" },
+		{ "item": "minecraft:milk_bucket" },
+		{ "item": "minecraft:sugar" },
+		{ "item": "minecraft:sweet_berries" },
+		{ "item": "minecraft:sweet_berries" }
+	],
+	"result": { "item": "meetyourfight:petal_cream", "count": 4 }
+}

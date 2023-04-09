@@ -19,7 +19,7 @@ public class ModItems {
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
-	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter;
+	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
 	public static RegistryObject<Item> discMagnum, discFrogPunch;
 	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne, eggVela;
 	
@@ -51,6 +51,7 @@ public class ModItems {
 		wiltedIdeals = REG.register("wilted_ideals", () -> new WiltedIdeals(bossNS()));
 		blossomingMind = REG.register("blossoming_mind", () -> new CurioBaseItem(bossNS(), true));
 		tombPlanter = REG.register("tomb_planter", () -> new CurioBaseItem(bossNS(), true));
+		petalCream = REG.register("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
 		
 		//Lasts 1:30.92
 		discMagnum = REG.register("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, disc(), 1818));
@@ -60,7 +61,6 @@ public class ModItems {
 		eggBellringer = REG.register("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
 		eggDameFortuna = REG.register("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
 		eggSwampjaw = REG.register("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
-		//TODO Rose
 		eggRosalyne = REG.register("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
 		//REG.register("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
 		//TODO Vela
