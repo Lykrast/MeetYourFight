@@ -20,14 +20,13 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class RoseSpiritRenderer extends MobRenderer<RoseSpiritEntity, RoseSpiritModel> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/rose_spirit.png");
-	private static final ResourceLocation TEXTURE_SHOOT = MeetYourFight.rl("textures/entity/rose_spirit_shooting.png");
-	private static final ResourceLocation TEXTURE_HURT = MeetYourFight.rl("textures/entity/rose_spirit_hurt.png");
 	//Copied from Ender Dragon
 	private static final ResourceLocation BEAM_TEXTURE = new ResourceLocation("textures/entity/end_crystal/end_crystal_beam.png");
 	private static final RenderType BEAM = RenderType.entitySmoothCutout(BEAM_TEXTURE);
 
 	public RoseSpiritRenderer(Context context) {
 		super(context, new RoseSpiritModel(context.bakeLayer(RoseSpiritModel.MODEL)), 0.5F);
+		addLayer(new RoseSpiritGlowLayer(this));
 	}
 	@Override
 	public void render(RoseSpiritEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
@@ -83,10 +82,7 @@ public class RoseSpiritRenderer extends MobRenderer<RoseSpiritEntity, RoseSpirit
 
 	@Override
 	public ResourceLocation getTextureLocation(RoseSpiritEntity entity) {
-		int status = entity.getStatus();
-		if (status == RoseSpiritEntity.ATTACKING) return TEXTURE_SHOOT;
-		else if (status == RoseSpiritEntity.HURT || status == RoseSpiritEntity.RETRACTING_HURT) return TEXTURE_HURT;
-		else return TEXTURE;
+		return TEXTURE;
 	}
 
 	@Override
