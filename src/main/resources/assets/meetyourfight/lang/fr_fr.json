@@ -36,15 +36,31 @@
 	"item.meetyourfight.caged_heart.desc": "Réduit les dégâts qui dépassent 1/4 de la vie max",
 	"item.meetyourfight.marshy_delight": "Délice des marais",
 	
+	"item.meetyourfight.dusk_key": "Clé du crépuscule",
+	"item.meetyourfight.dusk_key.desc": "Invoque Rosalyne, lame du crépuscule",
+	"item.meetyourfight.violet_bloom": "Floraison violette",
+	"item.meetyourfight.twilights_thorn": "Épine du soir",
+	"item.meetyourfight.wilted_ideals": "Idéaux fanés",
+	"item.meetyourfight.wilted_ideals.desc": "Augmente tous les dégâts infligés",
+	"item.meetyourfight.blossoming_mind": "Esprit fleurissant",
+	"item.meetyourfight.blossoming_mind.desc": "Augmente l'expérience donné par les monstres",
+	"item.meetyourfight.tomb_planter": "Planteur de tombes",
+	"item.meetyourfight.tomb_planter.desc": "Fertilise l'emplacement des monstres terrestres tués",
+	"item.meetyourfight.petal_cream": "Crême aux pétales",
+	
 	"item.meetyourfight.music_disc_magnum": "Disque",
+	"item.meetyourfight.music_disc_frogpunch": "Disque",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Oeuf d'apparition de Sonneur",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Oeuf d'apparition de Dame Fortuna",
 	"item.meetyourfight.swampjaw_spawn_egg": "Oeuf d'apparition de Gueule-des-marais",
+	"item.meetyourfight.rosalyne_spawn_egg": "Oeuf d'apparition de Rosalyne",
 	
 	"entity.meetyourfight.bellringer": "Sonneur",
 	"entity.meetyourfight.dame_fortuna": "Dame Fortuna",
 	"entity.meetyourfight.swampjaw": "Gueule-des-marais",
+	"entity.meetyourfight.rosalyne": "Rosalyne, lame du crépuscule",
+	"entity.meetyourfight.rose_spirit": "Esprit de rose",
 	
 	"status.meetyourfight.boss_nearby": "Un autre boss est trop proche",
 	
@@ -61,6 +77,17 @@
 	"subtitles.meetyourfight.entity.swampjaw.death": "Gueule-des-marais meurt",
 	"subtitles.meetyourfight.entity.swampjaw.charge": "Gueule-des-marais charge",
 	"subtitles.meetyourfight.entity.swampjaw.bomb": "Bombe larguée",
+	"subtitles.meetyourfight.entity.rosalyne.hurt": "Rosalyne blessée",
+	"subtitles.meetyourfight.entity.rosalyne.death": "Rosalyne meurt",
+	"subtitles.meetyourfight.entity.rosalyne.crack": "Rosalyne craque",
+	"subtitles.meetyourfight.entity.rosalyne.swing": "Rosalyne frappe",
+	"subtitles.meetyourfight.entity.rosalyne.swing.prepare": "Rosalyne se prépare à frapper",
+	"subtitles.meetyourfight.entity.rosespirit.idle": "Esprit de rose gémit",
+	"subtitles.meetyourfight.entity.rosespirit.hurt": "Esprit de rose blessé",
+	"subtitles.meetyourfight.entity.rosespirit.hurt.big": "Esprit de rose hurle",
+	"subtitles.meetyourfight.entity.rosespirit.death": "Esprit de rose meurt",
+	"subtitles.meetyourfight.entity.rosespirit.warn": "Esprit de rose se prépare à tirer",
+	"subtitles.meetyourfight.entity.rosespirit.shoot": "Esprit de rose tire",
 	
 	"subtitles.meetyourfight.item.bonus_damage": "Dégâts amplifiés",
 	"subtitles.meetyourfight.item.damage_negated": "Dégâts annulés",
@@ -80,6 +107,10 @@
 	"advancements.meetyourfight.swampjaw_summon.description": "Obtenez un appât fossile pour invoquer Gueule-des-marais.",
 	"advancements.meetyourfight.swampjaw_kill.title": "Champion du bourbier",
 	"advancements.meetyourfight.swampjaw_kill.description": "Vainquez Gueule-des-marais pour obtenir une dent moussue.",
+	"advancements.meetyourfight.rosalyne_summon.title": "La fleur tranchant la nuit",
+	"advancements.meetyourfight.rosalyne_summon.description": "Obtenez une clé du crépuscule pour invoquer Rosalyne, lame du crépuscule.",
+	"advancements.meetyourfight.rosalyne_kill.title": "Ennemi majeur vaincu",
+	"advancements.meetyourfight.rosalyne_kill.description": "Vainquez Rosalyne, lame du crépuscule pour obtenir une floraison violette.",
 	
 	"itemGroup.meetyourfight": "Meet Your Fight"
 }
