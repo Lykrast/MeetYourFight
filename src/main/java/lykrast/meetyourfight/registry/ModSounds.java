@@ -12,7 +12,8 @@ public class ModSounds {
 	public static RegistryObject<SoundEvent> bellringerIdle, bellringerHurt, bellringerDeath;
 	public static RegistryObject<SoundEvent> dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
 	public static RegistryObject<SoundEvent> swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
-	public static RegistryObject<SoundEvent> rosalyneHurt, rosalyneDeath, rosalyneCrack;
+	public static RegistryObject<SoundEvent> rosalyneHurt, rosalyneDeath, rosalyneCrack, rosalyneSwing, rosalyneSwingPrepare;
+	public static RegistryObject<SoundEvent> roseSpiritIdle, roseSpiritHurt, roseSpiritHurtBig, roseSpiritDeath, roseSpiritWarn, roseSpiritShoot;
 	//Items
 	public static RegistryObject<SoundEvent> slicersDiceProc, aceOfIronProc, cagedHeartProc;
 	//Music
@@ -39,6 +40,15 @@ public class ModSounds {
 		rosalyneHurt = initSound("entity.rosalyne.hurt");
 		rosalyneDeath = initSound("entity.rosalyne.death");
 		rosalyneCrack = initSound("entity.rosalyne.crack");
+		rosalyneSwing = initSound("entity.rosalyne.swing");
+		rosalyneSwingPrepare = initSound("entity.rosalyne.swing.prepare");
+		
+		roseSpiritIdle = initSound("entity.rosespirit.idle");
+		roseSpiritHurt = initSound("entity.rosespirit.hurt");
+		roseSpiritHurtBig = initSound("entity.rosespirit.hurt.big");
+		roseSpiritDeath = initSound("entity.rosespirit.death");
+		roseSpiritWarn = initSound("entity.rosespirit.warn");
+		roseSpiritShoot = initSound("entity.rosespirit.shoot");
 
 		//Items
 		slicersDiceProc = initSound("item.proc.slicers_dice");

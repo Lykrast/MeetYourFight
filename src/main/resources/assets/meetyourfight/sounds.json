@@ -138,6 +138,70 @@
 			"meetyourfight:rosalyne/crack5"
 		]
 	},
+	"entity.rosalyne.swing": {
+		"subtitle": "subtitles.meetyourfight.entity.rosalyne.swing",
+		"sounds": [
+			{ "name": "entity/player/attack/sweep1", "volume": 0.7 },
+			{ "name": "entity/player/attack/sweep2", "volume": 0.7 },
+			{ "name": "entity/player/attack/sweep3", "volume": 0.7 },
+			{ "name": "entity/player/attack/sweep4", "volume": 0.7 },
+			{ "name": "entity/player/attack/sweep5", "volume": 0.7 },
+			{ "name": "entity/player/attack/sweep6", "volume": 0.7 },
+			{ "name": "entity/player/attack/sweep7", "volume": 0.7 }
+		]
+	},
+	"entity.rosalyne.swing.prepare": {
+		"subtitle": "subtitles.meetyourfight.entity.rosalyne.swing.prepare",
+		"sounds": [
+			"item/armor/equip_iron1",
+			"item/armor/equip_iron2",
+			"item/armor/equip_iron3",
+			"item/armor/equip_iron4",
+			"item/armor/equip_iron5",
+			"item/armor/equip_iron6"
+		]
+	},
+	"entity.rosespirit.idle": {
+		"subtitle": "subtitles.meetyourfight.entity.rosespirit.idle",
+		"sounds": [
+			"mob/vex/idle1",
+			"mob/vex/idle2",
+			"mob/vex/idle3",
+			"mob/vex/idle4"
+		]
+	},
+	"entity.rosespirit.hurt": {
+		"subtitle": "subtitles.meetyourfight.entity.rosespirit.hurt",
+		"sounds": [
+			"mob/vex/hurt1",
+			"mob/vex/hurt2"
+		]
+	},
+	"entity.rosespirit.hurt.big": {
+		"subtitle": "subtitles.meetyourfight.entity.rosespirit.hurt.big",
+		"sounds": [
+			"mob/ghast/scream1",
+			"mob/ghast/scream2",
+			"mob/ghast/scream3",
+			"mob/ghast/scream4",
+			"mob/ghast/scream5"
+		]
+	},
+	"entity.rosespirit.death": {
+		"subtitle": "subtitles.meetyourfight.entity.rosespirit.death",
+		"sounds": [
+			"mob/vex/death1",
+			"mob/vex/death2"
+		]
+	},
+	"entity.rosespirit.warn": {
+		"subtitle": "subtitles.meetyourfight.entity.rosespirit.warn",
+		"sounds": [ "mob/ghast/charge" ]
+	},
+	"entity.rosespirit.shoot": {
+		"subtitle": "subtitles.meetyourfight.entity.rosespirit.shoot",
+		"sounds": [ "mob/ghast/fireball4" ]
+	},
 	
 	"item.proc.slicers_dice": {
 		"subtitle": "subtitles.meetyourfight.item.bonus_damage",

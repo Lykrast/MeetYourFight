@@ -149,7 +149,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		if (!source.isBypassInvul() && getPhase() != PHASE_1 && getPhase() != PHASE_3) {
-			if (amount > 0) playSound(SoundEvents.ANVIL_LAND, 1, 1);
+			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
 		return super.hurt(source, amount);
@@ -190,7 +190,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
         for(LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(2, 0.2, 2))) {
         	if (!(entity instanceof RosalyneEntity) && !(entity instanceof RoseSpiritEntity) && entity.isAlive()) doHurtTarget(entity);
         }
-        playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1, 1);
+        playSound(ModSounds.rosalyneSwing.get(), 1, 1);
         //attack cycle goes OUTDN, INUP, OUTUP, INDN, repeat
         switch (getAnimation()) {
             //special case for the vertical swing of the crash attack
@@ -530,7 +530,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 					holdz = tz;
 					timer = rosalyne.phase == PHASE_3 ? 15 : 20;
 					rosalyne.setAnimation(ANIM_ARM_OUT_DN);
-					rosalyne.playSound(SoundEvents.ARMOR_EQUIP_IRON, 1, 1);
+					rosalyne.playSound(ModSounds.rosalyneSwingPrepare.get(), 1, 1);
 				}
 			}
 			//Holding still before the swing
