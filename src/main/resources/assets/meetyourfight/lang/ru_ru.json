@@ -36,16 +36,33 @@
 	"item.meetyourfight.caged_heart.desc": "Снижает урон, превышающий 1/4 от максимального здоровья",
 	"item.meetyourfight.marshy_delight": "Болотный восторг",
 
+	"item.meetyourfight.dusk_key": "Сумеречный ключ",
+	"item.meetyourfight.dusk_key.desc": "Призывает Розалин, Клинок Заката",
+	"item.meetyourfight.violet_bloom": "Цветущая фиалка",
+	"item.meetyourfight.twilights_thorn": "Шип Сумерек",
+	"item.meetyourfight.wilted_ideals": "Увядшие идеалы",
+	"item.meetyourfight.wilted_ideals.desc": "Увеличивает весь наносимый урон",
+	"item.meetyourfight.blossoming_mind": "Цветущий разум",
+	"item.meetyourfight.blossoming_mind.desc": "Увеличивает опыт с мобов",
+	"item.meetyourfight.tomb_planter": "Рассадник гробниц",
+	"item.meetyourfight.tomb_planter.desc": "Удобряет место, где вы убили приземлившихся мобов",
+	"item.meetyourfight.petal_cream": "Лепестковый крем",
+
 	"item.meetyourfight.music_disc_magnum": "Музыкальный диск",
 	"item.meetyourfight.music_disc_magnum.desc": "Monkey Warhol - Magnum",
+	"item.meetyourfight.music_disc_frogpunch": "Музыкальный диск",
+	"item.meetyourfight.music_disc_frogpunch.desc": "Guifrog - Frog Punch",
 
 	"item.meetyourfight.bellringer_spawn_egg": "Яйцо призыва звонаря",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Яйцо призыва госпожи Фортуны",
 	"item.meetyourfight.swampjaw_spawn_egg": "Яйцо призыва болотной челюсти",
+	"item.meetyourfight.rosalyne_spawn_egg": "Яйцо призыва Розалины",
 
 	"entity.meetyourfight.bellringer": "Звонарь",
 	"entity.meetyourfight.dame_fortuna": "Госпожа Фортуна",
 	"entity.meetyourfight.swampjaw": "Болотная Челюсть",
+	"entity.meetyourfight.rosalyne": "Розалин, Клинок Заката",
+	"entity.meetyourfight.rose_spirit": "Дух розы",
 
 	"status.meetyourfight.boss_nearby": "Еще один босс слишком близко",
 
@@ -62,6 +79,17 @@
 	"subtitles.meetyourfight.entity.swampjaw.death": "Болотная Челюсть умирает",
 	"subtitles.meetyourfight.entity.swampjaw.charge": "Болотная Челюсть атакует",
 	"subtitles.meetyourfight.entity.swampjaw.bomb": "Бомба сброшена",
+	"subtitles.meetyourfight.entity.rosalyne.hurt": "Розалин ранена",
+	"subtitles.meetyourfight.entity.rosalyne.death": "Розалин умирает",
+	"subtitles.meetyourfight.entity.rosalyne.crack": "Розалин ломается",
+	"subtitles.meetyourfight.entity.rosalyne.swing": "Розалин качается",
+	"subtitles.meetyourfight.entity.rosalyne.swing.prepare": "Розалин готовится к удару",
+	"subtitles.meetyourfight.entity.rosespirit.idle": "Розовый дух вопит",
+	"subtitles.meetyourfight.entity.rosespirit.hurt": "Дух розы ранен",
+	"subtitles.meetyourfight.entity.rosespirit.hurt.big": "Дух розы кричит",
+	"subtitles.meetyourfight.entity.rosespirit.death": "Дух розы умирает",
+	"subtitles.meetyourfight.entity.rosespirit.warn": "Дух розы готовится к стрельбе",
+	"subtitles.meetyourfight.entity.rosespirit.shoot": "Дух розы стреляет",
 
 	"subtitles.meetyourfight.item.bonus_damage": "Урон увеличен",
 	"subtitles.meetyourfight.item.damage_negated": "Урон отменен",
@@ -81,6 +109,10 @@
 	"advancements.meetyourfight.swampjaw_summon.description": "Возьмите ископаемую приманку, чтобы призвать Болотную Челюсть",
 	"advancements.meetyourfight.swampjaw_kill.title": "Чемпион болот",
 	"advancements.meetyourfight.swampjaw_kill.description": "Победите Болотную Челюсть, чтобы получить Замшелый Зуб",
+	"advancements.meetyourfight.rosalyne_summon.title": "Цветущий рыцарь",
+	"advancements.meetyourfight.rosalyne_summon.description": "Получите Сумрачный ключ, чтобы призвать Розалин, Клинок Заката",
+	"advancements.meetyourfight.rosalyne_kill.title": "Великий враг повержен",
+	"advancements.meetyourfight.rosalyne_kill.description": "Победите Розалин, Клинок Заката, чтобы получить фиолетовый цветок",
 
 	"itemGroup.meetyourfight": "Meet Your Fight"
 }
