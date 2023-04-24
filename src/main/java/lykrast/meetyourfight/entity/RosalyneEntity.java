@@ -278,7 +278,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.rosalyneHurt.get();
+		return ModSounds.rosalyneDeath.get();
 	}
 
 	@Override
