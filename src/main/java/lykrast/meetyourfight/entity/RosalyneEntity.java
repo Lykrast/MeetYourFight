@@ -140,6 +140,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 			RoseSpiritEntity spirit = ModEntities.ROSE_SPIRIT.get().create(level);
 			spirit.moveTo(getX() + (i/2)*4 - 2, getY(), getZ() + (i%2)*4 - 2);
 			spirit.setOwner(this);
+			if (getTarget() != null) spirit.setTarget(getTarget());
 			spirit.attackCooldown = 80 + 60*i;
 			spirit.finalizeSpawn((ServerLevel)level, level.getCurrentDifficultyAt(blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
 			level.addFreshEntity(spirit);
