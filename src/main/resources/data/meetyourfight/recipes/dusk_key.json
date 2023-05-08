@@ -6,7 +6,7 @@
 		"DA "
 	],
 	"key": {
-		"S": { "item": "minecraft:cobbled_deepslate" },
+		"S": { "item": "minecraft:blackstone" },
 		"A": { "tag": "forge:gems/amethyst" },
 		"D": { "tag": "forge:gems/diamond" },
 		"F": { "item": "minecraft:allium" }
