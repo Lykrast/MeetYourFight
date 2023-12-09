@@ -25,13 +25,14 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.BELLRINGER.get(), (context) -> new BellringerRenderer(context));
     	event.registerEntityRenderer(ModEntities.DAME_FORTUNA.get(), (context) -> new DameFortunaRenderer(context));
     	event.registerEntityRenderer(ModEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
-    	//TODO Rose
     	event.registerEntityRenderer(ModEntities.ROSALYNE.get(), (context) -> new RosalyneRenderer(context));
     	event.registerEntityRenderer(ModEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
     	//TODO Vela
     	//event.registerEntityRenderer(ModEntities.VELA.get(), (context) -> new VelaRenderer(context));
 		
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
+    	event.registerEntityRenderer(ModEntities.PROJECTILE_TARGETED.get(), (context) -> new ProjectileTargetedRenderer(context));
+    	event.registerEntityRenderer(ModEntities.FORTUNA_BOMB.get(), (context) -> new FortunaBombRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
 		//event.registerEntityRenderer(ModEntities.WATER_BOULDER.get(), (context) -> new WaterBoulderRenderer(context));
 		//event.registerEntityRenderer(ModEntities.VELA_VORTEX.get(), (context) -> new VelaVortexRenderer(context));
@@ -49,6 +50,8 @@ public class ClientStuff {
     	//event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
+    	event.registerLayerDefinition(ProjectileChipsModel.MODEL, ProjectileChipsModel::createBodyLayer);
+    	event.registerLayerDefinition(FortunaBombModel.MODEL, FortunaBombModel::createBodyLayer);
     	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);
     	//event.registerLayerDefinition(WaterBoulderModel.MODEL, WaterBoulderModel::createBodyLayer);
     	//event.registerLayerDefinition(VelaVortexModel.MODEL, VelaVortexModel::createBodyLayer);

@@ -106,7 +106,7 @@ public class BellringerEntity extends BossEntity {
 	}
 	
 	private ProjectileLineEntity readyAttack() {
-		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this, 0, 0, 0);
+		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this);
 		ghost.setOwner(this);
 		ghost.setPos(getX() - 2 + random.nextDouble() * 4, getY() - 2 + random.nextDouble() * 4, getZ() - 2 + random.nextDouble() * 4);
 		ghost.setVariant(ProjectileLineEntity.VAR_BELLRINGER);

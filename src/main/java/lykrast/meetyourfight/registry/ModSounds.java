@@ -10,7 +10,7 @@ public class ModSounds {
 	public static final DeferredRegister<SoundEvent> REG = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MeetYourFight.MODID);
 	//Bosses
 	public static RegistryObject<SoundEvent> bellringerIdle, bellringerHurt, bellringerDeath;
-	public static RegistryObject<SoundEvent> dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
+	public static RegistryObject<SoundEvent> dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot, dameFortunaChipsStart, dameFortunaChipsFire;
 	public static RegistryObject<SoundEvent> swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
 	public static RegistryObject<SoundEvent> rosalyneHurt, rosalyneDeath, rosalyneCrack, rosalyneSwing, rosalyneSwingPrepare;
 	public static RegistryObject<SoundEvent> roseSpiritIdle, roseSpiritHurt, roseSpiritHurtBig, roseSpiritDeath, roseSpiritWarn, roseSpiritShoot;
@@ -30,6 +30,8 @@ public class ModSounds {
 		dameFortunaDeath = initSound("entity.dame_fortuna.death");
 		dameFortunaAttack = initSound("entity.dame_fortuna.attack");
 		dameFortunaShoot = initSound("entity.dame_fortuna.shoot");
+		dameFortunaChipsStart = initSound("entity.dame_fortuna.chips.start");
+		dameFortunaChipsFire = initSound("entity.dame_fortuna.chips.fire");
 		
 		swampjawIdle = initSound("entity.swampjaw.idle");
 		swampjawHurt = initSound("entity.swampjaw.hurt");

@@ -74,6 +74,8 @@
 	"subtitles.meetyourfight.entity.dame_fortuna.death": "Dame Fortuna dies",
 	"subtitles.meetyourfight.entity.dame_fortuna.attack": "Dame Fortuna laughs",
 	"subtitles.meetyourfight.entity.dame_fortuna.shoot": "Dame Fortuna shoots",
+	"subtitles.meetyourfight.entity.dame_fortuna.chips.start": "Chips produced",
+	"subtitles.meetyourfight.entity.dame_fortuna.chips.fire": "Chips fired",
 	"subtitles.meetyourfight.entity.swampjaw.idle": "Swampjaw growls",
 	"subtitles.meetyourfight.entity.swampjaw.hurt": "Swampjaw hurt",
 	"subtitles.meetyourfight.entity.swampjaw.death": "Swampjaw dies",

@@ -68,6 +68,18 @@
 			"entity/shulker/shoot4"
 		]
 	},
+	"entity.dame_fortuna.chips.start": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.chips.start",
+		"sounds": [
+			"meetyourfight:fortuna/chips_start"
+		]
+	},
+	"entity.dame_fortuna.chips.fire": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.chips.fire",
+		"sounds": [
+			"meetyourfight:fortuna/chips_fire"
+		]
+	},
 	"entity.swampjaw.idle": {
 		"subtitle": "subtitles.meetyourfight.entity.swampjaw.idle",
 		"sounds": [

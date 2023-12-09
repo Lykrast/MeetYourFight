@@ -184,7 +184,7 @@ public class RoseSpiritEntity extends Monster {
 	}
 	
 	private ProjectileLineEntity readyAttack() {
-		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this, 0, 0, 0);
+		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this);
 		ghost.setOwner(this);
 		ghost.setPos(getX(), getY()+0.625, getZ());
 		ghost.setVariant(ProjectileLineEntity.VAR_ROSALYNE);

@@ -219,10 +219,17 @@ public class DameFortunaEntity extends BossEntity {
 	}
 	
 	private ProjectileLineEntity readyLine() {
-		ProjectileLineEntity proj = new ProjectileLineEntity(level, this, 0, 0, 0);
+		ProjectileLineEntity proj = new ProjectileLineEntity(level, this);
 		proj.setOwner(this);
 		proj.setPos(getX(), getEyeY() + 1, getZ());
 		proj.setVariant(ProjectileLineEntity.VAR_DAME_FORTUNA);
+		return proj;
+	}
+	
+	private ProjectileTargetedEntity readyTargeted() {
+		ProjectileTargetedEntity proj = new ProjectileTargetedEntity(level, this);
+		proj.setOwner(this);
+		proj.setPos(getX(), getEyeY() + 1, getZ());
 		return proj;
 	}
 	
@@ -334,6 +341,7 @@ public class DameFortunaEntity extends BossEntity {
 					return 8 + dame.rage * 2;
 				default:
 				case 0:
+					return 2;
 				case 2:
 					return 4 + dame.rage;
 			}
@@ -350,7 +358,7 @@ public class DameFortunaEntity extends BossEntity {
 				if (attackRemaining <= 0) stop();
 			}
 		}
-
+		
 		//Horrible horrible ad hoc nï¿½3
 		private void performAttack() {
 			double tx = target.getX();
@@ -359,50 +367,58 @@ public class DameFortunaEntity extends BossEntity {
 			switch (chosenAttack) {
 				default:
 				case 0:
-					//Vertical lines
-					//Copied a good deal from Bellringer
-					attackDelay = 20;
-					BlockPos self = dame.blockPosition();
-					double sx = self.getX();
-					double sz = self.getZ();
-					Direction dir = Direction.getNearest(tx - sx, 0, tz - sz);
-					double cx = dir.getStepX();
-					double cz = dir.getStepZ();
+					//Homing chips
+					attackDelay = 5;
+					//should be pointing to like left/right (doesn't matter) of her
+					Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
+					if (attackRemaining % 2 == 0) perp = perp.scale(-1);
+					double sx = dame.getX() + perp.x;
+					double sy = dame.getY() + 1;
+					double sz = dame.getZ() + perp.y;
 					
-					for (int i = -4; i <= 4; i++) {
-						if ((i + 4) % 2 == attackRemaining % 2) {
-							for (int y = 0; y < 3; y++) {
-								ProjectileLineEntity proj = dame.readyLine();
-								proj.setUp(10, cx, 0, cz, tx - 7*cx + 1.5*i*cz, ty + 1.5*y, tz - 7*cz + 1.5*i*cx);
-								dame.level.addFreshEntity(proj);
-							}
-						}
+					for (int i = 0; i < 8; i++) {
+						ProjectileTargetedEntity proj = dame.readyTargeted();
+						proj.setPos(sx, sy + i*0.125, sz);
+						proj.setUp(85 - 10*i, 10, target, 1, sx, sy + i*0.5 + 0.25, sz);
+						dame.level.addFreshEntity(proj);
 					}
 					
-					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+					dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 1:
-					//Harvester style Evoker jaws
-					attackDelay = 10;
-					double minY = Math.min(ty, dame.getY());
-					double maxY = Math.max(ty, dame.getY()) + 1;
-					float angle = (float) Mth.atan2(tz - dame.getZ(), tx - dame.getX());
-					dame.spawnFangs(tx, tz, minY, maxY, angle, 0);
+					//Attack that spawn cardinal around player
+					//Like the old harvester claw attack
+					attackDelay = 11;
+					if (target.isOnGround()) ty += 1;
+					projAroundTarget(tx, ty, tz, 1, 0);
+					projAroundTarget(tx, ty, tz, -1, 0);
+					projAroundTarget(tx, ty, tz, 0, 1);
+					projAroundTarget(tx, ty, tz, 0, -1);
+					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 2:
-					//Grid above
+					//Dice bombs, currently placeholding the actual dices
 					attackDelay = 20;
-					for (int x = -3; x <= 3; x++) {
-						for (int z = -3; z <= 3; z++) {
-							if ((x + z + 6) % 2 != attackRemaining % 2) continue;
-							ProjectileLineEntity proj = dame.readyLine();
-							proj.setUp(15, 0, -1, 0, tx + x * 1.6, ty + 7, tz + z * 1.6);
-							dame.level.addFreshEntity(proj);
-						}
-					}
+					//don't want the bombs to be thrown behind the target, so we aim a 60° cone
+					//don't think the yrot can get negative values so wrap it is
+					Vec3 offset = new Vec3(dame.getX() - tx,0,dame.getZ() - tz).normalize().yRot(Mth.wrapDegrees(dame.random.nextFloat()*60 - 30)*Mth.DEG_TO_RAD);
+					double bombX = tx + offset.x*3;
+					double bombY = ty;
+					double bombZ = tz + offset.z*3;
+					if (target.isOnGround()) bombY += 1;
+					FortunaBombEntity bomb = new FortunaBombEntity(dame.level, dame.getX(), dame.getY() + 2, dame.getZ(), dame);
+					bomb.setup(25, 15, bombX, bombY, bombZ);
+					dame.level.addFreshEntity(bomb);
 					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
 			}
+		}
+		
+		private void projAroundTarget(double tx, double ty, double tz, double dx, double dz) {
+			ProjectileLineEntity proj = dame.readyLine();
+			proj.setPos(tx - dx * 6, ty - 2, tz - dz * 6);
+			proj.setUp(10, dx, 0, dz, tx - dx * 6, ty, tz - dz * 6);
+			dame.level.addFreshEntity(proj);
 		}
 
 		@Override

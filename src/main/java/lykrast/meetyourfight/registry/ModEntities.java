@@ -25,27 +25,32 @@ public class ModEntities {
 	
 	//Projectiles
 	public static RegistryObject<EntityType<ProjectileLineEntity>> PROJECTILE_LINE;
+	public static RegistryObject<EntityType<ProjectileTargetedEntity>> PROJECTILE_TARGETED;
+	public static RegistryObject<EntityType<FortunaBombEntity>> FORTUNA_BOMB;
 	public static RegistryObject<EntityType<SwampMineEntity>> SWAMP_MINE;
 	public static RegistryObject<EntityType<WaterBoulderEntity>> WATER_BOULDER;
 	public static RegistryObject<EntityType<VelaVortexEntity>> VELA_VORTEX;
 
 	static {
 		BELLRINGER = REG.register("bellringer", () -> EntityType.Builder.<BellringerEntity>of(BellringerEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
-				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
+				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		DAME_FORTUNA = REG.register("dame_fortuna", () -> EntityType.Builder.<DameFortunaEntity>of(DameFortunaEntity::new, MobCategory.MONSTER).sized(0.6f, 2.325f)
-				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
+				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMPJAW = REG.register("swampjaw", () -> EntityType.Builder.<SwampjawEntity>of(SwampjawEntity::new, MobCategory.MONSTER).sized(2.6f, 1.6f)
-				.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
-		//TODO Rose
+				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		ROSALYNE = REG.register("rosalyne", () -> EntityType.Builder.<RosalyneEntity>of(RosalyneEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
 				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		//TODO Vela
 		//VELA = REG.register("vela", () -> EntityType.Builder.<VelaEntity>of(VelaEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
 		//		.setUpdateInterval(2).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		ROSE_SPIRIT = REG.register("rose_spirit", () -> EntityType.Builder.<RoseSpiritEntity>of(RoseSpiritEntity::new, MobCategory.MONSTER).sized(0.75f, 1.3125f)
-				.setUpdateInterval(2).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 
 		PROJECTILE_LINE = REG.register("projectile_line", () -> EntityType.Builder.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
+				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+		PROJECTILE_TARGETED = REG.register("projectile_targeted", () -> EntityType.Builder.<ProjectileTargetedEntity>of(ProjectileTargetedEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
+				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+		FORTUNA_BOMB = REG.register("fortuna_bomb", () -> EntityType.Builder.<FortunaBombEntity>of(FortunaBombEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMP_MINE = REG.register("swamp_mine", () -> EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
