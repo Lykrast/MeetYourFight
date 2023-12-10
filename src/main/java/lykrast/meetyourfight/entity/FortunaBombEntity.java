@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -25,7 +26,7 @@ public class FortunaBombEntity extends Entity {
 	private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(FortunaBombEntity.class, EntityDataSerializers.INT);
 	private int moveFuse;
 
-	private static final double GRAVITY = -0.06;
+	private static final double GRAVITY = -0.08;
 
 	public FortunaBombEntity(EntityType<? extends FortunaBombEntity> entityTypeIn, Level worldIn) {
 		super(entityTypeIn, worldIn);
@@ -85,8 +86,10 @@ public class FortunaBombEntity extends Entity {
 
 		int remaining = getFuse() - 1;
 		setFuse(remaining);
+		//if (remaining == 10) playSound(SoundEvents.CREEPER_PRIMED, 1.0F, 0.5F);
 		if (remaining <= 0) {
 			remove(RemovalReason.KILLED);
+			playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 0.5F);
 			if (!level.isClientSide) explode();
 		}
 		else {

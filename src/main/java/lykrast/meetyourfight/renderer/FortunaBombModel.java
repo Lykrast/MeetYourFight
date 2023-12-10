@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import lykrast.meetyourfight.MeetYourFight;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,6 +12,8 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
 public class FortunaBombModel<T extends Entity> extends EntityModel<T> {
@@ -38,8 +39,8 @@ public class FortunaBombModel<T extends Entity> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		renderer.yRot = netHeadYaw * ((float) Math.PI / 180);
-		renderer.xRot = headPitch * ((float) Math.PI / 180);
+		renderer.yRot = netHeadYaw * Mth.DEG_TO_RAD;
+		renderer.xRot = headPitch * Mth.DEG_TO_RAD;
 	}
 
 }
