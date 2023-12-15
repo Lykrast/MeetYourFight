@@ -332,6 +332,9 @@ public class DameFortunaEntity extends BossEntity {
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+			//TODO Placeholder to test
+			chosenAttack = 3;
+			attackRemaining = 1;
 		}
 
 		//Horrible horrible ad hoc n�2
@@ -411,6 +414,35 @@ public class DameFortunaEntity extends BossEntity {
 					dame.level.addFreshEntity(bomb);
 					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
+				case 3:
+					//TODO Placeholder
+					Direction dir = Direction.getNearest(target.getX() - dame.getX(), 0, target.getZ() - dame.getZ());
+					Direction side = dir.getClockWise();
+					//Evenly space out the cards on the line
+					int cards = 5;
+					int[] shuffled = new int[cards];
+					for (int i = 0; i < cards; i++) shuffled[i] = i;
+					shuffle(shuffled);
+					BlockPos center = new BlockPos(dame.getX(), target.getY() + 1, dame.getZ());
+					Vec3 start = new Vec3(center.getX() - side.getStepX() * 1.5*(cards-1), center.getY(), center.getZ() - side.getStepZ() * 1.5*(cards-1));
+					for (int i = 0; i < cards; i++) {
+						FortunaCardEntity card = new FortunaCardEntity(dame.level, start.x + 3*i*side.getStepX(), start.y, start.z + 3*i*side.getStepZ(), dame);
+						card.setYRot(dir.toYRot());
+						card.setup(0, true, i*10 + 5, center.getX(), center.getY(), center.getZ(), i*(360/cards),
+								start.x + 3*shuffled[i]*side.getStepX(), start.y, start.z + 3*shuffled[i]*side.getStepZ());
+						dame.level.addFreshEntity(card);
+					}
+					break;
+			}
+		}
+		
+		//To use the boss's random gotta remade a fisher yates shuffle
+		private void shuffle(int[] arr) {
+			for (int i = 0; i < arr.length-1; i++) {
+				int j = dame.random.nextInt(i, arr.length);
+				int swap = arr[i];
+				arr[i] = arr[j];
+				arr[j] = swap;
 			}
 		}
 		
@@ -425,6 +457,8 @@ public class DameFortunaEntity extends BossEntity {
 		public void stop() {
 			dame.attackCooldown = 40 + dame.random.nextInt(21);
 			dame.setAttack(NO_ATTACK);
+			//TODO PLACEHOLDER
+			dame.attackCooldown = 13*20;
 		}
 
 		@Override

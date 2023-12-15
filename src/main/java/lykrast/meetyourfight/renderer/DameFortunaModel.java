@@ -47,9 +47,9 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
         head.y = -8 + Mth.sin(ageInTicks * (float)Math.PI / 50f);
 		
 		//Head animation
-		head.xRot = rotlerpRad(headProgress, headX, entityIn.headTargetPitch * ((float)Math.PI / 2f));
-		head.yRot = rotlerpRad(headProgress, headY, entityIn.headTargetYaw * ((float)Math.PI / 2f));
-		head.zRot = rotlerpRad(headProgress, headZ, entityIn.headTargetRoll * ((float)Math.PI / 2f));
+		head.xRot = rotlerpRad(headProgress, headX, entityIn.headTargetPitch * Mth.HALF_PI);
+		head.yRot = rotlerpRad(headProgress, headY, entityIn.headTargetYaw * Mth.HALF_PI);
+		head.zRot = rotlerpRad(headProgress, headZ, entityIn.headTargetRoll * Mth.HALF_PI);
 		
 		int attack = entityIn.getAttack();
 		//Same pose as Illagers casting spells

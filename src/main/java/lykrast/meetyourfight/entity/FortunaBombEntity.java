@@ -114,7 +114,6 @@ public class FortunaBombEntity extends Entity {
 		projectile(-HALF_SQRT2, HALF_SQRT2);
 		projectile(HALF_SQRT2, -HALF_SQRT2);
 		projectile(-HALF_SQRT2, -HALF_SQRT2);
-		//TODO sound
 	}
 
 	private void projectile(double dx, double dz) {

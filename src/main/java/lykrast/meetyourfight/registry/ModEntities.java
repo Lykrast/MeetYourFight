@@ -27,6 +27,7 @@ public class ModEntities {
 	public static RegistryObject<EntityType<ProjectileLineEntity>> PROJECTILE_LINE;
 	public static RegistryObject<EntityType<ProjectileTargetedEntity>> PROJECTILE_TARGETED;
 	public static RegistryObject<EntityType<FortunaBombEntity>> FORTUNA_BOMB;
+	public static RegistryObject<EntityType<FortunaCardEntity>> FORTUNA_CARD;
 	public static RegistryObject<EntityType<SwampMineEntity>> SWAMP_MINE;
 	public static RegistryObject<EntityType<WaterBoulderEntity>> WATER_BOULDER;
 	public static RegistryObject<EntityType<VelaVortexEntity>> VELA_VORTEX;
@@ -51,6 +52,8 @@ public class ModEntities {
 		PROJECTILE_TARGETED = REG.register("projectile_targeted", () -> EntityType.Builder.<ProjectileTargetedEntity>of(ProjectileTargetedEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		FORTUNA_BOMB = REG.register("fortuna_bomb", () -> EntityType.Builder.<FortunaBombEntity>of(FortunaBombEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
+				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+		FORTUNA_CARD = REG.register("fortuna_card", () -> EntityType.Builder.<FortunaCardEntity>of(FortunaCardEntity::new, MobCategory.MISC).sized(1.75f, 2.5f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMP_MINE = REG.register("swamp_mine", () -> EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));

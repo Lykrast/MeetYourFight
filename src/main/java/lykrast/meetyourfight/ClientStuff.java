@@ -33,6 +33,7 @@ public class ClientStuff {
     	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
     	event.registerEntityRenderer(ModEntities.PROJECTILE_TARGETED.get(), (context) -> new ProjectileTargetedRenderer(context));
     	event.registerEntityRenderer(ModEntities.FORTUNA_BOMB.get(), (context) -> new FortunaBombRenderer(context));
+    	event.registerEntityRenderer(ModEntities.FORTUNA_CARD.get(), (context) -> new FortunaCardRenderer(context));
 		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
 		//event.registerEntityRenderer(ModEntities.WATER_BOULDER.get(), (context) -> new WaterBoulderRenderer(context));
 		//event.registerEntityRenderer(ModEntities.VELA_VORTEX.get(), (context) -> new VelaVortexRenderer(context));
@@ -52,6 +53,7 @@ public class ClientStuff {
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
     	event.registerLayerDefinition(ProjectileChipsModel.MODEL, ProjectileChipsModel::createBodyLayer);
     	event.registerLayerDefinition(FortunaBombModel.MODEL, FortunaBombModel::createBodyLayer);
+    	event.registerLayerDefinition(FortunaCardModel.MODEL, FortunaCardModel::createBodyLayer);
     	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);
     	//event.registerLayerDefinition(WaterBoulderModel.MODEL, WaterBoulderModel::createBodyLayer);
     	//event.registerLayerDefinition(VelaVortexModel.MODEL, VelaVortexModel::createBodyLayer);
