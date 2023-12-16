@@ -1,19 +1,20 @@
 package lykrast.meetyourfight.entity;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 import lykrast.meetyourfight.registry.ModEntities;
+import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -21,13 +22,12 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class FortunaCardEntity extends Entity {
 	//Card for the shuffle attack
-	private LivingEntity bomber;
 	private static final EntityDataAccessor<Byte> VARIANT = SynchedEntityData.defineId(FortunaCardEntity.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Byte> ANIMATION = SynchedEntityData.defineId(FortunaCardEntity.class, EntityDataSerializers.BYTE);
 	private int phase, timer = 20, hideTime;
 	private boolean correct;
 	private static final int PHASE_START = 0, PHASE_SPIN = 1, PHASE_GOTODEST = 2, PHASE_ACTIVE = 3, PHASE_REVEAL = 4;
-	private static final int SHOW_TIME = 5*20, SPIN_TIME = 5*20;
+	private static final int START_TIME = 4*20, SPIN_TIME = 4*20, REVEAL_TIME = 4*20;
 	//Stuff for movement
 	private double spinX, spinY, spinZ, destX, destY, destZ;
 	private int spinOffset;
@@ -35,19 +35,18 @@ public class FortunaCardEntity extends Entity {
 	//Animation
 	public int clientAnim, animTimer;
 	public static final int ANIM_NOTHERE = 0, ANIM_APPEAR = 1, ANIM_IDLE_SHOW = 2, ANIM_HIDE = 3, ANIM_IDLE_HIDDEN = 4, ANIM_REVEAL = 5;
-	public static final int ANIM_APPEAR_DUR = 10, ANIM_HIDE_DUR = 10;
+	public static final int ANIM_APPEAR_DUR = 10, ANIM_HIDE_DUR = 10, ANIM_REVEAL_DUR = 20;
 
 	public FortunaCardEntity(EntityType<? extends FortunaCardEntity> entityTypeIn, Level worldIn) {
 		super(entityTypeIn, worldIn);
 	}
 
-	public FortunaCardEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
+	public FortunaCardEntity(Level worldIn, double x, double y, double z) {
 		this(ModEntities.FORTUNA_CARD.get(), worldIn);
 		setPos(x, y, z);
 		xo = x;
 		yo = y;
 		zo = z;
-		bomber = igniter;
 	}
 
 	//You know what I'm sure some code analyzer would yell at me for putting that many arguments there
@@ -57,7 +56,7 @@ public class FortunaCardEntity extends Entity {
 		setVariant(variant);
 		this.correct = correct;
 		phase = PHASE_START;
-		timer = SHOW_TIME;
+		timer = START_TIME;
 		hideTime = preflipTime;
 		this.spinX = spinX;
 		this.spinY = spinY;
@@ -92,11 +91,6 @@ public class FortunaCardEntity extends Entity {
 	}
 
 	@Override
-	public boolean isPickable() {
-		return false;
-	}
-
-	@Override
 	public void tick() {
 		if (!level.isClientSide) {
 			timer--;
@@ -114,8 +108,7 @@ public class FortunaCardEntity extends Entity {
 						break;
 					case PHASE_GOTODEST:
 						phase = PHASE_ACTIVE;
-						//timer = 10*20;
-						timer = 20;
+						timer = 10*20;
 						setDeltaMovement(0,0,0);
 						break;
 					case PHASE_ACTIVE:
@@ -124,16 +117,31 @@ public class FortunaCardEntity extends Entity {
 						break;
 				}
 			}
+			//Animation
 			if (phase == PHASE_START) {
-				if (timer == SHOW_TIME - hideTime) setAnimation(ANIM_APPEAR);
-				else if (timer == SHOW_TIME - hideTime - ANIM_APPEAR_DUR) setAnimation(ANIM_IDLE_SHOW);
+				if (timer == START_TIME - hideTime) {
+					setAnimation(ANIM_APPEAR);
+					playSound(ModSounds.dameFortunaCardStart.get(), 1, 1);
+				}
+				else if (timer == START_TIME - hideTime - ANIM_APPEAR_DUR) setAnimation(ANIM_IDLE_SHOW);
 				else if (timer == 20) setAnimation(ANIM_HIDE);
 				else if (timer == 20 - ANIM_HIDE_DUR) setAnimation(ANIM_IDLE_HIDDEN);
 			}
-			//Phases that have movement
+			else if (phase == PHASE_REVEAL) {
+				if (timer == START_TIME - 5) setAnimation(ANIM_REVEAL);
+				if (timer == START_TIME - ANIM_REVEAL_DUR - 5) {
+					setAnimation(ANIM_IDLE_SHOW);
+					playSound(correct ? ModSounds.dameFortunaCardRight.get() : ModSounds.dameFortunaCardWrong.get(), 1, 1);
+					if (correct) {
+						List<DameFortunaEntity> dames = level.getEntitiesOfClass(DameFortunaEntity.class, getBoundingBox().inflate(32), (dame) -> dame.isAlive());
+						for (var d : dames) d.progressShuffle();
+					}
+				}
+			}
+			//Movement
 			if (phase == PHASE_SPIN) {
-				//18° per tick = 360° per second
-				Vec3 offset = SPINVEC.yRot(((timer*18+spinOffset) % 360) * Mth.DEG_TO_RAD);
+				//12° per tick = 360° per 1.5 second
+				Vec3 offset = SPINVEC.yRot(((timer*12+spinOffset) % 360) * Mth.DEG_TO_RAD);
 				double tx = spinX + offset.x;
 				double tz = spinZ + offset.z;
 				//Accelerate to spin at the start
@@ -146,7 +154,7 @@ public class FortunaCardEntity extends Entity {
 				}
 				else setDeltaMovement(tx - getX(), spinY - getY(), tz - getZ());
 			}
-			if (phase == PHASE_GOTODEST) {
+			else if (phase == PHASE_GOTODEST) {
 				//delay dependend on the spin offset, so like a 180 offset takes 10 ticks more before going to the dest
 				int timeOffset = spinOffset / 18 + 1;
 				Vec3 speed = new Vec3(destX - getX(), destY - getY(), destZ - getZ());
@@ -158,8 +166,46 @@ public class FortunaCardEntity extends Entity {
 				}
 			}
 		}
-		move(MoverType.SELF, getDeltaMovement());
+
+		checkInsideBlocks();
+		Vec3 vector3d = getDeltaMovement();
+		double d0 = getX() + vector3d.x;
+		double d1 = getY() + vector3d.y;
+		double d2 = getZ() + vector3d.z;
+		setPos(d0, d1, d2);
+		
 		if (level.isClientSide) updateClientAnimation();
+	}
+	
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		if (phase == PHASE_ACTIVE && source.getEntity() != null && source.getEntity() instanceof LivingEntity) {
+			//Despawn other nearby cards, turn around
+			phase = PHASE_REVEAL;
+			timer = REVEAL_TIME;
+			List<FortunaCardEntity> others = level.getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32), (card) -> card.phase != PHASE_REVEAL);
+			for (var other : others) other.remove(RemovalReason.KILLED);
+			setYRot(lookToward(source.getEntity().getX(), source.getEntity().getZ()));
+			return true;
+		}
+		else return false;
+	}
+
+	@Override
+	public boolean isPickable() {
+		return true;
+	}
+
+	@Override
+	public float getPickRadius() {
+		return 1;
+	}
+
+	protected float lookToward(double wantedX, double wantedZ) {
+		//From LookControl, to face the player
+		double d0 = wantedX - getX();
+		double d1 = wantedZ - getZ();
+		return (float) (Mth.atan2(d1, d0) * (180 / Math.PI) - 90);
 	}
 	
 	private void updateClientAnimation() {
@@ -172,12 +218,12 @@ public class FortunaCardEntity extends Entity {
 				case ANIM_HIDE:
 					animTimer = ANIM_HIDE_DUR;
 					break;
-				default:
-					animTimer = 20;
+				case ANIM_REVEAL:
+					animTimer = ANIM_REVEAL_DUR;
 					break;
 			}
 		}
-		else animTimer--;
+		else if (animTimer > 0) animTimer--;
 	}
 
 	@Override

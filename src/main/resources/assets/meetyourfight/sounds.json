@@ -80,6 +80,24 @@
 			"meetyourfight:fortuna/chips_fire"
 		]
 	},
+	"entity.dame_fortuna.card.start": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.card.start",
+		"sounds": [
+			"meetyourfight:fortuna/card_start"
+		]
+	},
+	"entity.dame_fortuna.card.right": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.card.right",
+		"sounds": [
+			"meetyourfight:fortuna/card_right"
+		]
+	},
+	"entity.dame_fortuna.card.wrong": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.card.wrong",
+		"sounds": [
+			"meetyourfight:fortuna/card_wrong"
+		]
+	},
 	"entity.swampjaw.idle": {
 		"subtitle": "subtitles.meetyourfight.entity.swampjaw.idle",
 		"sounds": [

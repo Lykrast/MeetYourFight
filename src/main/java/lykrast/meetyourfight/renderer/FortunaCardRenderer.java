@@ -14,7 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
-	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/fortuna_card_circle.png");
+	private static final ResourceLocation[] TEXTURES = {
+			MeetYourFight.rl("textures/entity/fortuna_card_square.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_circle.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_triangle.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_cross.png")
+	};
 	private static final ResourceLocation TEXTURE_HIDDEN = MeetYourFight.rl("textures/entity/fortuna_card_hidden.png");
 	private final FortunaCardModel model;
 
@@ -33,13 +38,19 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 		int anim = entityIn.clientAnim;
 		if (anim == FortunaCardEntity.ANIM_NOTHERE) return;
 		matrixStackIn.pushPose();
+		//copied that from wither projectile, cause the texture is fucking upside down and mirrored
+		matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
 		float yaw = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.getYRot());
 		if (anim == FortunaCardEntity.ANIM_HIDE) {
 			float progress = (FortunaCardEntity.ANIM_APPEAR_DUR - entityIn.animTimer + partialTicks)/(float)FortunaCardEntity.ANIM_APPEAR_DUR;
 			yaw = Mth.wrapDegrees(yaw + progress*360);
 		}
+		else if (anim == FortunaCardEntity.ANIM_REVEAL) {
+			float progress = (FortunaCardEntity.ANIM_REVEAL_DUR - entityIn.animTimer + partialTicks)/(float)FortunaCardEntity.ANIM_REVEAL_DUR;
+			yaw = Mth.wrapDegrees(yaw + progress*360);
+		}
 		float pitch = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
-		matrixStackIn.translate(0, 1, 0);
+		matrixStackIn.translate(0, -1, 0);
 		model.setupAnim(entityIn, 0, 0, 0, yaw, pitch);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(getTextureLocation(entityIn)));
 		if (anim == FortunaCardEntity.ANIM_APPEAR) {
@@ -54,13 +65,13 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 	
-	private static final int HIDE_HALF = FortunaCardEntity.ANIM_APPEAR_DUR / 2;
+	private static final int HIDE_HALF = FortunaCardEntity.ANIM_APPEAR_DUR / 2, REVEAL_HALF = FortunaCardEntity.ANIM_REVEAL_DUR / 2;
 
 	@Override
 	public ResourceLocation getTextureLocation(FortunaCardEntity entity) {
 		int anim = entity.clientAnim;
-		if (anim == FortunaCardEntity.ANIM_IDLE_HIDDEN || (anim == FortunaCardEntity.ANIM_HIDE && entity.animTimer <= HIDE_HALF)) return TEXTURE_HIDDEN;
-		return TEXTURE;
+		if (anim == FortunaCardEntity.ANIM_IDLE_HIDDEN || (anim == FortunaCardEntity.ANIM_HIDE && entity.animTimer <= HIDE_HALF) || (anim == FortunaCardEntity.ANIM_REVEAL && entity.animTimer >= REVEAL_HALF)) return TEXTURE_HIDDEN;
+		return TEXTURES[Mth.clamp(entity.getVariant(), 0, TEXTURES.length)];
 	}
 
 }

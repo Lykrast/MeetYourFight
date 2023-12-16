@@ -51,7 +51,7 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 		head.yRot = rotlerpRad(headProgress, headY, entityIn.headTargetYaw * Mth.HALF_PI);
 		head.zRot = rotlerpRad(headProgress, headZ, entityIn.headTargetRoll * Mth.HALF_PI);
 		
-		int attack = entityIn.getAttack();
+		int attack = entityIn.getAnimation();
 		//Same pose as Illagers casting spells
 		//1 is normal attack, 2 is big attack
 		if (attack == DameFortunaEntity.PROJ_ATTACK) {

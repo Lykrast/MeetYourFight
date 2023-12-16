@@ -20,7 +20,7 @@ public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, 
 	protected void setupRotations(DameFortunaEntity entity, PoseStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
 		//Copied/changed this bit from the Mourned from Defiled Lands, that I think copied from endermen
 		//(and it don't want to show me the endermen code)
-		int rage = entity.getRage();
+		int rage = entity.getPhase();
 		if (rage >= 1) {
 			rotationYaw += (float)(Math.cos((ageInTicks + partialTicks) * 3.25) * Math.PI * rage);
 		}

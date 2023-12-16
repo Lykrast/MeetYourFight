@@ -29,41 +29,38 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class DameFortunaEntity extends BossEntity {
 	/**
 	 * Look at me I can embed attacks AND rage in a single byte! 0x0000RRAA with R for rage (0-2) and A for attack (0-2)
 	 */
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(DameFortunaEntity.class, EntityDataSerializers.BYTE);
+	public static final int PHASE_1 = 0, SHUFFLE_1 = 1, PHASE_2 = 2, SHUFFLE_2 = 3, PHASE_3 = 4, SHUFFLE_3 = 5, DEATH = 6;
+	private static final float TRESHOLD_1 = 2f/3, TRESHOLD_2 = 1f/3, TRESHOLD_3 = 1f/10;
+	private static final float RESET_1 = (1 + TRESHOLD_1)/2, RESET_2 = (TRESHOLD_1 + TRESHOLD_2)/2, RESET_3 = (TRESHOLD_2 + TRESHOLD_3)/2;
 	public static final int NO_ATTACK = 0, PROJ_ATTACK = 1, CLAW_ATTACK = 2;
-	private static final int ATTACK_MASK = 0b11, RAGE_MASK = ~ATTACK_MASK;
+	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
 	public int attackCooldown;
+	private int phase;
+	private boolean hasSpawnedShuffle = false;
 	/**
 	 * Since the animation only rotates in 90�, it's given in 90� by 0 1 2 or 3
 	 */
 	public int headTargetPitch, headTargetYaw, headTargetRoll;
 	public int headRotationTimer;
 	public float headRotationProgress, headRotationProgressLast;
-	/**
-	 * Server side cached rage
-	 */
-	private int rage;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, Level worldIn) {
 		super(type, worldIn);
 		moveControl = new VexMovementController(this);
 		xpReward = 100;
-		rage = 0;
+		phase = 0;
 		//Animations
 		headRotationTimer = 30;
 		headTargetPitch = 0;
@@ -77,8 +74,9 @@ public class DameFortunaEntity extends BossEntity {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
-		goalSelector.addGoal(2, new RegularAttack(this));
-		goalSelector.addGoal(3, new RageEvokerLines(this));
+		goalSelector.addGoal(1, new WaitShuffle(this));
+		goalSelector.addGoal(2, new DoTheShuffle(this));
+		goalSelector.addGoal(3, new RegularAttack(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this, 1));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -108,15 +106,19 @@ public class DameFortunaEntity extends BossEntity {
 		if (level.isClientSide) {
 			headRotationTimer--;
 			if (headRotationTimer <= 0) {
-				//So uh I do not intend to have rage beyond 3 levels, so the ad hoc will do
-				switch (getRage()) {
-					case 0:
+				switch (getPhase()) {
+					default:
+					case PHASE_1:
+					case SHUFFLE_1:
 						headRotationTimer = 20 + random.nextInt(21);
 						break;
-					case 1:
+					case PHASE_2:
+					case SHUFFLE_2:
 						headRotationTimer = 15 + random.nextInt(11);
 						break;
-					default:
+					case PHASE_3:
+					case SHUFFLE_3:
+					case DEATH:
 						headRotationTimer = 5 + random.nextInt(11);
 				}
 				rotateHead();
@@ -180,42 +182,89 @@ public class DameFortunaEntity extends BossEntity {
 		entityData.define(STATUS, (byte)0);
 	}
 	
-	public int getAttack() {
-		return entityData.get(STATUS) & ATTACK_MASK;
+	public int getAnimation() {
+		return (entityData.get(STATUS) & ANIMATION_MASK) >> 3;
 	}
 	
-	public void setAttack(int attack) {
-		int rage = entityData.get(STATUS) & RAGE_MASK;
-		entityData.set(STATUS, (byte)(rage | attack));
+	public void setAnimation(int animation) {
+		int phase = entityData.get(STATUS) & PHASE_MASK;
+		entityData.set(STATUS, (byte)((animation << 3) | phase));
 	}
 	
-	public int getRage() {
-		return (entityData.get(STATUS) & RAGE_MASK) >> 2;
+	public int getPhase() {
+		return entityData.get(STATUS) & PHASE_MASK;
 	}
 	
-	public void setRage(int rage) {
-		int attack = entityData.get(STATUS) & ATTACK_MASK;
-		entityData.set(STATUS, (byte)((rage << 2) | attack));
+	public void setPhase(int phase) {
+		int animation = entityData.get(STATUS) & ANIMATION_MASK;
+		entityData.set(STATUS, (byte)(phase | animation));
 	}
 	
-	private int getRageTarget() {
-		//+1 rage every 1/3 of life lost
-		float health = getHealth();
-		float third = getMaxHealth() / 3f;
-		if (health <= third) return 2;
-		else if (health >= third * 2) return 0;
-		else return 1;
+	@Override
+	public boolean hurt(DamageSource source, float amount) {
+		if (!source.isBypassInvul() && (getPhase() == SHUFFLE_1 || getPhase() == SHUFFLE_2 || getPhase() == SHUFFLE_3)) {
+			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
+			return false;
+		}
+		return super.hurt(source, amount);
 	}
 	
 	@Override
 	public void customServerAiStep() {
 		if (attackCooldown > 0) attackCooldown--;
-		int newrage = getRageTarget();
-		if (newrage > rage) {
-			rage = newrage;
-			setRage(rage);
+		if (phase != getPhase()) phase = getPhase();
+		//Start phase transitions
+		if ((phase == SHUFFLE_1 || phase == SHUFFLE_2 || phase == SHUFFLE_3) && tickCount % 10 == 0) {
+			if (hasSpawnedShuffle && level.getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32)).isEmpty()) {
+				//If we hit a correct card we get booted out of the shuffle phase, so here if it's failed
+				if (phase == SHUFFLE_1) {
+					setHealth(getMaxHealth()*RESET_1);
+					setPhase(PHASE_1);
+					phase = PHASE_1;
+				}
+				else if (phase == SHUFFLE_2) {
+					setHealth(getMaxHealth()*RESET_2);
+					setPhase(PHASE_2);
+					phase = PHASE_2;
+				}
+				else if (phase == SHUFFLE_3) {
+					setHealth(getMaxHealth()*RESET_3);
+					setPhase(PHASE_3);
+					phase = PHASE_3;
+				}
+			}
+		}
+		else if (phase == PHASE_1 && getHealth() < getMaxHealth()*TRESHOLD_1) {
+			setPhase(SHUFFLE_1);
+			phase = SHUFFLE_1;
+			hasSpawnedShuffle = false;
+		}
+		else if (phase == PHASE_2 && getHealth() < getMaxHealth()*TRESHOLD_2) {
+			setPhase(SHUFFLE_2);
+			phase = SHUFFLE_2;
+			hasSpawnedShuffle = false;
+		}
+		else if (phase == PHASE_3 && getHealth() < getMaxHealth()*TRESHOLD_3) {
+			setPhase(SHUFFLE_3);
+			phase = SHUFFLE_3;
+			hasSpawnedShuffle = false;
 		}
 		super.customServerAiStep();
+	}
+	
+	public void progressShuffle() {
+		if (phase == SHUFFLE_1) {
+			setPhase(PHASE_2);
+			phase = PHASE_2;
+		}
+		else if (phase == SHUFFLE_2) {
+			setPhase(PHASE_3);
+			phase = PHASE_3;
+		}
+		else if (phase == SHUFFLE_3) {
+			setPhase(DEATH);
+			phase = DEATH;
+		}
 	}
 	
 	private ProjectileLineEntity readyLine() {
@@ -233,44 +282,20 @@ public class DameFortunaEntity extends BossEntity {
 		return proj;
 	}
 	
-	//Copied from Evoker
-	private void spawnFangs(double posX, double posZ, double minY, double minZ, float rotationRad, int delay) {
-		BlockPos blockpos = new BlockPos(posX, minZ, posZ);
-		boolean success = false;
-		double d0 = 0;
-
-		do {
-			BlockPos blockpos1 = blockpos.below();
-			BlockState blockstate = level.getBlockState(blockpos1);
-			if (blockstate.isFaceSturdy(level, blockpos1, Direction.UP)) {
-				if (!level.isEmptyBlock(blockpos)) {
-					BlockState blockstate1 = level.getBlockState(blockpos);
-					VoxelShape voxelshape = blockstate1.getCollisionShape(level, blockpos);
-					if (!voxelshape.isEmpty()) d0 = voxelshape.max(Direction.Axis.Y);
-				}
-
-				success = true;
-				break;
-			}
-
-			blockpos = blockpos.below();
-		}
-		while (blockpos.getY() >= Mth.floor(minY) - 1);
-
-		if (success) level.addFreshEntity(new EvokerFangs(level, posX, blockpos.getY() + d0, posZ, rotationRad, delay, this));
-
-	}
-	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
+		if (compound.contains("Phase")) setPhase(compound.getByte("Phase"));
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
+		if (compound.contains("HasShuffled")) hasSpawnedShuffle = compound.getBoolean("HasShuffled");
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
+		compound.putByte("Phase", (byte)getPhase());
 		compound.putInt("AttackCooldown", attackCooldown);
+		compound.putBoolean("HasShuffled", hasSpawnedShuffle);
 	}
 	
 	@Override
@@ -298,6 +323,100 @@ public class DameFortunaEntity extends BossEntity {
 		return MeetYourFight.rl("dame_fortuna");
 	}
 	
+	private static class WaitShuffle extends StationaryAttack {
+		//Wait around while shuffle is ongoing
+		private DameFortunaEntity dame;
+		
+		public WaitShuffle(DameFortunaEntity dame) {
+			super(dame);
+			this.dame = dame;
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3;
+		}
+
+		@Override
+		public boolean canUse() {
+			return (dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3) && dame.hasSpawnedShuffle;
+		}
+		
+	}
+	
+	private static class DoTheShuffle extends StationaryAttack {
+		//Do the shuffle attack
+		private DameFortunaEntity dame;
+		private LivingEntity target;
+		private int timer;
+
+		public DoTheShuffle(DameFortunaEntity dame) {
+			super(dame);
+			this.dame = dame;
+		}
+
+		@Override
+		public void start() {
+			super.start();
+			dame.attackCooldown = 2;
+			target = dame.getTarget();
+			dame.setAnimation(PROJ_ATTACK);
+			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+			timer = 20;
+		}
+
+		@Override
+		public void tick() {
+			super.tick();
+			dame.attackCooldown = 2;
+			timer--;
+			if (timer <= 0) {
+				dame.hasSpawnedShuffle = true;
+				Direction dir = Direction.getNearest(target.getX() - dame.getX(), 0, target.getZ() - dame.getZ());
+				Direction side = dir.getClockWise();
+				int cards = 2;
+				if (dame.phase == SHUFFLE_2) cards = 3;
+				else if (dame.phase == SHUFFLE_3) cards = 4;
+				//Determine in what order will the cards actually be shuffled
+				int[] shuffled = new int[cards];
+				for (int i = 0; i < cards; i++) shuffled[i] = i;
+				shuffle(shuffled);
+				//Which card will be the correct one
+				int correct = dame.random.nextInt(cards);
+				//Evenly space out the cards on the line
+				BlockPos center = new BlockPos(dame.getX(), target.getY() + 1, dame.getZ());
+				Vec3 start = new Vec3(center.getX() - side.getStepX() * 1.5 * (cards - 1), center.getY(), center.getZ() - side.getStepZ() * 1.5 * (cards - 1));
+				for (int i = 0; i < cards; i++) {
+					FortunaCardEntity card = new FortunaCardEntity(dame.level, start.x + 3 * i * side.getStepX(), start.y, start.z + 3 * i * side.getStepZ());
+					card.setYRot(dir.toYRot());
+					card.setup(i, i == correct, i * 10 + 5, center.getX(), center.getY(), center.getZ(), i * (360 / cards), start.x + 3 * shuffled[i] * side.getStepX(), start.y,
+							start.z + 3 * shuffled[i] * side.getStepZ());
+					dame.level.addFreshEntity(card);
+				}
+			}
+		}
+		
+		//To use the boss's random gotta remade a fisher yates shuffle
+		private void shuffle(int[] arr) {
+			for (int i = 0; i < arr.length-1; i++) {
+				int j = dame.random.nextInt(i, arr.length);
+				int swap = arr[i];
+				arr[i] = arr[j];
+				arr[j] = swap;
+			}
+		}
+
+		@Override
+		public boolean canUse() {
+			return (dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3) && !dame.hasSpawnedShuffle && dame.getTarget() != null;
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return !dame.hasSpawnedShuffle;
+		}
+	}
+	
 	//The regular attacks
 	//It's horribly ad hoc but it'll do "for now"
 	private static class RegularAttack extends StationaryAttack {
@@ -308,11 +427,6 @@ public class DameFortunaEntity extends BossEntity {
 		public RegularAttack(DameFortunaEntity dame) {
 			super(dame);
 			this.dame = dame;
-		}
-
-		@Override
-		public boolean requiresUpdateEveryTick() {
-			return true;
 		}
 
 		@Override
@@ -328,25 +442,22 @@ public class DameFortunaEntity extends BossEntity {
 			chosenAttack = dame.random.nextInt(3);
 			//Choose animation depending on the attack
 			//Horrible ad hoc n�1
-			dame.setAttack(chosenAttack == 1 ? CLAW_ATTACK : PROJ_ATTACK);
+			dame.setAnimation(chosenAttack == 1 ? CLAW_ATTACK : PROJ_ATTACK);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
-			//TODO Placeholder to test
-			chosenAttack = 3;
-			attackRemaining = 1;
 		}
 
 		//Horrible horrible ad hoc n�2
 		private int getAttackCount() {
 			switch (chosenAttack) {
 				case 1:
-					return 8 + dame.rage * 2;
+					return 8 + dame.phase * 2;
 				default:
 				case 0:
 					return 2;
 				case 2:
-					return 4 + dame.rage;
+					return 4 + dame.phase;
 			}
 		}
 
@@ -414,35 +525,6 @@ public class DameFortunaEntity extends BossEntity {
 					dame.level.addFreshEntity(bomb);
 					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
-				case 3:
-					//TODO Placeholder
-					Direction dir = Direction.getNearest(target.getX() - dame.getX(), 0, target.getZ() - dame.getZ());
-					Direction side = dir.getClockWise();
-					//Evenly space out the cards on the line
-					int cards = 5;
-					int[] shuffled = new int[cards];
-					for (int i = 0; i < cards; i++) shuffled[i] = i;
-					shuffle(shuffled);
-					BlockPos center = new BlockPos(dame.getX(), target.getY() + 1, dame.getZ());
-					Vec3 start = new Vec3(center.getX() - side.getStepX() * 1.5*(cards-1), center.getY(), center.getZ() - side.getStepZ() * 1.5*(cards-1));
-					for (int i = 0; i < cards; i++) {
-						FortunaCardEntity card = new FortunaCardEntity(dame.level, start.x + 3*i*side.getStepX(), start.y, start.z + 3*i*side.getStepZ(), dame);
-						card.setYRot(dir.toYRot());
-						card.setup(0, true, i*10 + 5, center.getX(), center.getY(), center.getZ(), i*(360/cards),
-								start.x + 3*shuffled[i]*side.getStepX(), start.y, start.z + 3*shuffled[i]*side.getStepZ());
-						dame.level.addFreshEntity(card);
-					}
-					break;
-			}
-		}
-		
-		//To use the boss's random gotta remade a fisher yates shuffle
-		private void shuffle(int[] arr) {
-			for (int i = 0; i < arr.length-1; i++) {
-				int j = dame.random.nextInt(i, arr.length);
-				int swap = arr[i];
-				arr[i] = arr[j];
-				arr[j] = swap;
 			}
 		}
 		
@@ -456,65 +538,12 @@ public class DameFortunaEntity extends BossEntity {
 		@Override
 		public void stop() {
 			dame.attackCooldown = 40 + dame.random.nextInt(21);
-			dame.setAttack(NO_ATTACK);
-			//TODO PLACEHOLDER
-			dame.attackCooldown = 13*20;
+			dame.setAnimation(NO_ATTACK);
 		}
 
 		@Override
 		public boolean canContinueToUse() {
 			return attackRemaining > 0 && target.isAlive();
-		}
-
-	}
-	
-	//Firing evoker lines when enraged
-	private static class RageEvokerLines extends Goal {
-		private DameFortunaEntity dame;
-		private LivingEntity target;
-		private int delay;
-
-		public RageEvokerLines(DameFortunaEntity dame) {
-			this.dame = dame;
-		}
-
-		@Override
-		public boolean requiresUpdateEveryTick() {
-			return true;
-		}
-
-		@Override
-		public boolean canUse() {
-			return dame.rage >= 2 && dame.getTarget() != null && dame.getTarget().isAlive();
-		}
-
-		@Override
-		public void start() {
-			target = dame.getTarget();
-			delay = 80;
-		}
-
-		@Override
-		public void tick() {
-			delay--;
-			if (delay <= 0) {
-				double tx = target.getX();
-				double ty = target.getY();
-				double tz = target.getZ();
-				//Evoker lines
-				double minY = Math.min(ty, dame.getY());
-				double maxY = Math.max(ty, dame.getY()) + 1;
-				float angle = (float) Mth.atan2(tz - dame.getZ(), tx - dame.getX());
-				for (int i = 0; i < 16; ++i) {
-					double dist = 1.25 * (i + 1);
-					dame.spawnFangs(dame.getX() + Mth.cos(angle) * dist, dame.getZ() + Mth.sin(angle) * dist, minY, maxY, angle, i);
-				}
-			}
-		}
-
-		@Override
-		public boolean canContinueToUse() {
-			return delay > 0 && target.isAlive();
 		}
 
 	}
