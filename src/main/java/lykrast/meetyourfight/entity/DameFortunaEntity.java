@@ -265,6 +265,7 @@ public class DameFortunaEntity extends BossEntity {
 			setPhase(DEATH);
 			phase = DEATH;
 		}
+		attackCooldown = 20;
 	}
 	
 	private ProjectileLineEntity readyLine() {
@@ -328,7 +329,7 @@ public class DameFortunaEntity extends BossEntity {
 		private DameFortunaEntity dame;
 		
 		public WaitShuffle(DameFortunaEntity dame) {
-			super(dame);
+			super(dame, 4);
 			this.dame = dame;
 		}
 
@@ -351,7 +352,7 @@ public class DameFortunaEntity extends BossEntity {
 		private int timer;
 
 		public DoTheShuffle(DameFortunaEntity dame) {
-			super(dame);
+			super(dame, 4);
 			this.dame = dame;
 		}
 
@@ -362,7 +363,7 @@ public class DameFortunaEntity extends BossEntity {
 			target = dame.getTarget();
 			dame.setAnimation(PROJ_ATTACK);
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
-			timer = 20;
+			timer = 30;
 		}
 
 		@Override
@@ -408,7 +409,7 @@ public class DameFortunaEntity extends BossEntity {
 
 		@Override
 		public boolean canUse() {
-			return (dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3) && !dame.hasSpawnedShuffle && dame.getTarget() != null;
+			return (dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3) && !dame.hasSpawnedShuffle && dame.getTarget() != null && dame.getTarget().isAlive();
 		}
 
 		@Override
@@ -418,7 +419,6 @@ public class DameFortunaEntity extends BossEntity {
 	}
 	
 	//The regular attacks
-	//It's horribly ad hoc but it'll do "for now"
 	private static class RegularAttack extends StationaryAttack {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
@@ -431,7 +431,7 @@ public class DameFortunaEntity extends BossEntity {
 
 		@Override
 		public boolean canUse() {
-			return dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
+			return (dame.phase == PHASE_1 || dame.phase == PHASE_2 || dame.phase == PHASE_3) && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
 		}
 
 		@Override
@@ -448,7 +448,6 @@ public class DameFortunaEntity extends BossEntity {
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 		}
 
-		//Horrible horrible ad hoc nï¿½2
 		private int getAttackCount() {
 			switch (chosenAttack) {
 				case 1:
@@ -473,7 +472,6 @@ public class DameFortunaEntity extends BossEntity {
 			}
 		}
 		
-		//Horrible horrible ad hoc nï¿½3
 		private void performAttack() {
 			double tx = target.getX();
 			double ty = target.getY();
@@ -503,7 +501,7 @@ public class DameFortunaEntity extends BossEntity {
 					//Attack that spawn cardinal around player
 					//Like the old harvester claw attack
 					attackDelay = 11;
-					if (target.isOnGround()) ty += 1;
+					if (target.isOnGround()) ty += 1.25;
 					projAroundTarget(tx, ty, tz, 1, 0);
 					projAroundTarget(tx, ty, tz, -1, 0);
 					projAroundTarget(tx, ty, tz, 0, 1);
@@ -511,7 +509,7 @@ public class DameFortunaEntity extends BossEntity {
 					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
 				case 2:
-					//Dice bombs, currently placeholding the actual dices
+					//Dice bombs
 					attackDelay = 20;
 					//don't want the bombs to be thrown behind the target, so we aim a 60° cone
 					//don't think the yrot can get negative values so wrap it is
@@ -519,7 +517,7 @@ public class DameFortunaEntity extends BossEntity {
 					double bombX = tx + offset.x*3;
 					double bombY = ty;
 					double bombZ = tz + offset.z*3;
-					if (target.isOnGround()) bombY += 1;
+					if (target.isOnGround()) bombY += 1.25;
 					FortunaBombEntity bomb = new FortunaBombEntity(dame.level, dame.getX(), dame.getY() + 2, dame.getZ(), dame);
 					bomb.setup(25, 15, bombX, bombY, bombZ);
 					dame.level.addFreshEntity(bomb);
@@ -537,7 +535,7 @@ public class DameFortunaEntity extends BossEntity {
 
 		@Override
 		public void stop() {
-			dame.attackCooldown = 40 + dame.random.nextInt(21);
+			dame.attackCooldown = 50 + dame.random.nextInt(21);
 			dame.setAnimation(NO_ATTACK);
 		}
 

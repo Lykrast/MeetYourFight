@@ -50,7 +50,7 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 			yaw = Mth.wrapDegrees(yaw + progress*360);
 		}
 		float pitch = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
-		matrixStackIn.translate(0, -1, 0);
+		matrixStackIn.translate(0, -1.5, 0);
 		model.setupAnim(entityIn, 0, 0, 0, yaw, pitch);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(getTextureLocation(entityIn)));
 		if (anim == FortunaCardEntity.ANIM_APPEAR) {

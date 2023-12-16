@@ -27,7 +27,7 @@ public class FortunaCardEntity extends Entity {
 	private int phase, timer = 20, hideTime;
 	private boolean correct;
 	private static final int PHASE_START = 0, PHASE_SPIN = 1, PHASE_GOTODEST = 2, PHASE_ACTIVE = 3, PHASE_REVEAL = 4;
-	private static final int START_TIME = 4*20, SPIN_TIME = 4*20, REVEAL_TIME = 4*20;
+	private static final int START_TIME = 5*20, SPIN_TIME = 4*20, REVEAL_TIME = 3*20;
 	//Stuff for movement
 	private double spinX, spinY, spinZ, destX, destY, destZ;
 	private int spinOffset;
