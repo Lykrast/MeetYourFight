@@ -42,7 +42,8 @@ public class ClientStuff {
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
     	event.registerLayerDefinition(BellringerModel.MODEL, BellringerModel::createBodyLayer);
-    	event.registerLayerDefinition(DameFortunaModel.MODEL, DameFortunaModel::createBodyLayer);
+    	event.registerLayerDefinition(DameFortunaModel.MODEL, () -> DameFortunaModel.createBodyLayer(CubeDeformation.NONE));
+    	event.registerLayerDefinition(DameFortunaModel.MODEL_ARMOR, () -> DameFortunaModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION));
     	event.registerLayerDefinition(SwampjawModel.MODEL, SwampjawModel::createBodyLayer);
     	event.registerLayerDefinition(RosalyneModel.MODEL, () -> RosalyneModel.createBodyLayer(CubeDeformation.NONE, true));
     	event.registerLayerDefinition(RosalyneModel.MODEL_ARMOR, () -> RosalyneModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION, false));

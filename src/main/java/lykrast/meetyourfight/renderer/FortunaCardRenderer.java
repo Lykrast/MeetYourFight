@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.FortunaCardEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -20,8 +21,15 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 			MeetYourFight.rl("textures/entity/fortuna_card_triangle.png"),
 			MeetYourFight.rl("textures/entity/fortuna_card_cross.png")
 	};
+	private static final RenderType[] TEXTURES_OVERLAY = {
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_square.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_circle.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_triangle.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_cross.png"), false)
+		};
 	private static final ResourceLocation TEXTURE_HIDDEN = MeetYourFight.rl("textures/entity/fortuna_card_hidden.png");
 	private final FortunaCardModel model;
+	//So addlayer is for living entities, so uh guess I gotta readd this manually
 
 	public FortunaCardRenderer(Context context) {
 		super(context);
@@ -52,7 +60,6 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 		float pitch = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
 		matrixStackIn.translate(0, -1.5, 0);
 		model.setupAnim(entityIn, 0, 0, 0, yaw, pitch);
-		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(getTextureLocation(entityIn)));
 		if (anim == FortunaCardEntity.ANIM_APPEAR) {
 			float scale = (FortunaCardEntity.ANIM_APPEAR_DUR - entityIn.animTimer + partialTicks) / (float)FortunaCardEntity.ANIM_APPEAR_DUR;
 			if (scale > 1) scale = 1;
@@ -60,7 +67,13 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 			scale *= scale;
 			matrixStackIn.scale(scale, 1, scale);
 		}
+		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(getTextureLocation(entityIn)));
 		model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		//addlayer is on the mob rendered so whoops gotta redo it hope it works
+		if (entityIn.clientAnim == FortunaCardEntity.ANIM_IDLE_QUESTION) {
+			ivertexbuilder = bufferIn.getBuffer(TEXTURES_OVERLAY[Mth.clamp(entityIn.getVariantQuestion(), 0, TEXTURES_OVERLAY.length)]);
+			model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		}
 		matrixStackIn.popPose();
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
@@ -70,7 +83,7 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 	@Override
 	public ResourceLocation getTextureLocation(FortunaCardEntity entity) {
 		int anim = entity.clientAnim;
-		if (anim == FortunaCardEntity.ANIM_IDLE_HIDDEN || (anim == FortunaCardEntity.ANIM_HIDE && entity.animTimer <= HIDE_HALF) || (anim == FortunaCardEntity.ANIM_REVEAL && entity.animTimer >= REVEAL_HALF)) return TEXTURE_HIDDEN;
+		if (anim == FortunaCardEntity.ANIM_IDLE_HIDDEN || anim == FortunaCardEntity.ANIM_IDLE_QUESTION || (anim == FortunaCardEntity.ANIM_HIDE && entity.animTimer <= HIDE_HALF) || (anim == FortunaCardEntity.ANIM_REVEAL && entity.animTimer >= REVEAL_HALF)) return TEXTURE_HIDDEN;
 		return TEXTURES[Mth.clamp(entity.getVariant(), 0, TEXTURES.length)];
 	}
 

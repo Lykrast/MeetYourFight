@@ -42,7 +42,7 @@ public class FortunaCardModel extends EntityModel<FortunaCardEntity> {
 	@Override
 	public void setupAnim(FortunaCardEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {		
 		//I don't get why I need to add 180° for it to work properly but this fucking rotation cost me hours of my life
-		renderer.yRot = (180 + netHeadYaw) * Mth.DEG_TO_RAD;
+		renderer.yRot = Mth.wrapDegrees(180 + netHeadYaw) * Mth.DEG_TO_RAD;
 		renderer.xRot = headPitch * Mth.DEG_TO_RAD;
 	}
 

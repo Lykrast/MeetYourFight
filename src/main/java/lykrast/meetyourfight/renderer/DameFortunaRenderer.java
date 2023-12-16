@@ -14,10 +14,12 @@ public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, 
 	public DameFortunaRenderer(Context context) {
 		super(context, new DameFortunaModel(context.bakeLayer(DameFortunaModel.MODEL)), 0.5F);
 		addLayer(new GenericGlowLayer<>(this, GLOW));
+		addLayer(new FortunaArmorLayer(this, context.getModelSet()));
 	}
 	
 	@Override
 	protected void setupRotations(DameFortunaEntity entity, PoseStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
+		//TODO change
 		//Copied/changed this bit from the Mourned from Defiled Lands, that I think copied from endermen
 		//(and it don't want to show me the endermen code)
 		int rage = entity.getPhase();

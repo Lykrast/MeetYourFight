@@ -23,18 +23,19 @@ import net.minecraftforge.network.NetworkHooks;
 public class FortunaCardEntity extends Entity {
 	//Card for the shuffle attack
 	private static final EntityDataAccessor<Byte> VARIANT = SynchedEntityData.defineId(FortunaCardEntity.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<Byte> VARIANT_QUESTION = SynchedEntityData.defineId(FortunaCardEntity.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Byte> ANIMATION = SynchedEntityData.defineId(FortunaCardEntity.class, EntityDataSerializers.BYTE);
 	private int phase, timer = 20, hideTime;
 	private boolean correct;
 	private static final int PHASE_START = 0, PHASE_SPIN = 1, PHASE_GOTODEST = 2, PHASE_ACTIVE = 3, PHASE_REVEAL = 4;
-	private static final int START_TIME = 5*20, SPIN_TIME = 4*20, REVEAL_TIME = 3*20;
+	public static final int START_TIME = 5*20, GOTODEST_TIME = 40, SPIN_TIME = 3*20, REVEAL_TIME = 3*20;
 	//Stuff for movement
 	private double spinX, spinY, spinZ, destX, destY, destZ;
 	private int spinOffset;
 	private static final Vec3 SPINVEC = new Vec3(3, 0, 0);
 	//Animation
 	public int clientAnim, animTimer;
-	public static final int ANIM_NOTHERE = 0, ANIM_APPEAR = 1, ANIM_IDLE_SHOW = 2, ANIM_HIDE = 3, ANIM_IDLE_HIDDEN = 4, ANIM_REVEAL = 5;
+	public static final int ANIM_NOTHERE = 0, ANIM_APPEAR = 1, ANIM_IDLE_SHOW = 2, ANIM_HIDE = 3, ANIM_IDLE_HIDDEN = 4, ANIM_IDLE_QUESTION = 5, ANIM_REVEAL = 6;
 	public static final int ANIM_APPEAR_DUR = 10, ANIM_HIDE_DUR = 10, ANIM_REVEAL_DUR = 20;
 
 	public FortunaCardEntity(EntityType<? extends FortunaCardEntity> entityTypeIn, Level worldIn) {
@@ -50,10 +51,11 @@ public class FortunaCardEntity extends Entity {
 	}
 
 	//You know what I'm sure some code analyzer would yell at me for putting that many arguments there
-	//Anyway set the variant, whether it's a correct card or not, delay before it's revealed,
+	//Anyway set the variant, the solution to display, whether it's a correct card or not, delay before it's revealed,
 	//center of the shuffle spin, angle offset for the spin, and final destination after shuffling
-	public void setup(int variant, boolean correct, int preflipTime, double spinX, double spinY, double spinZ, int spinOffset, double destX, double destY, double destZ) {
+	public void setup(int variant, int correctVariant, boolean correct, int preflipTime, double spinX, double spinY, double spinZ, int spinOffset, double destX, double destY, double destZ) {
 		setVariant(variant);
+		setVariantQuestion(correctVariant);
 		this.correct = correct;
 		phase = PHASE_START;
 		timer = START_TIME;
@@ -71,6 +73,7 @@ public class FortunaCardEntity extends Entity {
 	@Override
 	protected void defineSynchedData() {
 		entityData.define(VARIANT, (byte)0);
+		entityData.define(VARIANT_QUESTION, (byte)0);
 		entityData.define(ANIMATION, (byte)0);
 	}
 
@@ -82,12 +85,24 @@ public class FortunaCardEntity extends Entity {
 		return entityData.get(VARIANT);
 	}
 
+	public void setVariantQuestion(int value) {
+		entityData.set(VARIANT_QUESTION, (byte)value);
+	}
+
+	public int getVariantQuestion() {
+		return entityData.get(VARIANT_QUESTION);
+	}
+
 	public void setAnimation(int value) {
 		entityData.set(ANIMATION, (byte)value);
 	}
 
 	public int getAnimation() {
 		return entityData.get(ANIMATION);
+	}
+	
+	public boolean isCorrect() {
+		return isAlive() && correct;
 	}
 
 	@Override
@@ -103,13 +118,12 @@ public class FortunaCardEntity extends Entity {
 					case PHASE_SPIN:
 						setAnimation(ANIM_IDLE_HIDDEN);
 						phase = PHASE_GOTODEST;
-						timer = 40;
-						setDeltaMovement(0,0,0);
+						timer = GOTODEST_TIME;
 						break;
 					case PHASE_GOTODEST:
 						phase = PHASE_ACTIVE;
+						setAnimation(ANIM_IDLE_QUESTION);
 						timer = 10*20;
-						setDeltaMovement(0,0,0);
 						break;
 					case PHASE_ACTIVE:
 					case PHASE_REVEAL:
@@ -128,8 +142,8 @@ public class FortunaCardEntity extends Entity {
 				else if (timer == 20 - ANIM_HIDE_DUR) setAnimation(ANIM_IDLE_HIDDEN);
 			}
 			else if (phase == PHASE_REVEAL) {
-				if (timer == START_TIME - 5) setAnimation(ANIM_REVEAL);
-				if (timer == START_TIME - ANIM_REVEAL_DUR - 5) {
+				if (timer == REVEAL_TIME - 5) setAnimation(ANIM_REVEAL);
+				if (timer == REVEAL_TIME - ANIM_REVEAL_DUR - 5) {
 					setAnimation(ANIM_IDLE_SHOW);
 					playSound(correct ? ModSounds.dameFortunaCardRight.get() : ModSounds.dameFortunaCardWrong.get(), 1, 1);
 					if (correct) {
@@ -165,6 +179,7 @@ public class FortunaCardEntity extends Entity {
 					setDeltaMovement(speed.scale(1.0/(timer - timeOffset)));
 				}
 			}
+			else setDeltaMovement(0,0,0);
 		}
 
 		checkInsideBlocks();
@@ -229,6 +244,7 @@ public class FortunaCardEntity extends Entity {
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
 		compound.putByte("Variant", (byte)getVariant());
+		compound.putByte("VariantAsk", (byte)getVariantQuestion());
 		compound.putInt("Phase", phase);
 		compound.putInt("Timer", timer);
 		compound.putInt("HTime", hideTime);
@@ -245,6 +261,7 @@ public class FortunaCardEntity extends Entity {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
 		setVariant(compound.getByte("Variant"));
+		setVariantQuestion(compound.getByte("VariantAsk"));
 		phase = compound.getInt("Phase");
 		timer = compound.getInt("Timer");
 		hideTime = compound.getInt("HTime");
