@@ -6,7 +6,7 @@ public class MYFConstants {
 	//Dame Fortuna
 	public static final float SLICER_DICE_MULT = 2;
 	//Those are mostly for the tooltip, cause if luck is not 0 then the formula kicks in
-	public static final double SLICER_DICE_CHANCE = 1.0 / 5, ACE_OF_IRON_CHANCE = 1.0 / 6,
+	public static final double SLICER_DICE_CHANCE = 1.0 / 6, ACE_OF_IRON_CHANCE = 1.0 / 6,
 			COCKTAIL_CUTLASS_CHANCE = 1.0 / 5, COCKTAIL_SHOTGUN_CHANCE = 1.0 / 3;
 	//Swampjaw
 	public static final float CAGED_HEART_TRESHOLD = 1f / 4, CAGED_HEART_MULT = 0.5f;
