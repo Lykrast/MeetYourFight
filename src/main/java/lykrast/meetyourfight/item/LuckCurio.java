@@ -11,8 +11,8 @@ import net.minecraft.world.level.Level;
 public class LuckCurio extends CurioBaseItem {
 	public static final String TOOLTIP_LUCK = "item.meetyourfight.desc.luck";
 	
-	public LuckCurio(Properties properties) {
-		super(properties, true);
+	public LuckCurio(Properties properties, Object... args) {
+		super(properties, true, args);
 	}
 
 	@Override

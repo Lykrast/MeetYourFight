@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import lykrast.meetyourfight.misc.MYFConstants;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -14,7 +15,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class WiltedIdeals extends CurioBaseItem {
 	public WiltedIdeals(Properties properties) {
-		super(properties, true);
+		super(properties, true, MYFConstants.percent(MYFConstants.WILTED_IDEALS_MULT - 1));
 	}
 
 	@Override

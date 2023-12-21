@@ -13,10 +13,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class CurioBaseItem extends Item implements ICurioItem {
 	private boolean hasDescription;
+	private Object[] args;
 
-	public CurioBaseItem(Properties properties, boolean hasDescription) {
+	public CurioBaseItem(Properties properties, boolean hasDescription, Object... args) {
 		super(properties);
 		this.hasDescription = hasDescription;
+		this.args = args;
+	}
+
+	public CurioBaseItem(Properties properties, boolean hasDescription) {
+		this(properties, hasDescription, new Object[0]);
 	}
 
 	@Override
@@ -26,7 +32,7 @@ public class CurioBaseItem extends Item implements ICurioItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		if (hasDescription) tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		if (hasDescription) tooltip.add(Component.translatable(getDescriptionId() + ".desc", args).withStyle(ChatFormatting.GRAY));
 	}
 
 }

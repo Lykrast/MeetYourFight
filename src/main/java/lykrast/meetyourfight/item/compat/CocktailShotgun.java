@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import lykrast.gunswithoutroses.item.IBullet;
 import lykrast.gunswithoutroses.item.ShotgunItem;
 import lykrast.meetyourfight.item.LuckCurio;
+import lykrast.meetyourfight.misc.MYFConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -47,7 +48,7 @@ public class CocktailShotgun extends ShotgunItem {
 		super.shoot(world, player, gun, ammo, bulletItem, bulletFree);
 		//Roll for potion
 		float luck = player.getLuck();
-		double chance = 1.0 / 3.0;
+		double chance = MYFConstants.COCKTAIL_SHOTGUN_CHANCE;
 		if (luck >= 0) chance = (2.0 + luck) / (6.0 + luck);
 		else chance = 1.0 / (3.0 - luck);
 		int effectLevel = -1;
@@ -80,7 +81,7 @@ public class CocktailShotgun extends ShotgunItem {
 	@Override
 	protected void addExtraStatsTooltip(ItemStack stack, @Nullable Level world, List<Component> tooltip) {
 		super.addExtraStatsTooltip(stack, world, tooltip);
-		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc", MYFConstants.percent(MYFConstants.COCKTAIL_SHOTGUN_CHANCE)).withStyle(ChatFormatting.GRAY));
 		tooltip.add(Component.translatable(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 

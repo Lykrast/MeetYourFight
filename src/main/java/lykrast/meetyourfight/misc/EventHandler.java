@@ -32,7 +32,7 @@ public class EventHandler {
 			//Ace of Iron
 			if (!event.isCanceled() && !event.getSource().isBypassInvul() && CuriosApi.getCuriosHelper().findFirstCurio(pattacked, ModItems.aceOfIron.get()).isPresent()) {
 				float luck = pattacked.getLuck();
-				double chance = 1.0 / 6.0;
+				double chance = MYFConstants.ACE_OF_IRON_CHANCE;
 				if (luck >= 0) chance = (1.0 + luck) / (6.0 + 2 * luck);
 				else chance = 1.0 / (6.0 - 3 * luck);
 				if (pattacked.getRandom().nextDouble() <= chance) {
@@ -52,18 +52,18 @@ public class EventHandler {
 			//Slicer's Dice
 			if (CuriosApi.getCuriosHelper().findFirstCurio(pattacker, ModItems.slicersDice.get()).isPresent()) {
 				float luck = pattacker.getLuck();
-				double chance = 0.2;
-				if (luck >= 0) chance = (1.0 + luck) / (5.0 + luck);
-				else chance = 1.0 / (5.0 - 3 * luck);
+				double chance = MYFConstants.SLICER_DICE_CHANCE;
+				if (luck >= 0) chance = (1.0 + luck) / (6.0 + luck);
+				else chance = 1.0 / (6.0 - 3 * luck);
 				if (pattacker.getRandom().nextDouble() <= chance) {
-					event.setAmount(event.getAmount() * 2);
+					event.setAmount(event.getAmount() * MYFConstants.SLICER_DICE_MULT);
 					pattacker.level.playSound(null, attacked.blockPosition(), ModSounds.slicersDiceProc.get(), SoundSource.PLAYERS, 1, 1);
 					((ServerLevel) pattacker.level).sendParticles(ParticleTypes.CRIT, attacked.getX(), attacked.getEyeY(), attacked.getZ(), 15, 0.2, 0.2, 0.2, 0);
 				}
 			}
 			//Wilted Ideals
 			if (CuriosApi.getCuriosHelper().findFirstCurio(pattacker, ModItems.wiltedIdeals.get()).isPresent()) {
-				event.setAmount(event.getAmount() * 1.5f);
+				event.setAmount(event.getAmount() * MYFConstants.WILTED_IDEALS_MULT);
 			}
 		}
 
@@ -72,9 +72,9 @@ public class EventHandler {
 			Player pattacked = (Player) attacked;
 			//Caged Heart
 			if (CuriosApi.getCuriosHelper().findFirstCurio(pattacked, ModItems.cagedHeart.get()).isPresent()) {
-				float treshold = pattacked.getMaxHealth() / 4.0f;
+				float treshold = pattacked.getMaxHealth() * MYFConstants.CAGED_HEART_TRESHOLD;
 				if (event.getAmount() > treshold) {
-					event.setAmount((event.getAmount() - treshold) * 0.5f + treshold);
+					event.setAmount((event.getAmount() - treshold) * MYFConstants.CAGED_HEART_MULT + treshold);
 					pattacked.level.playSound(null, attacked.blockPosition(), ModSounds.cagedHeartProc.get(), SoundSource.PLAYERS, 1, 1);
 				}
 			}

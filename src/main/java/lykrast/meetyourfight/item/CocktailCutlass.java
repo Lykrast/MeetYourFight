@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Triple;
 
+import lykrast.meetyourfight.misc.MYFConstants;
 import lykrast.meetyourfight.registry.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -48,7 +49,7 @@ public class CocktailCutlass extends SwordItem {
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target != null && attacker instanceof Player) {
 			float luck = ((Player)attacker).getLuck();
-			double chance = 1.0 / 5.0;
+			double chance = MYFConstants.COCKTAIL_CUTLASS_CHANCE;
 			if (luck >= 0) chance = (2.0 + luck) / (10.0 + luck);
 			else chance = 1.0 / (5.0 - luck);
 			int effectLevel = -1;
@@ -77,7 +78,7 @@ public class CocktailCutlass extends SwordItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc", MYFConstants.percent(MYFConstants.COCKTAIL_CUTLASS_CHANCE)).withStyle(ChatFormatting.GRAY));
 		tooltip.add(Component.translatable(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 

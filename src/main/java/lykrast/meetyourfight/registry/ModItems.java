@@ -3,6 +3,7 @@ package lykrast.meetyourfight.registry;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.*;
+import lykrast.meetyourfight.misc.MYFConstants;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
@@ -33,8 +34,8 @@ public class ModItems {
 		
 		devilsAnte = REG.register("devils_ante", () -> new SummonItem(noStack(), DameFortunaEntity::spawn));
 		fortunesFavor = REG.register("fortunes_favor", () -> new Item(boss()));
-		slicersDice = REG.register("slicers_dice", () -> new LuckCurio(bossNS()));
-		aceOfIron = REG.register("ace_of_iron", () -> new LuckCurio(bossNS()));
+		slicersDice = REG.register("slicers_dice", () -> new LuckCurio(bossNS(), MYFConstants.percent(MYFConstants.SLICER_DICE_CHANCE), MYFConstants.percent(MYFConstants.SLICER_DICE_MULT - 1)));
+		aceOfIron = REG.register("ace_of_iron", () -> new LuckCurio(bossNS(), MYFConstants.percent(MYFConstants.ACE_OF_IRON_CHANCE)));
 		cocktailCutlass = REG.register("cocktail_cutlass", () -> new CocktailCutlass(bossNS()));
 		velvetFortune = REG.register("velvet_fortune", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(2).saturationMod(0.1f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LUCK, 10*60*20), 1).build()))));
 		
@@ -42,14 +43,14 @@ public class ModItems {
 		mossyTooth = REG.register("mossy_tooth", () -> new Item(boss()));
 		boneRaker = REG.register("bone_raker", () -> new BoneRaker(bossNS()));
 		depthStar = REG.register("depth_star", () -> new DepthStar(bossNS()));
-		cagedHeart = REG.register("caged_heart", () -> new CurioBaseItem(bossNS(), true));
+		cagedHeart = REG.register("caged_heart", () -> new CurioBaseItem(bossNS(), true, MYFConstants.percent(MYFConstants.CAGED_HEART_TRESHOLD), MYFConstants.percent(1 - MYFConstants.CAGED_HEART_MULT)));
 		marshyDelight = REG.register("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
 		
 		duskKey = REG.register("dusk_key", () -> new SummonItem(noStack(), RosalyneEntity::spawn));
 		violetBloom = REG.register("violet_bloom", () -> new Item(boss()));
 		twilightsThorn = REG.register("twilights_thorn", () -> new TwilightsThorn(bossNS()));
 		wiltedIdeals = REG.register("wilted_ideals", () -> new WiltedIdeals(bossNS()));
-		blossomingMind = REG.register("blossoming_mind", () -> new CurioBaseItem(bossNS(), true));
+		blossomingMind = REG.register("blossoming_mind", () -> new CurioBaseItem(bossNS(), true, MYFConstants.BLOSSOMING_MIND_INCREASE));
 		tombPlanter = REG.register("tomb_planter", () -> new CurioBaseItem(bossNS(), true));
 		petalCream = REG.register("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
 		
