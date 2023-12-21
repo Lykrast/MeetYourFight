@@ -22,10 +22,10 @@ public class TwilightsThorn extends SwordItem {
 	public static final UUID RANGE = UUID.fromString("3080eef9-4ab7-4f8b-9a90-774208857fc9");
 
 	public TwilightsThorn(Properties builderIn) {
-		super(TIER, 3, -2.2f, builderIn);
+		super(TIER, 3, -2.4f, builderIn);
 		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", getDamage(), AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.2, AttributeModifier.Operation.ADDITION));
+		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
 		builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(RANGE, "Weapon modifier", 1, AttributeModifier.Operation.ADDITION));
 		defaultModifiers = builder.build();
 	}
