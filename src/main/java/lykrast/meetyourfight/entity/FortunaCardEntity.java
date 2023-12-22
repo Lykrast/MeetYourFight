@@ -178,6 +178,7 @@ public class FortunaCardEntity extends Entity {
 				else if (timer <= timeOffset + 10) {
 					setDeltaMovement(speed.scale(1.0/(timer - timeOffset)));
 				}
+				else setDeltaMovement(0,0,0);
 			}
 			else setDeltaMovement(0,0,0);
 		}
