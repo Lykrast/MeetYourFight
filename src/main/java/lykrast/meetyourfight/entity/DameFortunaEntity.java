@@ -493,7 +493,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					return 4 + dame.random.nextInt(2) + dame.phase*2;
 				default:
 				case 0:
-					return 2;
+					if (dame.phase == PHASE_3) return 2 + dame.random.nextInt(3);
+					return 1;
 				case 2:
 					if (dame.phase == PHASE_2) return 4 + dame.random.nextInt(3);
 					else if (dame.phase == PHASE_3) return 8 + dame.random.nextInt(4);
@@ -522,42 +523,25 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				default:
 				case 0:
 					//Homing chips
-					attackDelay = 5;
-					//should be pointing to like left/right (doesn't matter) of her
-					Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
-					if (attackRemaining % 2 == 0) perp = perp.scale(-1);
-					double sx = dame.getX() + perp.x;
-					double sy = dame.getY() + 1;
-					double sz = dame.getZ() + perp.y;
+					//Only phase 3 will have multiple attacks here
+					attackDelay = 35;
 					
 					int chips = 6;
 					if (dame.phase == PHASE_2) chips = 8;
 					else if (dame.phase == PHASE_3) chips = 12;
 					
 					int delay = 2;
-					if (dame.phase == PHASE_2) {
-						if (dame.random.nextBoolean()) delay = 10;
+					boolean horizontal = true;
+					if ((dame.phase == PHASE_2 && dame.random.nextBoolean()) || (dame.phase == PHASE_3 && attackRemaining == 0)) {
+						delay = 11;
+						horizontal = false;
 					}
-					else if (dame.phase == PHASE_3) {
-						if (dame.random.nextBoolean()) delay = 10;
-						else delay = 12;
-					}
-					
-					//Don't want 2 sets of chips at the same time
-					dame.chipsCooldown = Math.max(dame.chipsCooldown, 20 + chips*delay);
-					
-					for (int i = 0; i < chips; i++) {
-						ProjectileTargetedEntity proj = dame.readyTargeted();
-						proj.setPos(sx, sy + i*0.125, sz);
-						proj.setUp(20 + (chips-i-1)*delay, 15, target, 1, sx, sy + i*0.5 + 0.25, sz);
-						dame.level.addFreshEntity(proj);
-					}
-					
-					dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+					fireChipsStack(chips, delay, horizontal);
 					break;
 				case 1:
 					//Attack that spawn cardinal around player
 					//Like the old harvester claw attack
+					//TODO don't like this attack
 					attackDelay = 11;
 					if (target.isOnGround()) ty += 1.25;
 					else ty += 0.5;
@@ -584,6 +568,31 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 					break;
 			}
+		}
+		
+		private void fireChipsStack(int number, int delay, boolean horizontal) {
+			//should be pointing to like left/right (doesn't matter) of her
+			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
+			double sy = dame.getY() + 1;
+			
+			//Don't want 2 sets of chips at the same time
+			dame.chipsCooldown = Math.max(dame.chipsCooldown, 20 + number*delay);
+			
+			for (int dir = -1; dir <= 1; dir += 2) {
+				double sx = dame.getX() + perp.x*dir;
+				double sz = dame.getZ() + perp.z*dir;
+				int intialdelay = dir == -1 ? 25 : 30;
+				//-1 and 1 to have both sides
+				for (int i = 0; i < number; i++) {
+					ProjectileTargetedEntity proj = dame.readyTargeted();
+					proj.setPos(sx, sy + i*0.125, sz);
+					if (horizontal) proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx + i*perp.x*dir, sy + i*0.125 + 0.25, sz + i*perp.z*dir);
+					else proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx, sy + i*0.5 + 0.25, sz);
+					dame.level.addFreshEntity(proj);
+				}
+			}
+			
+			dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
 		
 		private void projAroundTarget(double tx, double ty, double tz, double dx, double dz) {
