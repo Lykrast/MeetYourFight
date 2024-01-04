@@ -154,15 +154,17 @@ public class FortunaCardEntity extends Entity {
 			}
 			//Movement
 			if (phase == PHASE_SPIN) {
+				int spintimer = SPIN_TIME - timer;
 				//12° per tick = 360° per 1.5 second
-				Vec3 offset = SPINVEC.yRot(((timer*12+spinOffset) % 360) * Mth.DEG_TO_RAD);
+				//At the start, get in position before spinning (hence the max(0,timer-20))
+				Vec3 offset = SPINVEC.yRot(((Math.max(0, spintimer-20)*12+spinOffset) % 360) * Mth.DEG_TO_RAD);
 				double tx = spinX + offset.x;
 				double tz = spinZ + offset.z;
-				//Accelerate to spin at the start
-				if (SPIN_TIME - timer < 20) {
+				if (spintimer <= 20) {
+					//Get in position
 					Vec3 speed = new Vec3(tx - getX(), spinY - getY(), tz - getZ());
 					double len = speed.lengthSqr();
-					double maxSpeed = (SPIN_TIME - timer)*0.1;
+					double maxSpeed = (SPIN_TIME - timer)*0.05;
 					if (len > maxSpeed*maxSpeed) speed = speed.normalize().scale(maxSpeed);
 					setDeltaMovement(speed);
 				}

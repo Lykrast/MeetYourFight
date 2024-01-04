@@ -524,7 +524,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				case 0:
 					//Homing chips
 					//Only phase 3 will have multiple attacks here
-					attackDelay = 35;
+					attackDelay = 40;
 					
 					int chips = 6;
 					if (dame.phase == PHASE_2) chips = 8;
