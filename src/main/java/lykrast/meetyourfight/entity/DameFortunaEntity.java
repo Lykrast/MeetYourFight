@@ -524,19 +524,29 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				case 0:
 					//Homing chips
 					//Only phase 3 will have multiple attacks here
-					attackDelay = 40;
+					attackDelay = 45;
 					
 					int chips = 6;
 					if (dame.phase == PHASE_2) chips = 8;
 					else if (dame.phase == PHASE_3) chips = 12;
 					
 					int delay = 2;
-					boolean horizontal = true;
 					if ((dame.phase == PHASE_2 && dame.random.nextBoolean()) || (dame.phase == PHASE_3 && attackRemaining == 0)) {
 						delay = 11;
-						horizontal = false;
 					}
-					fireChipsStack(chips, delay, horizontal);
+					//Get a random shape between vertical stack, side to side stack, and circle around fortuna
+					switch (dame.random.nextInt(3)) {
+						default:
+						case 0:
+							fireChipsStack(chips, delay, false);
+							break;
+						case 1:
+							fireChipsStack(chips, delay, true);
+							break;
+						case 2:
+							fireChipsCircle(chips, delay);
+							break;
+					}
 					break;
 				case 1:
 					//Attack that spawn cardinal around player
@@ -581,14 +591,44 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			for (int dir = -1; dir <= 1; dir += 2) {
 				double sx = dame.getX() + perp.x*dir;
 				double sz = dame.getZ() + perp.z*dir;
-				int intialdelay = dir == -1 ? 25 : 30;
+				int intialdelay = dir == -1 ? 30 : 35;
 				//-1 and 1 to have both sides
 				for (int i = 0; i < number; i++) {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
 					proj.setPos(sx, sy + i*0.125, sz);
-					if (horizontal) proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx + i*perp.x*dir, sy + i*0.125 + 0.25, sz + i*perp.z*dir);
+					if (horizontal) proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx + i*perp.x*dir, sy + 1, sz + i*perp.z*dir);
 					else proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx, sy + i*0.5 + 0.25, sz);
 					dame.level.addFreshEntity(proj);
+				}
+			}
+			
+			dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+		}
+		
+		//TODO Copy pasted fireChipsStack as a base, but like now lot of the logic is duplicated oh no
+		private void fireChipsCircle(int number, int delay) {
+			//should be pointing to like left/right (doesn't matter) of her
+			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
+			double sy = dame.getY() + 1;
+			float angle = Mth.PI / number;
+			
+			//Don't want 2 sets of chips at the same time
+			dame.chipsCooldown = Math.max(dame.chipsCooldown, 20 + number*delay);
+			
+			for (int dir = -1; dir <= 1; dir += 2) {
+				double damex = dame.getX();
+				double damez = dame.getZ();
+				double sx = damex + perp.x*dir;
+				double sz = damez + perp.z*dir;
+				int intialdelay = dir == -1 ? 25 : 30;
+				//-1 and 1 to have both sides
+				Vec3 offset = perp.scale(dir);
+				for (int i = 0; i < number; i++) {
+					ProjectileTargetedEntity proj = dame.readyTargeted();
+					proj.setPos(sx, sy + i*0.125, sz);
+					proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, damex + 3*offset.x, sy+1, damez + 3*offset.z);
+					dame.level.addFreshEntity(proj);
+					offset = offset.yRot(angle);
 				}
 			}
 			
