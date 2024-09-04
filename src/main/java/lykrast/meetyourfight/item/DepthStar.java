@@ -48,6 +48,8 @@ public class DepthStar extends SwordItem {
 				if (raytrace.getType() != HitResult.Type.MISS) end = raytrace.getLocation();
 				
 				if (!world.isClientSide) {
+					//as much as I like how it looks, it also resets attack time and I like the combo better :(
+					//entityLiving.swing(entityLiving.getUsedItemHand(), true);
 					world.playSound(null, end.x, end.y, end.z, SoundEvents.GENERIC_EXPLODE, entityLiving.getSoundSource(), 1, (1 + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 					
 					double damage = entityLiving.getAttributeValue(Attributes.ATTACK_DAMAGE);
