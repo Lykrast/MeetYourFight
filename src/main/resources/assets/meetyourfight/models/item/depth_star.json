@@ -5,16 +5,36 @@
 	},
 	"overrides": [
 		{
-			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.35 },
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.125 },
 			"model": "meetyourfight:item/depth_star_charge_1"
 		},
 		{
-			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.6 },
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.25 },
 			"model": "meetyourfight:item/depth_star_charge_2"
 		},
 		{
-			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.95 },
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.375 },
 			"model": "meetyourfight:item/depth_star_charge_3"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.5 },
+			"model": "meetyourfight:item/depth_star_charge_4"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.625 },
+			"model": "meetyourfight:item/depth_star_charge_5"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.75 },
+			"model": "meetyourfight:item/depth_star_charge_6"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.875 },
+			"model": "meetyourfight:item/depth_star_charge_7"
+		},
+		{
+			"predicate": { "meetyourfight:charging": 1, "meetyourfight:charge": 0.99 },
+			"model": "meetyourfight:item/depth_star_charge_8"
 		}
 	]
 }
