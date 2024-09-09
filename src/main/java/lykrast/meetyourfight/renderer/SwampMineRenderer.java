@@ -29,6 +29,16 @@ public class SwampMineRenderer extends EntityRenderer<SwampMineEntity> {
 		float f = Mth.rotLerp(partialTicks, entityIn.yRotO, entityIn.getYRot());
 		float f1 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
 		matrixStackIn.translate(0, -0.5, 0);
+		//From TNT rendering
+		int i = entityIn.getFuse();
+		if ((float) i - partialTicks + 1.0F < 10.0F) {
+			float interp = 1.0F - ((float) i - partialTicks + 1.0F) / 10.0F;
+			interp = Mth.clamp(interp, 0.0F, 1.0F);
+			interp *= interp;
+			interp *= interp;
+			float finalscale = 1 + interp * 0.3F;
+			matrixStackIn.scale(finalscale, finalscale, finalscale);
+		}
 		model.setupAnim(entityIn, 0, 0, 0, f, f1);
 		VertexConsumer ivertexbuilder = bufferIn.getBuffer(model.renderType(TEXTURE));
 		//From TNT rendering

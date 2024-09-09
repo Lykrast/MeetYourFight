@@ -6,6 +6,9 @@ import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -17,9 +20,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
 public class SwampMineEntity extends Entity {
+	private static final EntityDataAccessor<Integer> FUSE = SynchedEntityData.defineId(SwampMineEntity.class, EntityDataSerializers.INT);
 	//Mostly copied from TNT
 	private LivingEntity bomber;
-	public int fuse = 200;
 
 	public SwampMineEntity(EntityType<? extends SwampMineEntity> entityTypeIn, Level worldIn) {
 		super(entityTypeIn, worldIn);
@@ -31,7 +34,7 @@ public class SwampMineEntity extends Entity {
 		this.setPos(x, y, z);
 		double angle = worldIn.random.nextDouble() * Math.PI * 2;
 		setDeltaMovement(-Math.sin(angle) * 0.06, 0.05, -Math.cos(angle) * 0.06);
-		fuse = 200;
+		setFuse(200);
 		xo = x;
 		yo = y;
 		zo = z;
@@ -45,17 +48,24 @@ public class SwampMineEntity extends Entity {
 
 	@Override
 	public void tick() {
-		if (!isNoGravity()) {
-			setDeltaMovement(getDeltaMovement().add(0.0D, -0.04D, 0.0D));
-		}
+		int fuse = getFuse();
+		if (fuse > 10) {
+			if (!isNoGravity()) {
+				setDeltaMovement(getDeltaMovement().add(0.0D, -0.04D, 0.0D));
+			}
 
-		move(MoverType.SELF, getDeltaMovement());
-		//if (getMotion().y < 0) setMotion(getMotion().mul(0.98, 0.8, 0.98));
-		//else setMotion(getMotion().scale(0.98));
-		setDeltaMovement(getDeltaMovement().scale(0.98));
-		
-		if (onGround) fuse = 0;
-		else --fuse;
+			move(MoverType.SELF, getDeltaMovement());
+			//if (getMotion().y < 0) setMotion(getMotion().mul(0.98, 0.8, 0.98));
+			//else setMotion(getMotion().scale(0.98));
+			setDeltaMovement(getDeltaMovement().scale(0.98));
+			
+			if (onGround) {
+				setFuse(10);
+				setDeltaMovement(0, 0, 0);
+			}
+			else setFuse(--fuse);
+		}
+		else setFuse(--fuse);
 		if (fuse <= 0) {
 			remove(RemovalReason.KILLED);
 			if (!level.isClientSide) explode();
@@ -75,16 +85,25 @@ public class SwampMineEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData() {
+		entityData.define(FUSE, 200);
+	}
+
+	public void setFuse(int fuse) {
+		entityData.set(FUSE, fuse);
+	}
+
+	public int getFuse() {
+		return entityData.get(FUSE);
 	}
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
-		compound.putShort("Fuse", (short) fuse);
+		compound.putShort("Fuse", (short) getFuse());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
-		fuse = compound.getShort("Fuse");
+		setFuse(compound.getShort("Fuse"));
 	}
 
 	@Override
