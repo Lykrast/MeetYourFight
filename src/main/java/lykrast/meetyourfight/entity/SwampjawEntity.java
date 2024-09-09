@@ -37,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class SwampjawEntity extends BossFlyingEntity {
 	private int behavior;
+	private int attackDelay;
 	private static final int CIRCLE = 0, BOMB = 1, SWOOP = 2;
 	//A lot of similarity with Phantoms
 	private Vec3 orbitOffset = Vec3.ZERO;
@@ -184,10 +185,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 			float targetYaw = (float) Mth.atan2((double) targetZ, (double) targetX);
 			float startYaw = Mth.wrapDegrees(swampjaw.getYRot() + 90.0F);
 			targetYaw = Mth.wrapDegrees(targetYaw * (180F / (float) Math.PI));
+			boolean isFastBomb = swampjaw.behavior == BOMB && swampjaw.attackDelay <= 10;
 			//Phantoms approach by 4�
-			swampjaw.setYRot(Mth.approachDegrees(startYaw, targetYaw, 10) - 90.0F);
+			swampjaw.setYRot(Mth.approachDegrees(startYaw, targetYaw, isFastBomb ? 20 : 10) - 90.0F);
 			swampjaw.yBodyRot = swampjaw.getYRot();
-			if (Mth.degreesDifferenceAbs(prevYaw, swampjaw.getYRot()) < 3.0F) {
+			if (isFastBomb || Mth.degreesDifferenceAbs(prevYaw, swampjaw.getYRot()) < 3.0F) {
 				float maxSpeed = swampjaw.behavior != CIRCLE ? 3F : 1.2F;
 				float multiplier = speedFactor > maxSpeed ? 10 : maxSpeed / speedFactor;
 				speedFactor = Mth.approach(speedFactor, maxSpeed, 0.005F * multiplier);
@@ -307,6 +309,18 @@ public class SwampjawEntity extends BossFlyingEntity {
 		@Override
 		public void tick() {
 			if (isCloseToOffset()) updateOffset();
+			else if (swampjaw.attackDelay <= 10) {
+				//distance² between the travel line (swampjaw to orbit offset) and target
+				//to catch a player sidestepping
+				//bomb drop checks for a squared distance of 12
+				Vec3 swamp = swampjaw.position();
+				Vec3 destination = swampjaw.orbitOffset;
+				Vec3 target = swampjaw.getTarget().position();
+				//got formula from wikipedia https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+				double distance = (destination.z - swamp.z)*target.x - (destination.x - swamp.x)*target.z + destination.x*swamp.z - destination.z*swamp.x;
+				distance = (distance*distance) / ((destination.z-swamp.z)*(destination.z-swamp.z) + (destination.x-swamp.x)*(destination.x-swamp.x));
+				if (distance > 10) updateOffset();
+			}
 		}
 
 		private void updateOffset() {
@@ -317,7 +331,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 				double difZ = target.getZ() - swampjaw.orbitOffset.z;
 				Vec3 overshoot = new Vec3(difX, 0, difZ).normalize();
 				Vec3 vec = target.position();
-				swampjaw.orbitOffset = new Vec3(vec.x + overshoot.x * 7, swampjaw.orbitPosition.getY() - 4, vec.z + overshoot.z * 7);
+				swampjaw.orbitOffset = new Vec3(vec.x + overshoot.x * 10, swampjaw.orbitPosition.getY() - 4, vec.z + overshoot.z * 10);
 			}
 		}
 	}
@@ -361,7 +375,6 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 
 	private static class PickAttackGoal extends Goal {
-		private int tickDelay;
 		private int bombLeft;
 		private SwampjawEntity swampjaw;
 
@@ -383,7 +396,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		@Override
 		public void start() {
-			tickDelay = 100;
+			swampjaw.attackDelay = 100;
 			bombLeft = 3;
 			swampjaw.behavior = CIRCLE;
 			updateOrbit();
@@ -397,26 +410,26 @@ public class SwampjawEntity extends BossFlyingEntity {
 		@Override
 		public void tick() {
 			if (swampjaw.behavior == CIRCLE || swampjaw.behavior == BOMB) {
-				--tickDelay;
-				if (tickDelay <= 0) {
+				--swampjaw.attackDelay;
+				if (swampjaw.attackDelay <= 0) {
 					//No bombs left, swoop in
 					if (bombLeft <= 0) {
 						bombLeft = 3;
 						swampjaw.behavior = SWOOP;
 						updateOrbit();
-						tickDelay = (4 + swampjaw.random.nextInt(4)) * 20;
+						swampjaw.attackDelay = (4 + swampjaw.random.nextInt(4)) * 20;
 						swampjaw.playSound(ModSounds.swampjawCharge.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 					}
 					//Switch to bomb mode
 					else if (swampjaw.behavior == CIRCLE) {
 						swampjaw.behavior = BOMB;
-						tickDelay = 20;
+						swampjaw.attackDelay = 20;
 					}
 					//Bomb ready, wait for target near or for some extra time
-					else if (tickDelay <= -120 || isTargetClose()) {
+					else if (swampjaw.attackDelay <= -120 || isTargetClose()) {
 						bombLeft--;
-						if (bombLeft <= 0) tickDelay = 30 + swampjaw.random.nextInt(30);
-						else tickDelay = 20;
+						if (bombLeft <= 0) swampjaw.attackDelay = 30 + swampjaw.random.nextInt(30);
+						else swampjaw.attackDelay = 30;
 						updateOrbit();
 						swampjaw.playSound(ModSounds.swampjawBomb.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level, swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
