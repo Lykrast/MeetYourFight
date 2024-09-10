@@ -43,7 +43,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	public static final int ANIM_NEUTRAL = 0, ANIM_SWOOP = 1, ANIM_STUN = 2, ANIM_SWIPE = 3;
 	private int behavior;
 	private int attackDelay;
-	private static final int CIRCLE = 0, BOMB = 1, SWOOP = 2;
+	private static final int CIRCLE = 0, BOMB = 1, SWOOP = 2, STUNNED = 3, SWIPING = 4;
 	//A lot of similarity with Phantoms
 	private Vec3 orbitOffset = Vec3.ZERO;
 	private BlockPos orbitPosition = BlockPos.ZERO;
@@ -160,6 +160,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("AX")) orbitPosition = new BlockPos(compound.getInt("AX"), compound.getInt("AY"), compound.getInt("AZ"));
+		if (compound.contains("Delay")) attackDelay = compound.getInt("Delay");
+		if (compound.contains("Behavior")) behavior = compound.getInt("Behavior");
 	}
 
 	@Override
@@ -168,6 +170,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 		compound.putInt("AX", orbitPosition.getX());
 		compound.putInt("AY", orbitPosition.getY());
 		compound.putInt("AZ", orbitPosition.getZ());
+		compound.putInt("Delay", attackDelay);
+		compound.putInt("Behavior", behavior);
 	}
 
 	@Override
@@ -212,6 +216,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		@Override
 		public void tick() {
+			if (swampjaw.behavior == STUNNED) {
+				swampjaw.setDeltaMovement(swampjaw.getDeltaMovement().scale(0.9));
+				return;
+			}
+			
 			float targetX = (float) (swampjaw.orbitOffset.x - swampjaw.getX());
 			float targetY = (float) (swampjaw.orbitOffset.y - swampjaw.getY());
 			float targetZ = (float) (swampjaw.orbitOffset.z - swampjaw.getZ());
@@ -397,7 +406,10 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		@Override
 		public void stop() {
-			swampjaw.behavior = CIRCLE;
+			if (swampjaw.behavior == SWOOP) {
+				swampjaw.behavior = CIRCLE;
+				swampjaw.setAnimation(ANIM_NEUTRAL);
+			}
 		}
 
 		@Override
@@ -411,8 +423,9 @@ public class SwampjawEntity extends BossFlyingEntity {
 				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
 			}
 			else if (swampjaw.hurtTime > 0) {
-				swampjaw.behavior = CIRCLE;
-				swampjaw.setAnimation(ANIM_NEUTRAL);
+				swampjaw.attackDelay = 40;
+				swampjaw.behavior = STUNNED;
+				swampjaw.setAnimation(ANIM_STUN);
 			}
 
 		}
@@ -453,11 +466,17 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		@Override
 		public void tick() {
-			if (swampjaw.behavior == CIRCLE || swampjaw.behavior == BOMB) {
+			if (swampjaw.behavior == CIRCLE || swampjaw.behavior == BOMB || swampjaw.behavior == STUNNED) {
 				--swampjaw.attackDelay;
 				if (swampjaw.attackDelay <= 0) {
+					//Recover from stun
+					if (swampjaw.behavior == STUNNED) {
+						swampjaw.behavior = CIRCLE;
+						swampjaw.setAnimation(ANIM_NEUTRAL);
+						swampjaw.attackDelay = (2 + swampjaw.random.nextInt(3)) * 20;
+					}
 					//No bombs left, swoop in
-					if (bombLeft <= 0) {
+					else if (bombLeft <= 0) {
 						bombLeft = 3;
 						swampjaw.behavior = SWOOP;
 						swampjaw.setAnimation(ANIM_SWOOP);

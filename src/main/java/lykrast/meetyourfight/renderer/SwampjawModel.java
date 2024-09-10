@@ -52,14 +52,14 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(40, 0).addBox(-6, -10, -6, 12, 10, 12), PartPose.offset(0, 24, 0));
-		body.addOrReplaceChild("fin_right", CubeListBuilder.create().texOffs(0, 28).addBox(-8, 0, -2, 8, 1, 4), PartPose.offsetAndRotation(-6, -5, 0, 0, 0, -0.4363F));
-		body.addOrReplaceChild("fin_left", CubeListBuilder.create().texOffs(0, 28).addBox(0, 0, -2, 8, 1, 4), PartPose.offsetAndRotation(6, -5, 0, 0, 0, 0.4363F));
-		PartDefinition tailInner = body.addOrReplaceChild("tail_inner", CubeListBuilder.create().texOffs(40, 22).addBox(-5, 0, 0, 10, 8, 8), PartPose.offset(0, -10, 6));
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(40, 0).addBox(-6, -5, -6, 12, 10, 12), PartPose.offset(0, 19, 0));
+		body.addOrReplaceChild("fin_right", CubeListBuilder.create().texOffs(0, 28).addBox(-8, 0, -2, 8, 1, 4), PartPose.offsetAndRotation(-6, 0, 0, 0, 0, -0.4363F));
+		body.addOrReplaceChild("fin_left", CubeListBuilder.create().texOffs(0, 28).addBox(0, 0, -2, 8, 1, 4), PartPose.offsetAndRotation(6, 0, 0, 0, 0, 0.4363F));
+		PartDefinition tailInner = body.addOrReplaceChild("tail_inner", CubeListBuilder.create().texOffs(40, 22).addBox(-5, 0, 0, 10, 8, 8), PartPose.offset(0, -5, 6));
 		PartDefinition tailOuter = tailInner.addOrReplaceChild("tail_outer", CubeListBuilder.create().texOffs(40, 38).addBox(-1, 0, 0, 2, 2, 6), PartPose.offset(0, 0, 8));
 		tailOuter.addOrReplaceChild("tail_fin_top", CubeListBuilder.create().texOffs(0, 33).addBox(-0.5f, -10, 0, 1, 10, 5), PartPose.offsetAndRotation(0, 1, 5, -TAILFIN_PITCH, 0, 0));
 		tailOuter.addOrReplaceChild("tail_fin_bottom", CubeListBuilder.create().texOffs(12, 33).addBox(-0.5f, 0, 0, 1, 10, 5, new CubeDeformation(-0.1f)), PartPose.offsetAndRotation(0, 1, 5, TAILFIN_PITCH, 0, 0));
-		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-5, -4, -10, 10, 6, 10), PartPose.offset(0, -5, -6));
+		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-5, -4, -10, 10, 6, 10), PartPose.offset(0, 0, -6));
 		head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 16).addBox(-5, 0, -10, 10, 2, 10), PartPose.offset(0, 2, 0));
 		return LayerDefinition.create(meshdefinition, 128, 64);
 	}
@@ -77,19 +77,42 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	@Override
 	public void setupAnim(SwampjawEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		//bodyMain.rotateAngleX = entity.rotationPitch * ((float) Math.PI / 180F);
-		
-		//jaw
+
+		//animations
+		//head and jaw
 		if (entity.clientAnim == SwampjawEntity.ANIM_SWOOP) {
+			//open mouth, head a bit up to see the mouth
 			float offset = 15*animProgress;
 			headPitch -= offset;
 			jaw.xRot = 3*offset*Mth.DEG_TO_RAD;
+			bodyMain.zRot = 180*Mth.DEG_TO_RAD;
 		}
 		else if (entity.prevAnim == SwampjawEntity.ANIM_SWOOP && animProgress < 0.99) {
+			//closing mouth after a swoop
 			float offset = 15*(1-animProgress);
 			headPitch -= offset;
-			jaw.xRot = 3*offset*Mth.DEG_TO_RAD;
+			//jaw stays open when stunned
+			if (entity.clientAnim == SwampjawEntity.ANIM_STUN) jaw.xRot = (offset+30)*Mth.DEG_TO_RAD;
+			else jaw.xRot = 3*offset*Mth.DEG_TO_RAD;
+		}
+		else if (entity.clientAnim == SwampjawEntity.ANIM_STUN) {
+			//no need to ease the jaw here because it's covered by previous if
+			jaw.xRot = 30*Mth.DEG_TO_RAD;
+		}
+		else if (entity.prevAnim == SwampjawEntity.ANIM_STUN && animProgress < 0.99) {
+			//closing mouth after stun
+			float offset = 30*(1-animProgress);
+			jaw.xRot = offset*Mth.DEG_TO_RAD;
 		}
 		else jaw.xRot = 0;
+		//body
+		if (entity.clientAnim == SwampjawEntity.ANIM_STUN) {
+			bodyMain.zRot = 180*animProgress*Mth.DEG_TO_RAD;
+		}
+		else if (entity.prevAnim == SwampjawEntity.ANIM_STUN && animProgress < 0.99) {
+			bodyMain.zRot = 180*(1+animProgress)*Mth.DEG_TO_RAD;
+		}
+		else bodyMain.zRot = 0;
 		
 		//Head
 		head.xRot = headPitch * Mth.DEG_TO_RAD;
@@ -111,11 +134,5 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	@Override
 	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
 		bodyMain.render(matrixStack, buffer, packedLight, packedOverlay);
-	}
-
-	public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
 	}
 }
