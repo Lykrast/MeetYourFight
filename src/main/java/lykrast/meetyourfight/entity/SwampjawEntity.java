@@ -82,6 +82,16 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 
 	@Override
+	protected void registerGoals() {
+		goalSelector.addGoal(1, new PickAttackGoal(this));
+		goalSelector.addGoal(2, new SweepAttackGoal(this));
+		goalSelector.addGoal(3, new BombMovementGoal(this));
+		goalSelector.addGoal(4, new OrbitPointGoal(this));
+		goalSelector.addGoal(8, new LookWhenNotStunned(this, Player.class, 16));
+		targetSelector.addGoal(1, new PhantomAttackPlayer(this));
+	}
+
+	@Override
 	public void tick() {
 		noPhysics = true;
 		super.tick();
@@ -98,16 +108,6 @@ public class SwampjawEntity extends BossFlyingEntity {
 			}
 			else if (animProg < animDur) animProg++;
 		}
-	}
-
-	@Override
-	protected void registerGoals() {
-		goalSelector.addGoal(1, new PickAttackGoal(this));
-		goalSelector.addGoal(2, new SweepAttackGoal(this));
-		goalSelector.addGoal(3, new BombMovementGoal(this));
-		goalSelector.addGoal(4, new OrbitPointGoal(this));
-		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 16));
-		targetSelector.addGoal(1, new PhantomAttackPlayer(this));
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	
 	private void swipeAttack() {
 		playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 10.0F, 0.95F + random.nextFloat() * 0.1F);
-        for(LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 0, 1.75))) {
+        for(LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 1, 1.75))) {
         	if (target.isAlive() && !target.isInvulnerable() && target != this) {
         		if (doHurtTarget(target)) {
 					double mult = Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
@@ -545,6 +545,26 @@ public class SwampjawEntity extends BossFlyingEntity {
 		private void updateOrbit() {
 			swampjaw.orbitPosition = swampjaw.getTarget().blockPosition().above(14 + swampjaw.random.nextInt(6));
 		}
+	}
+	
+	private static class LookWhenNotStunned extends LookAtPlayerGoal {
+		private SwampjawEntity swampjaw;
+
+		public LookWhenNotStunned(SwampjawEntity swampjaw, Class<? extends LivingEntity> target, float range) {
+			super(swampjaw, target, range);
+			this.swampjaw = swampjaw;
+		}
+		
+		@Override
+		public boolean canUse() {
+			return swampjaw.behavior != STUNNED && swampjaw.behavior != SWIPING && super.canUse();
+		}
+		
+		@Override
+		public boolean canContinueToUse() {
+			return swampjaw.behavior != STUNNED && swampjaw.behavior != SWIPING && super.canContinueToUse();
+		}
+		
 	}
 
 }

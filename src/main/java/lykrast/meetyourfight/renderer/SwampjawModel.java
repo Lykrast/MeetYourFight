@@ -34,7 +34,7 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	//Blockbench constant
 	private static final float TAILFIN_PITCH = 0.2618F;
 	
-	private float tailYaw, tailPitch;
+	private float tailYaw, tailPitch, twitchingYaw;
 	private float animProgress;
 
 	public SwampjawModel(ModelPart modelPart) {
@@ -86,6 +86,18 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 			//quadratic ease in
 			animProgress *= animProgress;
 		}
+		//waggle tail when stunned
+		if (entity.clientAnim == SwampjawEntity.ANIM_STUN) {
+			twitchingYaw = Mth.sin((entity.tickCount+partialTick)*Mth.PI/5)*25*Mth.DEG_TO_RAD*animProgress;
+			tailYaw += twitchingYaw;
+			tailPitch *= (1-animProgress);
+		}
+		else if (entity.prevAnim == SwampjawEntity.ANIM_STUN && animProgress < 0.99) {
+			twitchingYaw = Mth.sin((entity.tickCount+partialTick)*Mth.PI/5)*25*Mth.DEG_TO_RAD*(1-animProgress);
+			tailYaw += twitchingYaw;
+			tailPitch *= animProgress;
+		}
+		else twitchingYaw = 0;
 	}
 
 	@Override
@@ -131,11 +143,11 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		if (entity.clientAnim == SwampjawEntity.ANIM_SWIPE) {
 			bodyMain.yRot = 360*animProgress*Mth.DEG_TO_RAD;
 		}
-		else bodyMain.yRot = 0;
+		else bodyMain.yRot = -twitchingYaw;
 		
 		//Head
 		head.xRot = headPitch * Mth.DEG_TO_RAD;
-		head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
+		head.yRot = netHeadYaw * Mth.DEG_TO_RAD - twitchingYaw;
 		
 		//Flap fins
 		finLeft.yRot = Mth.cos(limbSwing * 0.2F) * 0.8F * limbSwingAmount;
@@ -143,7 +155,7 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		
 		//Rotate tail
 		tailInner.xRot = tailPitch;
-		tailInner.yRot = tailYaw + Mth.cos(limbSwing * 0.35F) * 0.15F * limbSwingAmount;
+		tailInner.yRot = tailYaw + Mth.cos(limbSwing * 0.35F) * 0.15F * limbSwingAmount + twitchingYaw;
 		tailOuter.xRot = tailPitch;
 		tailOuter.yRot = tailYaw + Mth.cos(limbSwing * 0.35F + (float)Math.PI / 3F) * 0.15F * limbSwingAmount;
 		tailfinTop.yRot = tailYaw + Mth.cos(limbSwing * 0.35F + 2F * (float)Math.PI / 3F) * 0.15F * limbSwingAmount;
