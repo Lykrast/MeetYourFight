@@ -437,6 +437,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
 			}
 			else if (swampjaw.hurtTime > 0) {
+				swampjaw.playSound(ModSounds.swampjawStun.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 				swampjaw.attackDelay = 50;
 				swampjaw.behavior = STUNNED;
 				swampjaw.setAnimation(ANIM_STUN);

@@ -12,7 +12,7 @@ public class ModSounds {
 	public static RegistryObject<SoundEvent> bellringerIdle, bellringerHurt, bellringerDeath;
 	public static RegistryObject<SoundEvent> dameFortunaIdle, dameFortunaHurt, dameFortunaDeath, dameFortunaAttack, dameFortunaShoot;
 	public static RegistryObject<SoundEvent> dameFortunaChipsStart, dameFortunaChipsFire, dameFortunaCardStart, dameFortunaCardRight, dameFortunaCardWrong;
-	public static RegistryObject<SoundEvent> swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb;
+	public static RegistryObject<SoundEvent> swampjawIdle, swampjawHurt, swampjawDeath, swampjawCharge, swampjawBomb, swampjawStun;
 	public static RegistryObject<SoundEvent> rosalyneHurt, rosalyneDeath, rosalyneCrack, rosalyneSwing, rosalyneSwingPrepare;
 	public static RegistryObject<SoundEvent> roseSpiritIdle, roseSpiritHurt, roseSpiritHurtBig, roseSpiritDeath, roseSpiritWarn, roseSpiritShoot;
 	//Items
@@ -42,6 +42,7 @@ public class ModSounds {
 		swampjawDeath = initSound("entity.swampjaw.death");
 		swampjawCharge = initSound("entity.swampjaw.charge");
 		swampjawBomb = initSound("entity.swampjaw.bomb");
+		swampjawStun = initSound("entity.swampjaw.stun");
 		
 		rosalyneHurt = initSound("entity.rosalyne.hurt");
 		rosalyneDeath = initSound("entity.rosalyne.death");

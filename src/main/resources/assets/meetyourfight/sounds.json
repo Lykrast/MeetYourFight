@@ -138,6 +138,16 @@
 			"random/fuse"
 		]
 	},
+	"entity.swampjaw.stun": {
+		"subtitle": "subtitles.meetyourfight.entity.swampjaw.stun",
+		"sounds": [
+			{ "name": "mob/ghast/scream1", "pitch": 0.2, "volume": 0.5 },
+			{ "name": "mob/ghast/scream2", "pitch": 0.2, "volume": 0.5 },
+			{ "name": "mob/ghast/scream3", "pitch": 0.2, "volume": 0.5 },
+			{ "name": "mob/ghast/scream4", "pitch": 0.2, "volume": 0.5 },
+			{ "name": "mob/ghast/scream5", "pitch": 0.2, "volume": 0.5 }
+		]
+	},
 	"entity.rosalyne.hurt": {
 		"subtitle": "subtitles.meetyourfight.entity.rosalyne.hurt",
 		"sounds": [
