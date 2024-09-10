@@ -16,6 +16,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -65,7 +66,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 12);
+		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 12).add(Attributes.KNOCKBACK_RESISTANCE, 0.8);
 	}
 	
 	public static void spawn(Player player, Level world) {
@@ -92,8 +93,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 				prevAnim = clientAnim;
 				clientAnim = newanim;
 				animProg = 0;
-				animDur = 5;
-				if (clientAnim == ANIM_STUN || clientAnim == ANIM_SWIPE) animDur = 10;
+				animDur = 10;
+				if (clientAnim == ANIM_NEUTRAL && prevAnim == ANIM_SWOOP) animDur = 5;
 			}
 			else if (animProg < animDur) animProg++;
 		}
@@ -204,6 +205,19 @@ public class SwampjawEntity extends BossFlyingEntity {
 		return MeetYourFight.rl("swampjaw");
 	}
 	
+	private void swipeAttack() {
+		playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 10.0F, 0.95F + random.nextFloat() * 0.1F);
+        for(LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 0, 1.75))) {
+        	if (target.isAlive() && !target.isInvulnerable() && target != this) {
+        		if (doHurtTarget(target)) {
+					double mult = Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+					Vec3 knockback = new Vec3(target.getX() - getX(), 0, target.getZ() - getZ()).normalize().add(0, 0.2, 0).scale(2*mult);
+					target.setDeltaMovement(target.getDeltaMovement().add(knockback));
+        		}
+        	}
+        }
+	}
+	
 	//Same controller as Phantoms but ignores walls
 	private static class MoveHelperController extends MoveControl {
 		private float speedFactor = 0.1F;
@@ -216,7 +230,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		@Override
 		public void tick() {
-			if (swampjaw.behavior == STUNNED) {
+			if (swampjaw.behavior == STUNNED || swampjaw.behavior == SWIPING) {
 				swampjaw.setDeltaMovement(swampjaw.getDeltaMovement().scale(0.9));
 				return;
 			}
@@ -416,14 +430,14 @@ public class SwampjawEntity extends BossFlyingEntity {
 		public void tick() {
 			LivingEntity livingentity = swampjaw.getTarget();
 			swampjaw.orbitOffset = new Vec3(livingentity.getX(), livingentity.getY(0.5D), livingentity.getZ());
-			if (swampjaw.getBoundingBox().inflate(0.2).intersects(livingentity.getBoundingBox())) {
+			if (swampjaw.getBoundingBox().intersects(livingentity.getBoundingBox())) {
 				swampjaw.doHurtTarget(livingentity);
 				swampjaw.behavior = CIRCLE;
 				swampjaw.setAnimation(ANIM_NEUTRAL);
 				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
 			}
 			else if (swampjaw.hurtTime > 0) {
-				swampjaw.attackDelay = 40;
+				swampjaw.attackDelay = 50;
 				swampjaw.behavior = STUNNED;
 				swampjaw.setAnimation(ANIM_STUN);
 			}
@@ -448,7 +462,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		public boolean canUse() {
 			LivingEntity livingentity = swampjaw.getTarget();
 			//Thanks debugger for letting me find a los check here
-			return livingentity != null ? swampjaw.canAttack(swampjaw.getTarget(), PhantomAttackPlayer.DEFAULT_BUT_THROUGH_WALLS) : false;
+			return swampjaw.behavior == STUNNED || swampjaw.behavior == SWIPING || (livingentity != null ? swampjaw.canAttack(swampjaw.getTarget(), PhantomAttackPlayer.DEFAULT_BUT_THROUGH_WALLS) : false);
 		}
 
 		@Override
@@ -466,11 +480,17 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 		@Override
 		public void tick() {
-			if (swampjaw.behavior == CIRCLE || swampjaw.behavior == BOMB || swampjaw.behavior == STUNNED) {
+			if (swampjaw.behavior == CIRCLE || swampjaw.behavior == BOMB || swampjaw.behavior == STUNNED || swampjaw.behavior == SWIPING) {
 				--swampjaw.attackDelay;
 				if (swampjaw.attackDelay <= 0) {
 					//Recover from stun
 					if (swampjaw.behavior == STUNNED) {
+						swampjaw.behavior = SWIPING;
+						swampjaw.setAnimation(ANIM_SWIPE);
+						swampjaw.attackDelay = 10;
+					}
+					//Recover from stun
+					else if (swampjaw.behavior == SWIPING) {
 						swampjaw.behavior = CIRCLE;
 						swampjaw.setAnimation(ANIM_NEUTRAL);
 						swampjaw.attackDelay = (2 + swampjaw.random.nextInt(3)) * 20;
@@ -503,8 +523,15 @@ public class SwampjawEntity extends BossFlyingEntity {
 						swampjaw.level.addFreshEntity(tntentity);
 					}
 				}
+				//animation change
+				else if (swampjaw.behavior == STUNNED && swampjaw.attackDelay == 10) {
+					swampjaw.setAnimation(ANIM_NEUTRAL);
+				}
+				//perform the swipe
+				else if (swampjaw.behavior == SWIPING && swampjaw.attackDelay == 5) {
+					swampjaw.swipeAttack();
+				}
 			}
-
 		}
 		
 		private boolean isTargetClose() {

@@ -72,6 +72,20 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		tailYaw *= Mth.DEG_TO_RAD;
 		tailPitch *= Mth.DEG_TO_RAD;
 		animProgress = entity.getAnimProgress(partialTick);
+		if (entity.clientAnim == SwampjawEntity.ANIM_SWIPE) {
+			//ease in and out https://math.stackexchange.com/questions/121720/ease-in-out-function/121755#121755
+			float sq = animProgress * animProgress;
+			animProgress = sq / (2 * (sq - animProgress)+1);
+		}
+		else if (entity.clientAnim == SwampjawEntity.ANIM_STUN || entity.prevAnim == SwampjawEntity.ANIM_SWOOP) {
+			//quadratic ease out
+			animProgress = 1-animProgress;
+			animProgress = 1-(animProgress*animProgress);
+		}
+		else {
+			//quadratic ease in
+			animProgress *= animProgress;
+		}
 	}
 
 	@Override
@@ -105,7 +119,7 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 			jaw.xRot = offset*Mth.DEG_TO_RAD;
 		}
 		else jaw.xRot = 0;
-		//body
+		//body zrot
 		if (entity.clientAnim == SwampjawEntity.ANIM_STUN) {
 			bodyMain.zRot = 180*animProgress*Mth.DEG_TO_RAD;
 		}
@@ -113,6 +127,11 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 			bodyMain.zRot = 180*(1+animProgress)*Mth.DEG_TO_RAD;
 		}
 		else bodyMain.zRot = 0;
+		//body yrot
+		if (entity.clientAnim == SwampjawEntity.ANIM_SWIPE) {
+			bodyMain.yRot = 360*animProgress*Mth.DEG_TO_RAD;
+		}
+		else bodyMain.yRot = 0;
 		
 		//Head
 		head.xRot = headPitch * Mth.DEG_TO_RAD;
