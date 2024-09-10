@@ -28,13 +28,14 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	private final ModelPart tailfinTop;
 	private final ModelPart tailOuter;
 	private final ModelPart tailInner;
-	//private final ModelPart jaw;
+	private final ModelPart jaw;
 	private final ModelPart head;
 	
 	//Blockbench constant
 	private static final float TAILFIN_PITCH = 0.2618F;
 	
 	private float tailYaw, tailPitch;
+	private float animProgress;
 
 	public SwampjawModel(ModelPart modelPart) {
 		bodyMain = modelPart.getChild("body");
@@ -45,7 +46,7 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		tailfinTop = tailOuter.getChild("tail_fin_top");
 		tailfinBottom = tailOuter.getChild("tail_fin_bottom");
 		head = bodyMain.getChild("head");
-		//jaw = modelPart.getChild("jaw");
+		jaw = head.getChild("jaw");
 	}
 	
 	public static LayerDefinition createBodyLayer() {
@@ -68,17 +69,31 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
 		tailYaw = Mth.degreesDifference(entity.getYRot(), entity.getTailYaw(partialTick)) / 3F;
 		tailPitch = -Mth.degreesDifference(entity.getXRot(), entity.getTailPitch(partialTick)) / 1.5F;
-		tailYaw *= (float)Math.PI / 180F;
-		tailPitch *= (float)Math.PI / 180F;
+		tailYaw *= Mth.DEG_TO_RAD;
+		tailPitch *= Mth.DEG_TO_RAD;
+		animProgress = entity.getAnimProgress(partialTick);
 	}
 
 	@Override
 	public void setupAnim(SwampjawEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		//bodyMain.rotateAngleX = entity.rotationPitch * ((float) Math.PI / 180F);
 		
+		//jaw
+		if (entity.clientAnim == SwampjawEntity.ANIM_SWOOP) {
+			float offset = 15*animProgress;
+			headPitch -= offset;
+			jaw.xRot = 3*offset*Mth.DEG_TO_RAD;
+		}
+		else if (entity.prevAnim == SwampjawEntity.ANIM_SWOOP && animProgress < 0.99) {
+			float offset = 15*(1-animProgress);
+			headPitch -= offset;
+			jaw.xRot = 3*offset*Mth.DEG_TO_RAD;
+		}
+		else jaw.xRot = 0;
+		
 		//Head
-		head.xRot = headPitch * ((float) Math.PI / 180F);
-		head.yRot = netHeadYaw * ((float) Math.PI / 180F);
+		head.xRot = headPitch * Mth.DEG_TO_RAD;
+		head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
 		
 		//Flap fins
 		finLeft.yRot = Mth.cos(limbSwing * 0.2F) * 0.8F * limbSwingAmount;

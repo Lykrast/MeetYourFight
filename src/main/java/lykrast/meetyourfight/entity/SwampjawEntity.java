@@ -10,6 +10,9 @@ import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -36,6 +39,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
 public class SwampjawEntity extends BossFlyingEntity {
+	private static final EntityDataAccessor<Byte> ANIMATION = SynchedEntityData.defineId(SwampjawEntity.class, EntityDataSerializers.BYTE);
+	public static final int ANIM_NEUTRAL = 0, ANIM_SWOOP = 1, ANIM_STUN = 2, ANIM_SWIPE = 3;
 	private int behavior;
 	private int attackDelay;
 	private static final int CIRCLE = 0, BOMB = 1, SWOOP = 2;
@@ -45,6 +50,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	
 	//For rotating the tail
 	public float tailYaw, tailPitch;
+	public int clientAnim, prevAnim, animProg, animDur;
 
 	public SwampjawEntity(EntityType<? extends SwampjawEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -52,6 +58,10 @@ public class SwampjawEntity extends BossFlyingEntity {
 		moveControl = new MoveHelperController(this);
 		tailYaw = getYRot();
 		tailPitch = getXRot();
+		clientAnim = ANIM_NEUTRAL;
+		prevAnim = ANIM_NEUTRAL;
+		animProg = 1;
+		animDur = 1;
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -75,6 +85,18 @@ public class SwampjawEntity extends BossFlyingEntity {
 		noPhysics = true;
 		super.tick();
 		noPhysics = false;
+		
+		if (level.isClientSide()) {
+			int newanim = getAnimation();
+			if (clientAnim != newanim) {
+				prevAnim = clientAnim;
+				clientAnim = newanim;
+				animProg = 0;
+				animDur = 5;
+				if (clientAnim == ANIM_STUN || clientAnim == ANIM_SWIPE) animDur = 10;
+			}
+			else if (animProg < animDur) animProg++;
+		}
 	}
 
 	@Override
@@ -97,6 +119,24 @@ public class SwampjawEntity extends BossFlyingEntity {
 	@Override
 	public boolean canAttackType(EntityType<?> typeIn) {
 		return true;
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(ANIMATION, (byte)0);
+	}
+	
+	public int getAnimation() {
+		return entityData.get(ANIMATION);
+	}
+	
+	public void setAnimation(int anim) {
+		entityData.set(ANIMATION, (byte)anim);
+	}
+	
+	public float getAnimProgress(float partial) {
+		return Mth.clamp((animProg + partial) / animDur, 0, 1);
 	}
 	
 	public float getTailYaw(float partialTick) {
@@ -367,9 +407,13 @@ public class SwampjawEntity extends BossFlyingEntity {
 			if (swampjaw.getBoundingBox().inflate(0.2).intersects(livingentity.getBoundingBox())) {
 				swampjaw.doHurtTarget(livingentity);
 				swampjaw.behavior = CIRCLE;
+				swampjaw.setAnimation(ANIM_NEUTRAL);
 				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
 			}
-			else if (swampjaw.hurtTime > 0) swampjaw.behavior = CIRCLE;
+			else if (swampjaw.hurtTime > 0) {
+				swampjaw.behavior = CIRCLE;
+				swampjaw.setAnimation(ANIM_NEUTRAL);
+			}
 
 		}
 	}
@@ -416,6 +460,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 					if (bombLeft <= 0) {
 						bombLeft = 3;
 						swampjaw.behavior = SWOOP;
+						swampjaw.setAnimation(ANIM_SWOOP);
 						updateOrbit();
 						swampjaw.attackDelay = (4 + swampjaw.random.nextInt(4)) * 20;
 						swampjaw.playSound(ModSounds.swampjawCharge.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
