@@ -80,7 +80,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	protected void explode() {
-		level.explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2.5, Explosion.BlockInteraction.NONE);
+		level.explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2.5f, Explosion.BlockInteraction.NONE);
 	}
 
 	@Override
