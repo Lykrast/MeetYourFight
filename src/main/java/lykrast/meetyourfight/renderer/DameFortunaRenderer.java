@@ -20,7 +20,7 @@ public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, 
 	
 	@Override
 	protected void setupRotations(DameFortunaEntity entity, PoseStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-		rotationYaw = Mth.wrapDegrees(rotationYaw + Mth.rotLerp(partialTicks, entity.spinPrev, entity.spinAngle));
+		rotationYaw = Mth.wrapDegrees(rotationYaw + entity.getSpinAngle(partialTicks));
 		super.setupRotations(entity, stack, ageInTicks, rotationYaw, partialTicks);
 	}
 

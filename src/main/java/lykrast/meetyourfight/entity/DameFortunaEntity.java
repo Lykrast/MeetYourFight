@@ -65,7 +65,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	public int headTargetPitch, headTargetYaw, headTargetRoll;
 	public int headRotationTimer;
 	public float headRotationProgress, headRotationProgressLast;
-	public int clientAnim, prevAnim, animProg, animDur;
+	public int clientAnim, prevAnim, animProg, animDur, spinTime;
 	public float spinAngle, spinPrev;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, Level worldIn) {
@@ -132,12 +132,33 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				animDur = 10;
 			}
 			else if (animProg < animDur) animProg++;
+			
+			//spin
 			spinPrev = spinAngle;
-			if (clientAnim == ANIM_SPIN || spinAngle > 0) {
-				spinAngle += 36;
-				if (spinAngle >= 360) spinAngle = 0;
+			if (clientAnim == ANIM_SPIN) {
+				//spinning up
+				if (spinTime < 20) {
+					spinTime++;
+					//keep spin angle at 0 to know our offset when we spin down
+				}
+				//stable spinning
+				else {
+					spinAngle += 36;
+					if (spinAngle >= 360) spinAngle = 0;
+				}
+			}
+			else {
+				if (spinAngle > 0) {
+					//finish our full turn 
+					spinAngle += 36;
+					if (spinAngle >= 360) spinAngle = 0;
+				}
+				else if (spinTime > 0) {
+					spinTime--;
+				}
 			}
 			
+			//head
 			headRotationTimer--;
 			if (headRotationTimer <= 0) {
 				switch (getPhase()) {
@@ -172,6 +193,28 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	
 	public float getHeadRotationProgress(float partial) {
 	      return Mth.lerp(partial, headRotationProgressLast, headRotationProgress);
+	}
+	
+	private float getEasedSpin(float progress) {
+		//0.9x^2 means we spin a full 360° after 20 ticks
+		//and derivative at x = 20 is 36, matching the constant speed rate when stable
+		return 0.9f*progress*progress;
+	}
+	
+	public float getSpinAngle(float partial) {
+		if (clientAnim == ANIM_SPIN) {
+			//spinning up
+			if (spinTime < 20) return getEasedSpin(spinTime + partial);
+			//stable spin
+			else return Mth.rotLerp(partial, spinPrev, spinAngle);
+		}
+		//spinning down
+		else {
+			//finishing the turn
+			if (spinAngle > 0) return Mth.rotLerp(partial, spinPrev, spinAngle);
+			//actual spin down
+			else return 360-getEasedSpin(spinTime - partial);
+		}
 	}
 	
 	private void rotateHead() {
