@@ -17,6 +17,7 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "main");
 	public static final ModelLayerLocation MODEL_ARMOR = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "armor");
 	public float headProgress;
+	private float animProgress;
 	
 	public DameFortunaModel(ModelPart modelPart) {
 		super(modelPart);
@@ -37,45 +38,53 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 	}
 
 	@Override
-	public void prepareMobModel(DameFortunaEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
-		headProgress = entityIn.getHeadRotationProgress(partialTick);
-		super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
+	public void prepareMobModel(DameFortunaEntity entity, float limbSwing, float limbSwingAmount, float partialTick) {
+		super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
+		headProgress = entity.getHeadRotationProgress(partialTick);
+		animProgress = entity.getAnimProgress(partialTick);
 	}
 
 	@Override
-	public void setupAnim(DameFortunaEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(DameFortunaEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		//Save previous head angles for animations before super overrides them so we override them back
 		float headX = head.xRot;
 		float headY = head.yRot;
 		float headZ = head.zRot;
 		
-		super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		hat.skipDraw = true;
 		//Hey guess what this gets overridden in the super too
 		//We'll do something fancy with it, should cycle every 100 ticks (5 seconds)
         head.y = -8 + Mth.sin(ageInTicks * (float)Math.PI / 50f);
 		
 		//Head animation
-		head.xRot = rotlerpRad(headProgress, headX, entityIn.headTargetPitch * Mth.HALF_PI);
-		head.yRot = rotlerpRad(headProgress, headY, entityIn.headTargetYaw * Mth.HALF_PI);
-		head.zRot = rotlerpRad(headProgress, headZ, entityIn.headTargetRoll * Mth.HALF_PI);
+		head.xRot = rotlerpRad(headProgress, headX, entity.headTargetPitch * Mth.HALF_PI);
+		head.yRot = rotlerpRad(headProgress, headY, entity.headTargetYaw * Mth.HALF_PI);
+		head.zRot = rotlerpRad(headProgress, headZ, entity.headTargetRoll * Mth.HALF_PI);
 		
-		int attack = entityIn.getAnimation();
 		//Same pose as Illagers casting spells
 		//1 is normal attack, 2 is big attack
-		if (attack == DameFortunaEntity.PROJ_ATTACK) {
+		if (entity.clientAnim == DameFortunaEntity.ANIM_ATTACK_1) {
 			leftArm.z = 0.0F;
 			leftArm.x = 5.0F;
 			leftArm.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.25F;
 			leftArm.zRot = -2.3561945F;
 			leftArm.yRot = 0.0F;
 		}
-		else if (attack == DameFortunaEntity.CLAW_ATTACK) {
+		else if (entity.clientAnim == DameFortunaEntity.ANIM_ATTACK_2) {
 			rightArm.z = 0.0F;
 			rightArm.x = -5.0F;
 			rightArm.xRot = Mth.cos(ageInTicks * 0.6662F) * 0.25F;
 			rightArm.zRot = 2.3561945F;
 			rightArm.yRot = 0.0F;
+		}
+		else if (entity.clientAnim == DameFortunaEntity.ANIM_SPIN) {
+			rightArm.xRot = 0;
+			rightArm.zRot = 2.3561945F;
+			rightArm.yRot = 0.0F;
+			leftArm.xRot = 0;
+			leftArm.zRot = -2.3561945F;
+			leftArm.yRot = 0.0F;
 		}
 	}
 

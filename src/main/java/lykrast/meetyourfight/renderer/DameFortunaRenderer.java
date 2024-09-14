@@ -7,6 +7,7 @@ import lykrast.meetyourfight.entity.DameFortunaEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, DameFortunaModel> {
 	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png"), GLOW = MeetYourFight.rl("textures/entity/dame_fortuna_glow.png");
@@ -19,13 +20,7 @@ public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, 
 	
 	@Override
 	protected void setupRotations(DameFortunaEntity entity, PoseStack stack, float ageInTicks, float rotationYaw, float partialTicks) {
-		//TODO change
-		//Copied/changed this bit from the Mourned from Defiled Lands, that I think copied from endermen
-		//(and it don't want to show me the endermen code)
-		int rage = entity.getPhase();
-		if (rage >= 1) {
-			rotationYaw += (float)(Math.cos((ageInTicks + partialTicks) * 3.25) * Math.PI * rage);
-		}
+		rotationYaw = Mth.wrapDegrees(rotationYaw + Mth.rotLerp(partialTicks, entity.spinPrev, entity.spinAngle));
 		super.setupRotations(entity, stack, ageInTicks, rotationYaw, partialTicks);
 	}
 

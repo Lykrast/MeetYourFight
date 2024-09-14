@@ -1,5 +1,7 @@
 package lykrast.meetyourfight.entity;
 
+import java.util.EnumSet;
+
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
 import lykrast.meetyourfight.entity.ai.StationaryAttack;
@@ -30,6 +32,7 @@ import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -42,20 +45,28 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	 * Look at me I can embed attacks AND rage in a single byte! 0x0000RRAA with R for rage (0-2) and A for attack (0-2)
 	 */
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(DameFortunaEntity.class, EntityDataSerializers.BYTE);
+	//Phases
 	public static final int PHASE_1 = 0, SHUFFLE_1 = 1, PHASE_2 = 2, SHUFFLE_2 = 3, PHASE_3 = 4, SHUFFLE_3 = 5, DEATH = 6;
+	//Health tresholds for phases
 	private static final float TRESHOLD_1 = 2f/3, TRESHOLD_2 = 1f/3, TRESHOLD_3 = 1f/10;
+	//Heal values for failed shuffles
 	private static final float RESET_1 = (1 + TRESHOLD_1)/2, RESET_2 = (TRESHOLD_1 + TRESHOLD_2)/2, RESET_3 = (TRESHOLD_2 + TRESHOLD_3)/2;
-	public static final int NO_ATTACK = 0, PROJ_ATTACK = 1, CLAW_ATTACK = 2;
+	//Attacks
+	private static final int ATK_CHIPS = 0, ATK_DICE = 1, ATK_SPIN = 2;
+	//Animations
+	public static final int ANIM_IDLE = 0, ANIM_ATTACK_1 = 1, ANIM_ATTACK_2 = 2, ANIM_SPIN = 3;
 	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
-	private int attackCooldown, chipsCooldown;
+	private int attackCooldown, nextAttack, chipsCooldown;
 	private int phase;
 	private boolean hasSpawnedShuffle = false;
 	/**
-	 * Since the animation only rotates in 90°, it's given in 90° by 0 1 2 or 3
+	 * Since the animation only rotates in 90Â°, it's given in 90Â° by 0 1 2 or 3
 	 */
 	public int headTargetPitch, headTargetYaw, headTargetRoll;
 	public int headRotationTimer;
 	public float headRotationProgress, headRotationProgressLast;
+	public int clientAnim, prevAnim, animProg, animDur;
+	public float spinAngle, spinPrev;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -69,6 +80,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		headTargetRoll = 0;
 		headRotationProgress = 1;
 		headRotationProgressLast = 1;
+		clientAnim = ANIM_IDLE;
+		prevAnim = ANIM_IDLE;
+		animProg = 1;
+		animDur = 1;
+		spinAngle = 0;
+		spinPrev = 0;
 	}
 
 	@Override
@@ -77,7 +94,9 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new WaitShuffle(this));
 		goalSelector.addGoal(2, new DoTheShuffle(this));
-		goalSelector.addGoal(3, new RegularAttack(this));
+		goalSelector.addGoal(3, new SpinAttack(this));
+		goalSelector.addGoal(4, new DiceAttack(this));
+		goalSelector.addGoal(5, new ChipsAttack(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this, 1));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -105,6 +124,20 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		
 		//Animations
 		if (level.isClientSide) {
+			int newanim = getAnimation();
+			if (clientAnim != newanim) {
+				prevAnim = clientAnim;
+				clientAnim = newanim;
+				animProg = 0;
+				animDur = 10;
+			}
+			else if (animProg < animDur) animProg++;
+			spinPrev = spinAngle;
+			if (clientAnim == ANIM_SPIN || spinAngle > 0) {
+				spinAngle += 36;
+				if (spinAngle >= 360) spinAngle = 0;
+			}
+			
 			headRotationTimer--;
 			if (headRotationTimer <= 0) {
 				switch (getPhase()) {
@@ -133,8 +166,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		}
 	}
 	
-	public float getHeadRotationProgress(float partialTicks) {
-	      return Mth.lerp(partialTicks, headRotationProgressLast, headRotationProgress);
+	public float getAnimProgress(float partial) {
+		return Mth.clamp((animProg + partial) / animDur, 0, 1);
+	}
+	
+	public float getHeadRotationProgress(float partial) {
+	      return Mth.lerp(partial, headRotationProgressLast, headRotationProgress);
 	}
 	
 	private void rotateHead() {
@@ -170,6 +207,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		DameFortunaEntity dame = ModEntities.DAME_FORTUNA.get().create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
+		dame.nextAttack = ATK_CHIPS;
 		if (!player.getAbilities().instabuild) dame.setTarget(player);
 		dame.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
@@ -222,7 +260,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		if (chipsCooldown > 0) chipsCooldown--;
 		if (phase != getPhase()) phase = getPhase();
 		//Start phase transitions
-		if ((phase == SHUFFLE_1 || phase == SHUFFLE_2 || phase == SHUFFLE_3) && tickCount % 10 == 0) {
+		if (isShuffling() && tickCount % 10 == 0) {
 			if (hasSpawnedShuffle && level.getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32)).isEmpty()) {
 				//If we hit a correct card we get booted out of the shuffle phase, so here if it's failed
 				if (phase == SHUFFLE_1) {
@@ -276,13 +314,33 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		attackCooldown = 20;
 	}
 	
-	private ProjectileLineEntity readyLine() {
-		ProjectileLineEntity proj = new ProjectileLineEntity(level, this);
-		proj.setOwner(this);
-		proj.setPos(getX(), getEyeY() + 1, getZ());
-		proj.setVariant(ProjectileLineEntity.VAR_DAME_FORTUNA);
-		return proj;
+	public boolean isAttackPhase() {
+		return phase == PHASE_1 || phase == PHASE_2 || phase == PHASE_3;
 	}
+	
+	public boolean isShuffling() {
+		return phase == SHUFFLE_1 || phase == SHUFFLE_2 || phase == SHUFFLE_3;
+	}
+	
+	private void rollNextAttack(int ignore) {
+		if (ignore >= 0) {
+			nextAttack = random.nextInt(2);
+			if (nextAttack >= ignore) nextAttack++;
+		}
+		else nextAttack = random.nextInt(3);
+	}
+	
+	private void cooldownNextAttack() {
+		attackCooldown = 50 + random.nextInt(21);
+	}
+	
+//	private ProjectileLineEntity readyLine() {
+//		ProjectileLineEntity proj = new ProjectileLineEntity(level, this);
+//		proj.setOwner(this);
+//		proj.setPos(getX(), getEyeY() + 1, getZ());
+//		proj.setVariant(ProjectileLineEntity.VAR_DAME_FORTUNA);
+//		return proj;
+//	}
 	
 	private ProjectileTargetedEntity readyTargeted() {
 		ProjectileTargetedEntity proj = new ProjectileTargetedEntity(level, this);
@@ -296,6 +354,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("Phase")) setPhase(compound.getByte("Phase"));
 		if (compound.contains("AttackCooldown")) attackCooldown = compound.getInt("AttackCooldown");
+		if (compound.contains("NxtAt")) nextAttack = compound.getInt("NxtAt");
 		if (compound.contains("ChipsCooldown")) chipsCooldown = compound.getInt("ChipsCooldown");
 		if (compound.contains("HasShuffled")) hasSpawnedShuffle = compound.getBoolean("HasShuffled");
 	}
@@ -305,6 +364,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		super.addAdditionalSaveData(compound);
 		compound.putByte("Phase", (byte)getPhase());
 		compound.putInt("AttackCooldown", attackCooldown);
+		compound.putInt("NxtAt", nextAttack);
 		compound.putInt("ChipsCooldown", chipsCooldown);
 		compound.putBoolean("HasShuffled", hasSpawnedShuffle);
 	}
@@ -346,23 +406,22 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		@Override
 		public void start() {
 			super.start();
-			//TODO waiting animation
-			dame.setAnimation(NO_ATTACK);
+			dame.setAnimation(ANIM_IDLE);
 		}
 
 		@Override
 		public void stop() {
-			dame.setAnimation(NO_ATTACK);
+			dame.setAnimation(ANIM_IDLE);
 		}
 
 		@Override
 		public boolean canContinueToUse() {
-			return dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3;
+			return dame.isShuffling();
 		}
 
 		@Override
 		public boolean canUse() {
-			return (dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3) && dame.hasSpawnedShuffle;
+			return dame.isShuffling() && dame.hasSpawnedShuffle;
 		}
 		
 	}
@@ -383,7 +442,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			super.start();
 			dame.attackCooldown = 2;
 			target = dame.getTarget();
-			dame.setAnimation(PROJ_ATTACK);
+			dame.setAnimation(ANIM_ATTACK_1);
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 			//Wait for chips to clean up if possible
 			timer = Math.max(30, dame.chipsCooldown + 20);
@@ -395,7 +454,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			dame.attackCooldown = 2;
 			timer--;
 			if (timer <= 0 && !dame.hasSpawnedShuffle) {
-				dame.setAnimation(NO_ATTACK);
+				dame.setAnimation(ANIM_IDLE);
 				dame.hasSpawnedShuffle = true;
 				Direction dir = Direction.getNearest(target.getX() - dame.getX(), 0, target.getZ() - dame.getZ());
 				Direction side = dir.getClockWise();
@@ -425,7 +484,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 		@Override
 		public void stop() {
-			dame.setAnimation(NO_ATTACK);
+			dame.setAnimation(ANIM_IDLE);
 		}
 		
 		//To use the boss's random gotta remade a fisher yates shuffle
@@ -440,7 +499,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 		@Override
 		public boolean canUse() {
-			return (dame.phase == SHUFFLE_1 || dame.phase == SHUFFLE_2 || dame.phase == SHUFFLE_3) && !dame.hasSpawnedShuffle && dame.getTarget() != null && dame.getTarget().isAlive();
+			return dame.isShuffling() && !dame.hasSpawnedShuffle && dame.getTarget() != null && dame.getTarget().isAlive();
 		}
 
 		@Override
@@ -449,64 +508,47 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		}
 	}
 	
-	//The regular attacks
-	private static class RegularAttack extends StationaryAttack {
+	//Regular attacks below
+	private static class DiceAttack extends StationaryAttack {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
-		private int attackRemaining, attackDelay, chosenAttack;
+		private int attackRemaining, attackDelay;
 
-		public RegularAttack(DameFortunaEntity dame) {
+		public DiceAttack(DameFortunaEntity dame) {
 			super(dame);
 			this.dame = dame;
 		}
 
 		@Override
 		public boolean canUse() {
-			return (dame.phase == PHASE_1 || dame.phase == PHASE_2 || dame.phase == PHASE_3) && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
+			return dame.nextAttack == ATK_DICE && dame.isAttackPhase() && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return dame.nextAttack == ATK_DICE && attackRemaining > 0 && target.isAlive() && dame.isAttackPhase();
 		}
 
 		@Override
 		public void start() {
 			super.start();
-			dame.attackCooldown = 2;
 			target = dame.getTarget();
-			//Don't fire chips if some are already there
-			//In phase 3 always have chips ready
-			if (dame.phase == PHASE_3) {
-				if (dame.chipsCooldown <= 0) chosenAttack = 0;
-				else chosenAttack = dame.random.nextInt(2) + 1;
-			}
-			else {
-				if (dame.chipsCooldown <= 0) chosenAttack = dame.random.nextInt(3);
-				else chosenAttack = dame.random.nextInt(2) + 1;
-			}
-			//TODO clean up animations
-			dame.setAnimation(chosenAttack == 1 ? CLAW_ATTACK : PROJ_ATTACK);
+			dame.setAnimation(ANIM_ATTACK_1);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 		}
 
 		private int getAttackCount() {
-			switch (chosenAttack) {
-				case 1:
-					return 4 + dame.random.nextInt(2) + dame.phase*2;
-				default:
-				case 0:
-					if (dame.phase == PHASE_3) return 2 + dame.random.nextInt(3);
-					return 1;
-				case 2:
-					if (dame.phase == PHASE_2) return 4 + dame.random.nextInt(3);
-					else if (dame.phase == PHASE_3) return 8 + dame.random.nextInt(4);
-					//Phase 1
-					return 2 + dame.random.nextInt(2);
-			}
+			if (dame.phase == PHASE_2) return 4 + dame.random.nextInt(3);
+			else if (dame.phase == PHASE_3) return 8 + dame.random.nextInt(4);
+			//Phase 1
+			return 2 + dame.random.nextInt(2);
 		}
 
 		@Override
 		public void tick() {
 			super.tick();
-			dame.attackCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
 				attackRemaining--;
@@ -519,63 +561,100 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			double tx = target.getX();
 			double ty = target.getY();
 			double tz = target.getZ();
-			switch (chosenAttack) {
+			//Dice bombs
+			attackDelay = dame.phase == PHASE_3 ? 12 : 20;
+			//don't want the bombs to be thrown behind the target, so we aim a 60ï¿½ cone
+			//don't think the yrot can get negative values so wrap it is
+			Vec3 offset = new Vec3(dame.getX() - tx,0,dame.getZ() - tz).normalize().yRot(Mth.wrapDegrees(dame.random.nextFloat()*60 - 30)*Mth.DEG_TO_RAD);
+			double bombX = tx + offset.x*3;
+			double bombY = ty + 0.5;
+			double bombZ = tz + offset.z*3;
+			if (target.isOnGround()) bombY += 0.75;
+			FortunaBombEntity bomb = new FortunaBombEntity(dame.level, dame.getX(), dame.getY() + 2, dame.getZ(), dame);
+			int dettime = dame.phase == PHASE_1 ? 0 : dame.random.nextInt(11);
+			bomb.setup(25 + dettime, 15 + dettime, bombX, bombY, bombZ);
+			dame.level.addFreshEntity(bomb);
+			dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+		}
+
+		@Override
+		public void stop() {
+			dame.cooldownNextAttack();
+			dame.rollNextAttack(ATK_DICE);
+			//if we going to shuffle phase, let that handle the next animation
+			if (dame.isAttackPhase()) dame.setAnimation(ANIM_IDLE);
+		}
+
+	}
+	
+	private static class ChipsAttack extends StationaryAttack {
+		private DameFortunaEntity dame;
+		private LivingEntity target;
+		private int attackRemaining, attackDelay;
+
+		public ChipsAttack(DameFortunaEntity dame) {
+			super(dame);
+			this.dame = dame;
+		}
+
+		@Override
+		public boolean canUse() {
+			return dame.nextAttack == ATK_CHIPS && dame.isAttackPhase() && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return dame.nextAttack == ATK_CHIPS && attackRemaining > 0 && target.isAlive() && dame.isAttackPhase();
+		}
+
+		@Override
+		public void start() {
+			super.start();
+			target = dame.getTarget();
+			dame.setAnimation(ANIM_ATTACK_1);
+			attackDelay = 30;
+			attackRemaining = getAttackCount();
+			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+		}
+
+		private int getAttackCount() {
+			if (dame.phase == PHASE_3) return 2 + dame.random.nextInt(3);
+			else if (dame.phase == PHASE_2) return 2 + dame.random.nextInt(2);
+			else return 1 + dame.random.nextInt(2);
+		}
+
+		@Override
+		public void tick() {
+			super.tick();
+			attackDelay--;
+			if (attackDelay <= 0) {
+				attackRemaining--;
+				performAttack();
+				if (attackRemaining <= 0) stop();
+			}
+		}
+		
+		private void performAttack() {
+			//Homing chips
+			//Only phase 3 will have multiple attacks here
+			attackDelay = 45;
+			
+			int chips = 6;
+			if (dame.phase == PHASE_2) chips = 8;
+			else if (dame.phase == PHASE_3) chips = 12;
+			
+			int delay = 2;
+			//Get a random shape between vertical stack, side to side stack, and circle around fortuna
+			switch (dame.random.nextInt(3)) {
 				default:
 				case 0:
-					//Homing chips
-					//Only phase 3 will have multiple attacks here
-					attackDelay = 45;
-					
-					int chips = 6;
-					if (dame.phase == PHASE_2) chips = 8;
-					else if (dame.phase == PHASE_3) chips = 12;
-					
-					int delay = 2;
-					if ((dame.phase == PHASE_2 && dame.random.nextBoolean()) || (dame.phase == PHASE_3 && attackRemaining == 0)) {
-						delay = 11;
-					}
-					//Get a random shape between vertical stack, side to side stack, and circle around fortuna
-					switch (dame.random.nextInt(3)) {
-						default:
-						case 0:
-							fireChipsStack(chips, delay, false);
-							break;
-						case 1:
-							fireChipsStack(chips, delay, true);
-							break;
-						case 2:
-							fireChipsCircle(chips, delay);
-							break;
-					}
+					fireChipsStack(chips, delay, false);
 					break;
 				case 1:
-					//Attack that spawn cardinal around player
-					//Like the old harvester claw attack
-					//TODO don't like this attack
-					attackDelay = 11;
-					if (target.isOnGround()) ty += 1.25;
-					else ty += 0.5;
-					projAroundTarget(tx, ty, tz, 1, 0);
-					projAroundTarget(tx, ty, tz, -1, 0);
-					projAroundTarget(tx, ty, tz, 0, 1);
-					projAroundTarget(tx, ty, tz, 0, -1);
-					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+					fireChipsStack(chips, delay, true);
 					break;
 				case 2:
-					//Dice bombs
-					attackDelay = dame.phase == PHASE_3 ? 12 : 20;
-					//don't want the bombs to be thrown behind the target, so we aim a 60° cone
-					//don't think the yrot can get negative values so wrap it is
-					Vec3 offset = new Vec3(dame.getX() - tx,0,dame.getZ() - tz).normalize().yRot(Mth.wrapDegrees(dame.random.nextFloat()*60 - 30)*Mth.DEG_TO_RAD);
-					double bombX = tx + offset.x*3;
-					double bombY = ty + 0.5;
-					double bombZ = tz + offset.z*3;
-					if (target.isOnGround()) bombY += 0.75;
-					FortunaBombEntity bomb = new FortunaBombEntity(dame.level, dame.getX(), dame.getY() + 2, dame.getZ(), dame);
-					int dettime = dame.phase == PHASE_1 ? 0 : dame.random.nextInt(11);
-					bomb.setup(25 + dettime, 15 + dettime, bombX, bombY, bombZ);
-					dame.level.addFreshEntity(bomb);
-					dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+					fireChipsCircle(chips, delay);
 					break;
 			}
 		}
@@ -634,25 +713,115 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			
 			dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
+
+		@Override
+		public void stop() {
+			dame.cooldownNextAttack();
+			dame.rollNextAttack(ATK_CHIPS);
+			//if we going to shuffle phase, let that handle the next animation
+			if (dame.isAttackPhase()) dame.setAnimation(ANIM_IDLE);
+		}
+
+	}
+	
+	private static class SpinAttack extends Goal {
+		private DameFortunaEntity dame;
+		private int timer, chipsLeft, attackPhase;
+		private double holdx, holdy, holdz;
+		//attackPhase 0 = start animation, 1 = chase and throw chips, 2 = final animation
 		
-		private void projAroundTarget(double tx, double ty, double tz, double dx, double dz) {
-			ProjectileLineEntity proj = dame.readyLine();
-			proj.setPos(tx - dx * 6, ty - 2, tz - dz * 6);
-			proj.setUp(10, dx, 0, dz, tx - dx * 6, ty, tz - dz * 6);
+		public SpinAttack(DameFortunaEntity dame) {
+			this.dame = dame;
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
+		public boolean canUse() {
+			return dame.nextAttack == ATK_SPIN && dame.isAttackPhase() && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return canUse() && (chipsLeft > 0 || timer > 0);
+		}
+		
+		@Override
+		public void start() {
+			timer = 20;
+			chipsLeft = 6 + dame.random.nextInt(5);
+			if (dame.phase == PHASE_2) chipsLeft = 12 + dame.random.nextInt(11);
+			else if (dame.phase == PHASE_3) chipsLeft = 24 + dame.random.nextInt(21);
+			attackPhase = 0;
+			holdx = dame.getX();
+			holdy = dame.getTarget().getY() + 1;
+			holdz = dame.getZ();
+			dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
+			dame.setAnimation(ANIM_SPIN);
+		}
+		
+		@Override
+		public void tick() {
+			timer--;
+			LivingEntity target = dame.getTarget();
+			//Start animation
+			if (attackPhase == 0) {
+				dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
+				if (timer <= 0) {
+					attackPhase = 1;
+					timer = 10;
+				}
+			}
+			//Chasing
+			else if (attackPhase == 1) {
+				dame.moveControl.setWantedPosition(target.getX(), target.getY() + 1, target.getZ(), 0.4);
+				if (timer <= 0) {
+					fireChips(target);
+					chipsLeft--;
+					if (chipsLeft > 0) {
+						timer = dame.phase == PHASE_3 ? 6 : dame.phase == PHASE_2 ? 12 : 20;
+					}
+					else {
+						attackPhase = 2;
+						timer = 20;
+						holdx = dame.getX();
+						holdy = dame.getTarget().getY() + 1;
+						holdz = dame.getZ();
+						dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
+						dame.setAnimation(ANIM_IDLE);
+					}
+				}
+			}
+			//Finish animation
+			else {
+				dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
+			}
+		}
+		private void fireChips(LivingEntity target) {
+			//should be pointing to like left/right (doesn't matter) of her
+			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
+			perp = perp.yRot(dame.random.nextFloat() * Mth.TWO_PI);
+			double sy = dame.getY() + 1;
+			
+			double damex = dame.getX();
+			double damez = dame.getZ();
+			ProjectileTargetedEntity proj = dame.readyTargeted();
+			proj.setPos(damex, sy, damez);
+			proj.setUp(10, 15, target, 1, damex + 1*perp.x, sy+1, damez + 1*perp.z);
 			dame.level.addFreshEntity(proj);
 		}
 
 		@Override
 		public void stop() {
-			dame.attackCooldown = 50 + dame.random.nextInt(21);
-			dame.setAnimation(NO_ATTACK);
+			dame.cooldownNextAttack();
+			dame.rollNextAttack(ATK_SPIN);
+			if (dame.isAttackPhase() && attackPhase < 2) dame.setAnimation(ANIM_IDLE);
 		}
-
-		@Override
-		public boolean canContinueToUse() {
-			return attackRemaining > 0 && target.isAlive() && (dame.phase == PHASE_1 || dame.phase == PHASE_2 || dame.phase == PHASE_3);
-		}
-
+		
 	}
 
 }
