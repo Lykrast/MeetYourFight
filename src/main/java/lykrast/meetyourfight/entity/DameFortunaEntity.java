@@ -54,7 +54,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	//Attacks
 	private static final int ATK_CHIPS = 0, ATK_DICE = 1, ATK_SPIN = 2;
 	//Animations
-	public static final int ANIM_IDLE = 0, ANIM_ATTACK_1 = 1, ANIM_ATTACK_2 = 2, ANIM_SPIN = 3;
+	public static final int ANIM_IDLE = 0, ANIM_CHIPS_WINDUP = 1, ANIM_CHIPS_LAUNCH = 2, ANIM_DICE_WINDUP = 3, ANIM_DICE_LAUNCH = 4, ANIM_SPIN = 5, ANIM_SPIN_POSE = 6;
 	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
 	private int attackCooldown, nextAttack, chipsCooldown;
 	private int phase;
@@ -65,7 +65,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	public int headTargetPitch, headTargetYaw, headTargetRoll;
 	public int headRotationTimer;
 	public float headRotationProgress, headRotationProgressLast;
-	public int clientAnim, prevAnim, animProg, animDur, spinTime;
+	public int clientAnim, prevAnim, animProg, animDur, spinTime, headRegrowTime;
 	public float spinAngle, spinPrev;
 	
 	public DameFortunaEntity(EntityType<? extends DameFortunaEntity> type, Level worldIn) {
@@ -130,6 +130,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				clientAnim = newanim;
 				animProg = 0;
 				animDur = 10;
+				if (clientAnim == ANIM_DICE_LAUNCH) {
+					 animDur = 4;
+					 headRegrowTime = 11; //it'll get decreased to 10 right after
+				}
+				else if (clientAnim == ANIM_CHIPS_LAUNCH) animDur = 4;
+				else if (clientAnim == ANIM_DICE_WINDUP) animDur = 8;
 			}
 			else if (animProg < animDur) animProg++;
 			
@@ -159,7 +165,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			}
 			
 			//head
-			headRotationTimer--;
+			if (headRegrowTime > 0) headRegrowTime--;
+			if (clientAnim != ANIM_DICE_WINDUP) headRotationTimer--;
 			if (headRotationTimer <= 0) {
 				switch (getPhase()) {
 					default:
@@ -213,7 +220,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			//finishing the turn
 			if (spinAngle > 0) return Mth.rotLerp(partial, spinPrev, spinAngle);
 			//actual spin down
-			else return 360-getEasedSpin(spinTime - partial);
+			else if (spinTime > 0) return 360-getEasedSpin(spinTime - partial);
+			else return 0;
 		}
 	}
 	
@@ -449,7 +457,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		@Override
 		public void start() {
 			super.start();
-			dame.setAnimation(ANIM_IDLE);
+			dame.setAnimation(ANIM_IDLE); //TODO dedicated animation
 		}
 
 		@Override
@@ -485,7 +493,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			super.start();
 			dame.attackCooldown = 2;
 			target = dame.getTarget();
-			dame.setAnimation(ANIM_ATTACK_1);
+			dame.setAnimation(ANIM_IDLE); //TODO dedicated animation
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 			//Wait for chips to clean up if possible
 			timer = Math.max(30, dame.chipsCooldown + 20);
@@ -497,7 +505,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			dame.attackCooldown = 2;
 			timer--;
 			if (timer <= 0 && !dame.hasSpawnedShuffle) {
-				dame.setAnimation(ANIM_IDLE);
+				dame.setAnimation(ANIM_IDLE); //TODO dedicated animation
 				dame.hasSpawnedShuffle = true;
 				Direction dir = Direction.getNearest(target.getX() - dame.getX(), 0, target.getZ() - dame.getZ());
 				Direction side = dir.getClockWise();
@@ -523,11 +531,6 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				//Hang around a bit before going in the wait animation
 				timer = FortunaCardEntity.START_TIME + FortunaCardEntity.GOTODEST_TIME + FortunaCardEntity.SPIN_TIME;
 			}
-		}
-
-		@Override
-		public void stop() {
-			dame.setAnimation(ANIM_IDLE);
 		}
 		
 		//To use the boss's random gotta remade a fisher yates shuffle
@@ -569,14 +572,14 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 		@Override
 		public boolean canContinueToUse() {
-			return dame.nextAttack == ATK_DICE && attackRemaining > 0 && target.isAlive() && dame.isAttackPhase();
+			return dame.nextAttack == ATK_DICE && (attackDelay > 0 || attackRemaining > 0) && target.isAlive() && dame.isAttackPhase();
 		}
 
 		@Override
 		public void start() {
 			super.start();
 			target = dame.getTarget();
-			dame.setAnimation(ANIM_ATTACK_1);
+			dame.setAnimation(ANIM_DICE_WINDUP);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
@@ -593,20 +596,22 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			super.tick();
 			attackDelay--;
-			if (attackDelay <= 0) {
+			if (attackDelay <= 0 && attackRemaining > 0) {
 				attackRemaining--;
+				dame.setAnimation(ANIM_DICE_LAUNCH);
 				performAttack();
-				if (attackRemaining <= 0) stop();
 			}
+			if (attackDelay == (dame.phase == PHASE_3 ? 8 : 10) && attackRemaining > 0) dame.setAnimation(ANIM_DICE_WINDUP);
 		}
 		
 		private void performAttack() {
+			//TODO use second animation
 			double tx = target.getX();
 			double ty = target.getY();
 			double tz = target.getZ();
 			//Dice bombs
 			attackDelay = dame.phase == PHASE_3 ? 12 : 20;
-			//don't want the bombs to be thrown behind the target, so we aim a 60� cone
+			//don't want the bombs to be thrown behind the target, so we aim a 60° cone
 			//don't think the yrot can get negative values so wrap it is
 			Vec3 offset = new Vec3(dame.getX() - tx,0,dame.getZ() - tz).normalize().yRot(Mth.wrapDegrees(dame.random.nextFloat()*60 - 30)*Mth.DEG_TO_RAD);
 			double bombX = tx + offset.x*3;
@@ -647,15 +652,15 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 		@Override
 		public boolean canContinueToUse() {
-			return dame.nextAttack == ATK_CHIPS && attackRemaining > 0 && target.isAlive() && dame.isAttackPhase();
+			return dame.nextAttack == ATK_CHIPS && (attackDelay > 0 || attackRemaining > 0) && target.isAlive() && dame.isAttackPhase();
 		}
 
 		@Override
 		public void start() {
 			super.start();
 			target = dame.getTarget();
-			dame.setAnimation(ANIM_ATTACK_1);
-			attackDelay = 30;
+			dame.setAnimation(ANIM_CHIPS_WINDUP);
+			attackDelay = 20;
 			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 		}
@@ -670,11 +675,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			super.tick();
 			attackDelay--;
-			if (attackDelay <= 0) {
+			if (attackDelay <= 0 && attackRemaining > 0) {
 				attackRemaining--;
+				dame.setAnimation(ANIM_CHIPS_LAUNCH);
 				performAttack();
-				if (attackRemaining <= 0) stop();
 			}
+			else if (attackDelay == 20 && attackRemaining > 0) dame.setAnimation(ANIM_CHIPS_WINDUP);
 		}
 		
 		private void performAttack() {
@@ -685,19 +691,18 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			int chips = 6;
 			if (dame.phase == PHASE_2) chips = 8;
 			else if (dame.phase == PHASE_3) chips = 12;
-			
-			int delay = 2;
+
 			//Get a random shape between vertical stack, side to side stack, and circle around fortuna
 			switch (dame.random.nextInt(3)) {
 				default:
 				case 0:
-					fireChipsStack(chips, delay, false);
+					fireChipsStack(chips, 2, false);
 					break;
 				case 1:
-					fireChipsStack(chips, delay, true);
+					fireChipsStack(chips, 2, true);
 					break;
 				case 2:
-					fireChipsCircle(chips, delay);
+					fireChipsCircle(chips, 2);
 					break;
 			}
 		}
@@ -830,12 +835,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					}
 					else {
 						attackPhase = 2;
-						timer = 20;
+						timer = 30;
 						holdx = dame.getX();
 						holdy = dame.getTarget().getY() + 1;
 						holdz = dame.getZ();
 						dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
-						dame.setAnimation(ANIM_IDLE);
+						dame.setAnimation(ANIM_SPIN_POSE);
 					}
 				}
 			}
@@ -862,7 +867,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		public void stop() {
 			dame.cooldownNextAttack();
 			dame.rollNextAttack(ATK_SPIN);
-			if (dame.isAttackPhase() && attackPhase < 2) dame.setAnimation(ANIM_IDLE);
+			if (dame.isAttackPhase()) dame.setAnimation(ANIM_IDLE);
 		}
 		
 	}

@@ -102,6 +102,7 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 		animProgress = entityIn.getAnimProgress(partialTick);
 		if (pose.fast) {
 			//Fast initial then slows down
+			//quartic ease out
 			animProgress = 1-animProgress;
 			animProgress *= animProgress;
 			animProgress *= animProgress;
