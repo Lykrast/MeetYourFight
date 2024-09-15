@@ -98,6 +98,29 @@
 			"meetyourfight:fortuna/card_wrong"
 		]
 	},
+	"entity.dame_fortuna.spin.start": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.spin.start",
+		"sounds": [
+			"meetyourfight:fortuna/spin_start"
+		]
+	},
+	"entity.dame_fortuna.spin.loop": {
+		"sounds": [
+			"meetyourfight:fortuna/spin_loop"
+		]
+	},
+	"entity.dame_fortuna.spin.stop": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.spin.stop",
+		"sounds": [
+			"meetyourfight:fortuna/spin_stop"
+		]
+	},
+	"entity.dame_fortuna.snap": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.snap",
+		"sounds": [
+			"meetyourfight:fortuna/snap"
+		]
+	},
 	"entity.swampjaw.idle": {
 		"subtitle": "subtitles.meetyourfight.entity.swampjaw.idle",
 		"sounds": [

@@ -69,6 +69,7 @@
 	"subtitles.meetyourfight.entity.bellringer.idle": "Bellringer wails",
 	"subtitles.meetyourfight.entity.bellringer.hurt": "Bellringer hurt",
 	"subtitles.meetyourfight.entity.bellringer.death": "Bellringer dies",
+
 	"subtitles.meetyourfight.entity.dame_fortuna.idle": "Dame Fortuna speaks",
 	"subtitles.meetyourfight.entity.dame_fortuna.hurt": "Dame Fortuna hurt",
 	"subtitles.meetyourfight.entity.dame_fortuna.death": "Dame Fortuna dies",
@@ -79,12 +80,17 @@
 	"subtitles.meetyourfight.entity.dame_fortuna.card.start": "Card drawn",
 	"subtitles.meetyourfight.entity.dame_fortuna.card.right": "Correct guess",
 	"subtitles.meetyourfight.entity.dame_fortuna.card.wrong": "Wrong guess",
+	"subtitles.meetyourfight.entity.dame_fortuna.spin.start": "Dame Fortuna starts spinning",
+	"subtitles.meetyourfight.entity.dame_fortuna.spin.stop": "Dame Fortuna stops spinning",
+	"subtitles.meetyourfight.entity.dame_fortuna.snap": "Finger snap",
+
 	"subtitles.meetyourfight.entity.swampjaw.idle": "Swampjaw growls",
 	"subtitles.meetyourfight.entity.swampjaw.hurt": "Swampjaw hurt",
 	"subtitles.meetyourfight.entity.swampjaw.death": "Swampjaw dies",
 	"subtitles.meetyourfight.entity.swampjaw.charge": "Swampjaw charges",
 	"subtitles.meetyourfight.entity.swampjaw.bomb": "Bomb dropped",
 	"subtitles.meetyourfight.entity.swampjaw.stun": "Swampjaw wails",
+
 	"subtitles.meetyourfight.entity.rosalyne.hurt": "Rosalyne hurt",
 	"subtitles.meetyourfight.entity.rosalyne.death": "Rosalyne dies",
 	"subtitles.meetyourfight.entity.rosalyne.crack": "Rosalyne cracks",

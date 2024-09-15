@@ -18,6 +18,7 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 	public static final ModelLayerLocation MODEL_ARMOR = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "armor");
 	//Arm poses, they take degrees from blockbench for readability
 	//ANIM_IDLE = 0, ANIM_CHIPS_WINDUP = 1, ANIM_CHIPS_LAUNCH = 2, ANIM_DICE_WINDUP = 3, ANIM_DICE_LAUNCH = 4, ANIM_SPIN = 5, ANIM_SPIN_POSE = 6
+	//ANIM_SNAP_PRE = 7, ANIM_SNAP_POST = 8, ANIM_CARD_WAIT = 9, ANIM_FINALE = 10
 	private static final Pose[] POSE = {
 			new Pose(0,0,0, 0,0,0), //ANIM_IDLE
 			new Pose(30,0,30, 30,0,-30), //ANIM_CHIPS_WINDUP
@@ -25,7 +26,11 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 			new Pose(-150,0,-30, 150,0,30), //ANIM_DICE_WINDUP
 			new Pose(160,0,30, -160,0,-30), //ANIM_DICE_LAUNCH
 			new Pose(-10,0,-160, 10,0,160), //ANIM_SPIN
-			new Pose(-10,0,-95, 10,0,95) //ANIM_SPIN_POSE
+			new Pose(-10,0,-95, 10,0,95), //ANIM_SPIN_POSE
+			new Pose(135,70,0, 0,0,0), //ANIM_SNAP_PRE
+			new Pose(110,70,0, 0,0,0), //ANIM_SNAP_POST
+			new Pose(35,20,55, 35,-20,-55), //ANIM_CARD_WAIT
+			new Pose(0,0,-100, 0,0,-50) //ANIM_FINALE
 			};
 	private Pose pose, prevPose;
 	private float headProgress, headScale;
@@ -76,6 +81,7 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 		float headY = head.yRot;
 		float headZ = head.zRot;
 		
+		crouching = (entity.clientAnim == DameFortunaEntity.ANIM_FINALE);
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		hat.skipDraw = true;
 		//Hey guess what this gets overridden in the super too
