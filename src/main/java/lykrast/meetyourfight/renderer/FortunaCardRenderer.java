@@ -16,16 +16,16 @@ import net.minecraft.util.Mth;
 
 public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 	private static final ResourceLocation[] TEXTURES = {
-			MeetYourFight.rl("textures/entity/fortuna_card_square.png"),
-			MeetYourFight.rl("textures/entity/fortuna_card_circle.png"),
-			MeetYourFight.rl("textures/entity/fortuna_card_triangle.png"),
-			MeetYourFight.rl("textures/entity/fortuna_card_cross.png")
+			MeetYourFight.rl("textures/entity/fortuna_card_club.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_heart.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_diamond.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_spade.png")
 	};
 	private static final RenderType[] TEXTURES_OVERLAY = {
-			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_square.png"), false),
-			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_circle.png"), false),
-			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_triangle.png"), false),
-			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_cross.png"), false)
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_club.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_heart.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_diamond.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_spade.png"), false)
 		};
 	private static final ResourceLocation TEXTURE_HIDDEN = MeetYourFight.rl("textures/entity/fortuna_card_hidden.png");
 	private final FortunaCardModel model;
