@@ -98,8 +98,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
-		goalSelector.addGoal(1, new WaitShuffle(this));
-		goalSelector.addGoal(2, new DoTheShuffle(this));
+		goalSelector.addGoal(1, new DoTheShuffle(this));
+		goalSelector.addGoal(2, new WaitShuffle(this));
 		goalSelector.addGoal(3, new EndPose(this));
 		goalSelector.addGoal(4, new SpinAttack(this));
 		goalSelector.addGoal(5, new DiceAttack(this));
@@ -737,7 +737,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
 			double sy = dame.getY() + 1;
 			
-			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 20 + number*delay);
+			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 35 + number*delay);
 			
 			for (int dir = -1; dir <= 1; dir += 2) {
 				double sx = dame.getX() + perp.x*dir;
@@ -763,7 +763,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			double sy = dame.getY() + 1;
 			float angle = Mth.PI / number;
 			
-			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 20 + number*delay);
+			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 30 + number*delay);
 			
 			for (int dir = -1; dir <= 1; dir += 2) {
 				double damex = dame.getX();
@@ -903,6 +903,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	//Hold the pose when defeated
 	private static class EndPose extends StationaryAttack {
 		private DameFortunaEntity dame;
+		private int patience;
 
 		public EndPose(DameFortunaEntity dame) {
 			super(dame);
@@ -913,6 +914,22 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		public void start() {
 			super.start();
 			dame.setAnimation(ANIM_FINALE);
+			//if not killed within 30 seconds (should be plenty generous), go back to the fight
+			patience = 30*20;
+			if (dame.getTarget() != null) stationaryY = dame.getTarget().getY() + 1;
+		}
+		
+		@Override
+		public void tick() {
+			super.tick();
+			patience--;
+			if (patience <= 0) {
+				dame.setHealth(dame.getMaxHealth()*RESET_3);
+				dame.setPhase(PHASE_3);
+				dame.phase = PHASE_3;
+				dame.attackCooldown = 20;
+				dame.setAnimation(ANIM_IDLE);
+			}
 		}
 
 		@Override

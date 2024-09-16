@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 public abstract class StationaryAttack extends Goal {
 	//An attack where the boss stays still and maintains y position to not fall through the ground
 	private Mob boss;
-	private double stationaryY, offset;
+	protected double stationaryY, offset;
 	
 	public StationaryAttack(Mob boss, double offset) {
 		setFlags(EnumSet.of(Goal.Flag.MOVE));

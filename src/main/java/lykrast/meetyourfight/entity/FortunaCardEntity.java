@@ -28,7 +28,7 @@ public class FortunaCardEntity extends Entity {
 	private int phase, timer = 20, hideTime;
 	private boolean correct;
 	private static final int PHASE_START = 0, PHASE_SPIN = 1, PHASE_GOTODEST = 2, PHASE_ACTIVE = 3, PHASE_REVEAL = 4;
-	public static final int START_TIME = 5*20, GOTODEST_TIME = 40, SPIN_TIME = 3*20, REVEAL_TIME = 3*20;
+	public static final int START_TIME = 6*20, GOTODEST_TIME = 40, SPIN_TIME = 3*20, REVEAL_TIME = 3*20;
 	//Stuff for movement
 	private double spinX, spinY, spinZ, destX, destY, destZ;
 	private int spinOffset;
@@ -155,7 +155,7 @@ public class FortunaCardEntity extends Entity {
 			//Movement
 			if (phase == PHASE_SPIN) {
 				int spintimer = SPIN_TIME - timer;
-				//12° per tick = 360° per 1.5 second
+				//12Â° per tick = 360Â° per 1.5 second
 				//At the start, get in position before spinning (hence the max(0,timer-20))
 				Vec3 offset = SPINVEC.yRot(((Math.max(0, spintimer-20)*12+spinOffset) % 360) * Mth.DEG_TO_RAD);
 				double tx = spinX + offset.x;
