@@ -140,6 +140,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				if (clientAnim == ANIM_DICE_LAUNCH) {
 					 animDur = 4;
 					 headRegrowTime = 11; //it'll get decreased to 10 right after
+					 headRotationTimer = 0;
 				}
 				else if (clientAnim == ANIM_CHIPS_LAUNCH) animDur = 4;
 				else if (clientAnim == ANIM_DICE_WINDUP) animDur = 8;
@@ -632,7 +633,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			double ty = target.getY();
 			double tz = target.getZ();
 			//Dice bombs
-			attackDelay = dame.phase == PHASE_3 ? 12 : 20;
+			attackDelay = attackRemaining == 0 ? 40 : dame.phase == PHASE_3 ? 12 : 20;
 			
 			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 30);
 			
@@ -691,7 +692,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		}
 
 		private int getAttackCount() {
-			if (dame.phase == PHASE_3) return 2 + dame.random.nextInt(3);
+			if (dame.phase == PHASE_3) return 3 + dame.random.nextInt(2);
 			else if (dame.phase == PHASE_2) return 2 + dame.random.nextInt(2);
 			else return 1 + dame.random.nextInt(2);
 		}
@@ -715,7 +716,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			
 			int chips = 6;
 			if (dame.phase == PHASE_2) chips = 8;
-			else if (dame.phase == PHASE_3) chips = 12;
+			else if (dame.phase == PHASE_3) chips = 10;
 
 			//Get a random shape between vertical stack, side to side stack, and circle around fortuna
 			switch (dame.random.nextInt(3)) {
@@ -737,12 +738,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
 			double sy = dame.getY() + 1;
 			
-			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 35 + number*delay);
+			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 40 + number*delay);
 			
 			for (int dir = -1; dir <= 1; dir += 2) {
 				double sx = dame.getX() + perp.x*dir;
 				double sz = dame.getZ() + perp.z*dir;
-				int intialdelay = dir == -1 ? 30 : 35;
+				int intialdelay = dir == -1 ? 35 : 40;
 				//-1 and 1 to have both sides
 				for (int i = 0; i < number; i++) {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
@@ -763,14 +764,14 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			double sy = dame.getY() + 1;
 			float angle = Mth.PI / number;
 			
-			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 30 + number*delay);
+			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 40 + number*delay);
 			
 			for (int dir = -1; dir <= 1; dir += 2) {
 				double damex = dame.getX();
 				double damez = dame.getZ();
 				double sx = damex + perp.x*dir;
 				double sz = damez + perp.z*dir;
-				int intialdelay = dir == -1 ? 25 : 30;
+				int intialdelay = dir == -1 ? 35 : 40;
 				//-1 and 1 to have both sides
 				Vec3 offset = perp.scale(dir);
 				for (int i = 0; i < number; i++) {
