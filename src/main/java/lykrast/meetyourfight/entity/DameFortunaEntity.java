@@ -706,17 +706,14 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				dame.setAnimation(ANIM_CHIPS_LAUNCH);
 				performAttack();
 			}
-			else if (attackDelay == 20 && attackRemaining > 0) dame.setAnimation(ANIM_CHIPS_WINDUP);
+			else if (attackDelay == 15 && attackRemaining > 0) dame.setAnimation(ANIM_CHIPS_WINDUP);
 		}
 		
 		private void performAttack() {
 			//Homing chips
-			//Only phase 3 will have multiple attacks here
-			attackDelay = 45;
+			attackDelay = dame.phase == PHASE_3 ? 25 : 45;
 			
-			int chips = 6;
-			if (dame.phase == PHASE_2) chips = 8;
-			else if (dame.phase == PHASE_3) chips = 10;
+			int chips = 8;
 
 			//Get a random shape between vertical stack, side to side stack, and circle around fortuna
 			switch (dame.random.nextInt(3)) {
@@ -777,7 +774,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				for (int i = 0; i < number; i++) {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
 					proj.setPos(sx, sy + i*0.125, sz);
-					proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, damex + 3*offset.x, sy+1, damez + 3*offset.z);
+					proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, damex + 2*offset.x, sy+1, damez + 2*offset.z);
 					dame.level.addFreshEntity(proj);
 					offset = offset.yRot(angle);
 				}
