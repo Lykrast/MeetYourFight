@@ -540,7 +540,10 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				for (int i = 0; i < cards; i++) {
 					FortunaCardEntity card = new FortunaCardEntity(dame.level, start.x + 3 * i * side.getStepX(), start.y, start.z + 3 * i * side.getStepZ());
 					card.setYRot(dir.toYRot());
-					card.setup(i, correct, i == correct, i * 10 + 5, center.getX(), center.getY(), center.getZ(), i * (360 / cards), start.x + 3 * shuffled[i] * side.getStepX(), start.y,
+					//aaaaaaa this was hell to figure out to make it consistent across all orientations
+					//the minus sign on the yrot was hard part (and 360 is cause negative mod in java gives negative)
+					int angleOffset = (i * (360 / cards) + 360 - (int)dir.toYRot()) % 360;
+					card.setup(i, correct, i == correct, i * 10 + 5, center.getX(), center.getY(), center.getZ(), angleOffset, start.x + 3 * shuffled[i] * side.getStepX(), start.y,
 							start.z + 3 * shuffled[i] * side.getStepZ());
 					dame.level.addFreshEntity(card);
 				}
@@ -822,9 +825,9 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		@Override
 		public void start() {
 			timer = 20;
-			chipsLeft = 6 + dame.random.nextInt(5);
-			if (dame.phase == PHASE_2) chipsLeft = 12 + dame.random.nextInt(11);
-			else if (dame.phase == PHASE_3) chipsLeft = 24 + dame.random.nextInt(21);
+			chipsLeft = 5 + dame.random.nextInt(3);
+			if (dame.phase == PHASE_2) chipsLeft = 10 + dame.random.nextInt(5);
+			else if (dame.phase == PHASE_3) chipsLeft = 20 + dame.random.nextInt(9);
 			attackPhase = 0;
 			holdx = dame.getX();
 			holdy = dame.getTarget().getY() + 1;

@@ -28,7 +28,7 @@ public class FortunaCardEntity extends Entity {
 	private int phase, timer = 20, hideTime;
 	private boolean correct;
 	private static final int PHASE_START = 0, PHASE_SPIN = 1, PHASE_GOTODEST = 2, PHASE_ACTIVE = 3, PHASE_REVEAL = 4;
-	public static final int START_TIME = 6*20, GOTODEST_TIME = 40, SPIN_TIME = 3*20, REVEAL_TIME = 3*20;
+	public static final int START_TIME = 7*20, GOTODEST_TIME = 60, SPIN_TIME = 3*20, REVEAL_TIME = 3*20;
 	//Stuff for movement
 	private double spinX, spinY, spinZ, destX, destY, destZ;
 	private int spinOffset;
@@ -171,8 +171,8 @@ public class FortunaCardEntity extends Entity {
 				else setDeltaMovement(tx - getX(), spinY - getY(), tz - getZ());
 			}
 			else if (phase == PHASE_GOTODEST) {
-				//delay dependend on the spin offset, so like a 180 offset takes 10 ticks more before going to the dest
-				int timeOffset = spinOffset / 18 + 1;
+				//delay dependend on the spin offset, so like a 180 offset takes 20 ticks more before going to the dest
+				int timeOffset = spinOffset / 9 + 1;
 				Vec3 speed = new Vec3(destX - getX(), destY - getY(), destZ - getZ());
 				if (timer <= timeOffset) {
 					setDeltaMovement(speed);
