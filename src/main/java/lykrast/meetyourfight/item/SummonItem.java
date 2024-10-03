@@ -65,7 +65,7 @@ public class SummonItem extends Item {
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
 		tooltip.add(Component.translatable("item.meetyourfight.summon.use").withStyle(ChatFormatting.GRAY));
-		tooltip.add(Component.translatable("item.meetyourfight.summon.gear", Component.translatable(getDescriptionId() + ".gear")).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable("item.meetyourfight.summon.gear", Component.translatable(getDescriptionId() + ".gear").withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.GOLD));
 	}
 	
 	@FunctionalInterface
