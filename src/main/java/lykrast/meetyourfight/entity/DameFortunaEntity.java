@@ -305,7 +305,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
-		return super.hurt(source, amount);
+		else if (amount > 1 && getPhase() == DEATH) return super.hurt(source, Math.max(getHealth()*2, amount));
+		else return super.hurt(source, amount);
 	}
 
 	@Override
