@@ -1,6 +1,10 @@
 {
+	"item.meetyourfight.summon.use": "Consumed on summon",
+	"item.meetyourfight.summon.gear": "Recommended gear: %s",
+
 	"item.meetyourfight.haunted_bell": "Haunted Bell",
 	"item.meetyourfight.haunted_bell.desc": "Summons Bellringer",
+	"item.meetyourfight.haunted_bell.gear": "Diamond",
 	"item.meetyourfight.phantoplasm": "Phantoplasm",
 	"item.meetyourfight.passages_toll": "Passage's Toll",
 	"item.meetyourfight.passages_toll.desc": "Teleports you up to %1$d blocks through any surface",
@@ -13,6 +17,7 @@
 	
 	"item.meetyourfight.devils_ante": "Devil's Ante",
 	"item.meetyourfight.devils_ante.desc": "Summons Dame Fortuna",
+	"item.meetyourfight.devils_ante.gear": "Enchanted diamond",
 	"item.meetyourfight.fortunes_favor": "Fortune's Favor",
 	"item.meetyourfight.slicers_dice": "Slicer's Dice",
 	"item.meetyourfight.slicers_dice.desc": "%1$d%% chance for attacks to do %2$d%% more damage",
@@ -28,6 +33,7 @@
 	
 	"item.meetyourfight.fossil_bait": "Fossil Bait",
 	"item.meetyourfight.fossil_bait.desc": "Summons Swampjaw",
+	"item.meetyourfight.fossil_bait.gear": "Iron",
 	"item.meetyourfight.mossy_tooth": "Mossy Tooth",
 	"item.meetyourfight.bone_raker": "Bone Raker",
 	"item.meetyourfight.depth_star": "Depth Star",
@@ -38,6 +44,7 @@
 	
 	"item.meetyourfight.dusk_key": "Dusk Key",
 	"item.meetyourfight.dusk_key.desc": "Summons Rosalyne, Blade of Dusk",
+	"item.meetyourfight.dusk_key.gear": "Netherite",
 	"item.meetyourfight.violet_bloom": "Violet Bloom",
 	"item.meetyourfight.twilights_thorn": "Twilight's Thorn",
 	"item.meetyourfight.wilted_ideals": "Wilted Ideals",
