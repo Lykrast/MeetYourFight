@@ -52,7 +52,7 @@ public class ProjectileLineEntity extends ProjectileBossAbstract {
 
 	@Override
 	protected float getDamage(LivingEntity shooter, Entity hit) {
-		return 16;
+		return getVariant() == VAR_BELLRINGER ? 10 : 16;
 	}
 	
 	@Override

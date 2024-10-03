@@ -279,7 +279,7 @@ public class BellringerEntity extends BossEntity {
 			ringer.attackCooldown = 2;
 			ringer.rageAttacks = 1;
 			attackDelay = 30;
-			attackRemaining = 20;
+			attackRemaining = 16;
 			target = ringer.getTarget();
 			
 			BlockPos self = ringer.blockPosition();
@@ -306,7 +306,7 @@ public class BellringerEntity extends BossEntity {
 			ringer.attackCooldown = 2;
 			attackDelay--;
 			if (attackDelay <= 0) {
-				attackDelay = 12;
+				attackDelay = 16;
 				attackRemaining--;
 				ringer.dingDong();
 				
