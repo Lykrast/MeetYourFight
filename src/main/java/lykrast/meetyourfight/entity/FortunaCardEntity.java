@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -35,8 +36,8 @@ public class FortunaCardEntity extends Entity {
 	private static final Vec3 SPINVEC = new Vec3(3, 0, 0);
 	//Animation
 	public int clientAnim, animTimer;
-	public static final int ANIM_NOTHERE = 0, ANIM_APPEAR = 1, ANIM_IDLE_SHOW = 2, ANIM_HIDE = 3, ANIM_IDLE_HIDDEN = 4, ANIM_IDLE_QUESTION = 5, ANIM_REVEAL = 6;
-	public static final int ANIM_APPEAR_DUR = 10, ANIM_HIDE_DUR = 10, ANIM_REVEAL_DUR = 20;
+	public static final int ANIM_NOTHERE = 0, ANIM_APPEAR = 1, ANIM_IDLE_SHOW = 2, ANIM_HIDE = 3, ANIM_IDLE_HIDDEN = 4, ANIM_IDLE_QUESTION = 5, ANIM_REVEAL = 6, ANIM_HINT = 7;
+	public static final int ANIM_APPEAR_DUR = 10, ANIM_HIDE_DUR = 10, ANIM_REVEAL_DUR = 20, ANIM_HINT_DUR = 30;
 
 	public FortunaCardEntity(EntityType<? extends FortunaCardEntity> entityTypeIn, Level worldIn) {
 		super(entityTypeIn, worldIn);
@@ -68,6 +69,7 @@ public class FortunaCardEntity extends Entity {
 		this.destY = destY;
 		this.destZ = destZ;
 		setAnimation(ANIM_NOTHERE);
+		noPhysics = true;
 	}
 
 	@Override
@@ -133,12 +135,18 @@ public class FortunaCardEntity extends Entity {
 			}
 			//Animation
 			if (phase == PHASE_START) {
+				//card appear
 				if (timer == START_TIME - hideTime) {
 					setAnimation(ANIM_APPEAR);
 					playSound(ModSounds.dameFortunaCardStart.get(), 1, 1);
 				}
-				else if (timer == START_TIME - hideTime - ANIM_APPEAR_DUR) setAnimation(ANIM_IDLE_SHOW);
+				//finish appearing or hinting
+				else if (timer == START_TIME - hideTime - ANIM_APPEAR_DUR || (timer == 30 && isCorrect())) setAnimation(ANIM_IDLE_SHOW);
+				//hint
+				else if (timer == 30 + ANIM_HINT_DUR && isCorrect()) setAnimation(ANIM_HINT);
+				//turn to hide
 				else if (timer == 20) setAnimation(ANIM_HIDE);
+				//finished turning to hide
 				else if (timer == 20 - ANIM_HIDE_DUR) setAnimation(ANIM_IDLE_HIDDEN);
 			}
 			else if (phase == PHASE_REVEAL) {
@@ -180,17 +188,12 @@ public class FortunaCardEntity extends Entity {
 				else if (timer <= timeOffset + 10) {
 					setDeltaMovement(speed.scale(1.0/(timer - timeOffset)));
 				}
-				else setDeltaMovement(0,0,0);
+				else setDeltaMovement(Vec3.ZERO);
 			}
-			else setDeltaMovement(0,0,0);
+			else setDeltaMovement(Vec3.ZERO);
 		}
 
-		checkInsideBlocks();
-		Vec3 vector3d = getDeltaMovement();
-		double d0 = getX() + vector3d.x;
-		double d1 = getY() + vector3d.y;
-		double d2 = getZ() + vector3d.z;
-		setPos(d0, d1, d2);
+		move(MoverType.SELF, getDeltaMovement());
 		
 		if (level.isClientSide) updateClientAnimation();
 	}
@@ -238,6 +241,9 @@ public class FortunaCardEntity extends Entity {
 					break;
 				case ANIM_REVEAL:
 					animTimer = ANIM_REVEAL_DUR;
+					break;
+				case ANIM_HINT:
+					animTimer = ANIM_HINT_DUR;
 					break;
 			}
 		}

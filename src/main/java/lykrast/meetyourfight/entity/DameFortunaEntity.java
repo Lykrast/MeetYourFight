@@ -543,7 +543,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					//aaaaaaa this was hell to figure out to make it consistent across all orientations
 					//the minus sign on the yrot was hard part (and 360 is cause negative mod in java gives negative)
 					int angleOffset = (i * (360 / cards) + 360 - (int)dir.toYRot()) % 360;
-					card.setup(i, correct, i == correct, i * 10 + 5, center.getX(), center.getY(), center.getZ(), angleOffset, start.x + 3 * shuffled[i] * side.getStepX(), start.y,
+					card.setup(i, correct, i == correct, i * 10 + 5, center.getX(), center.getY() + 3, center.getZ(), angleOffset, start.x + 3 * shuffled[i] * side.getStepX(), start.y,
 							start.z + 3 * shuffled[i] * side.getStepZ());
 					dame.level.addFreshEntity(card);
 				}

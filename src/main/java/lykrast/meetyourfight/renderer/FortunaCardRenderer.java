@@ -57,6 +57,11 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 			float progress = (FortunaCardEntity.ANIM_REVEAL_DUR - entityIn.animTimer + partialTicks)/(float)FortunaCardEntity.ANIM_REVEAL_DUR;
 			yaw = Mth.wrapDegrees(yaw + progress*360);
 		}
+		else if (anim == FortunaCardEntity.ANIM_HINT) {
+			//this whole thing smells of past me, but too lazy to clean up I'm just gonna like add that here
+			float progress = (FortunaCardEntity.ANIM_HINT_DUR - entityIn.animTimer + partialTicks)/(float)FortunaCardEntity.ANIM_HINT_DUR;
+			yaw = Mth.wrapDegrees(yaw + Mth.sin(progress*3*Mth.PI)*30);
+		}
 		float pitch = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
 		matrixStackIn.translate(0, -1.5, 0);
 		model.setupAnim(entityIn, 0, 0, 0, yaw, pitch);
