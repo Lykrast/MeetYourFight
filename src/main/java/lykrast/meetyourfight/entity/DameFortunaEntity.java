@@ -57,7 +57,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	//Heal values for failed shuffles
 	private static final float RESET_1 = (1 + TRESHOLD_1)/2, RESET_2 = (TRESHOLD_1 + TRESHOLD_2)/2, RESET_3 = (TRESHOLD_2 + TRESHOLD_3)/2;
 	//Attacks
-	private static final int ATK_CHIPS = 0, ATK_DICE = 1, ATK_SPIN = 2;
+	private static final int ATK_DICE = 0, ATK_SPIN = 1, ATK_CHIPS_CIRCLE = 2, ATK_CHIPS_STRAFE = 3;
 	//Animations
 	public static final int ANIM_IDLE = 0, ANIM_CHIPS_WINDUP = 1, ANIM_CHIPS_LAUNCH = 2, ANIM_DICE_WINDUP = 3, ANIM_DICE_LAUNCH = 4, ANIM_SPIN = 5, ANIM_SPIN_POSE = 6,
 			ANIM_SNAP_PRE = 7, ANIM_SNAP_POST = 8, ANIM_CARD_WAIT = 9, ANIM_FINALE = 10;
@@ -267,7 +267,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		DameFortunaEntity dame = ModEntities.DAME_FORTUNA.get().create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
-		dame.nextAttack = ATK_CHIPS;
+		dame.nextAttack = ATK_CHIPS_CIRCLE;
 		if (!player.getAbilities().instabuild) dame.setTarget(player);
 		dame.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
@@ -384,11 +384,13 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	}
 	
 	private void rollNextAttack(int ignore) {
+		int max = ATK_CHIPS_CIRCLE;
+		if (phase == PHASE_2 || phase == PHASE_3) max = ATK_CHIPS_STRAFE;
 		if (ignore >= 0) {
-			nextAttack = random.nextInt(2);
+			nextAttack = random.nextInt(max);
 			if (nextAttack >= ignore) nextAttack++;
 		}
-		else nextAttack = random.nextInt(3);
+		else nextAttack = random.nextInt(max+1);
 	}
 	
 	private void cooldownNextAttack() {
@@ -668,7 +670,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	private static class ChipsAttack extends StationaryAttack {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
-		private int attackRemaining, attackDelay;
+		private int attackRemaining, attackDelay, chosenPattern, circleDelay, circleDirection;
 
 		public ChipsAttack(DameFortunaEntity dame) {
 			super(dame);
@@ -677,12 +679,12 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 		@Override
 		public boolean canUse() {
-			return dame.nextAttack == ATK_CHIPS && dame.isAttackPhase() && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
+			return dame.nextAttack >= ATK_CHIPS_CIRCLE && dame.nextAttack <= ATK_CHIPS_STRAFE && dame.isAttackPhase() && dame.attackCooldown <= 0 && dame.getTarget() != null && dame.getTarget().isAlive();
 		}
 
 		@Override
 		public boolean canContinueToUse() {
-			return dame.nextAttack == ATK_CHIPS && (attackDelay > 0 || attackRemaining > 0) && target.isAlive() && dame.isAttackPhase();
+			return dame.nextAttack >= ATK_CHIPS_CIRCLE && dame.nextAttack <= ATK_CHIPS_STRAFE && (attackDelay > 0 || attackRemaining > 0) && target.isAlive() && dame.isAttackPhase();
 		}
 
 		@Override
@@ -691,14 +693,29 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			target = dame.getTarget();
 			dame.setAnimation(ANIM_CHIPS_WINDUP);
 			attackDelay = 20;
-			attackRemaining = getAttackCount();
 			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
-		}
-
-		private int getAttackCount() {
-			if (dame.phase == PHASE_3) return 3 + dame.random.nextInt(2);
-			else if (dame.phase == PHASE_2) return 2 + dame.random.nextInt(2);
-			else return 1 + dame.random.nextInt(2);
+			chosenPattern = dame.nextAttack;
+			switch (chosenPattern) {
+				default:
+				case ATK_CHIPS_CIRCLE:
+					if (dame.phase == PHASE_3) attackRemaining = 4 + dame.random.nextInt(3);
+					else if (dame.phase == PHASE_2) attackRemaining = 3 + dame.random.nextInt(2);
+					else attackRemaining = 2 + dame.random.nextInt(2);
+					//first fire all the chips, then they get fired at 15 ticks interval
+					//first one is fire 15 ticks after last one, so (20*(totalAttacks-1) + 15) after being placed
+					//the next one fires 15 ticks later but is placed 20 later, so -5 to that delay
+					//so each one should have a delay of 15*totalAttacks + 5*attackRemaining
+					circleDelay = 15*attackRemaining;
+					circleDirection = dame.random.nextBoolean() ? 1 : -1;
+					break;
+				case ATK_CHIPS_STRAFE:
+					attackRemaining = 2;
+					break;
+				case 0:
+					//TODO find a phase 3 attack
+					attackRemaining = 2;
+					break;
+			}
 		}
 
 		@Override
@@ -714,43 +731,55 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		}
 		
 		private void performAttack() {
-			//Homing chips
-			attackDelay = dame.phase == PHASE_3 ? 25 : 45;
+			attackDelay = 45;
+			if (chosenPattern == ATK_CHIPS_CIRCLE && attackRemaining > 0) attackDelay = 20;
 			
-			int chips = 8;
-
-			//Get a random shape between vertical stack, side to side stack, and circle around fortuna
-			switch (dame.random.nextInt(3)) {
+			switch (chosenPattern) {
 				default:
+				case ATK_CHIPS_CIRCLE:
+					fireChipsCircle(8, 1, circleDelay + 5*attackRemaining);
+					if (attackRemaining > 0) rotateAroundTarget();
+					break;
+				case ATK_CHIPS_STRAFE:
+					if (attackRemaining == 1) fireChipsStack(16);
+					else fireChipsCircle(8, 3 + dame.random.nextInt(2), 35);
+					break;
 				case 0:
-					fireChipsStack(chips, 2, false);
-					break;
-				case 1:
-					fireChipsStack(chips, 2, true);
-					break;
-				case 2:
-					fireChipsCircle(chips, 2);
+					//TODO find a phase 3 attack
+					attackRemaining = 2;
 					break;
 			}
 		}
 		
-		private void fireChipsStack(int number, int delay, boolean horizontal) {
+		private void rotateAroundTarget() {
+			//like the MoveAroundTarget goal but with more speed
+			float angle = (dame.random.nextInt(4) + 4) * 10f * Mth.DEG_TO_RAD * circleDirection;
+			Vec3 offset = new Vec3(dame.getX() - target.getX(), 0, dame.getZ() - target.getZ()).normalize().yRot(angle);
+			double distance = dame.random.nextDouble() * 2 + 4;
+
+			dame.getMoveControl().setWantedPosition(
+					target.getX() + offset.x * distance, 
+					target.getY() + 1 + dame.random.nextDouble() * 2, 
+					target.getZ() + offset.z * distance,
+					2);
+		}
+		
+		private void fireChipsStack(int number) {
 			//should be pointing to like left/right (doesn't matter) of her
 			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
 			double sy = dame.getY() + 1;
 			
-			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 40 + number*delay);
+			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 38 + number*6);
 			
 			for (int dir = -1; dir <= 1; dir += 2) {
 				double sx = dame.getX() + perp.x*dir;
 				double sz = dame.getZ() + perp.z*dir;
-				int intialdelay = dir == -1 ? 35 : 40;
+				int intialdelay = dir == -1 ? 35 : 38;
 				//-1 and 1 to have both sides
 				for (int i = 0; i < number; i++) {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
 					proj.setPos(sx, sy + i*0.125, sz);
-					if (horizontal) proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx + i*perp.x*dir, sy + 1, sz + i*perp.z*dir);
-					else proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, sx, sy + i*0.5 + 0.25, sz);
+					proj.setUp(intialdelay + (number-i-1)*6, 15, target, 0.75, sx, sy + i*0.25 + 0.25, sz, dir*-17.5);
 					dame.level.addFreshEntity(proj);
 				}
 			}
@@ -758,27 +787,25 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
 		
-		//TODO Copy pasted fireChipsStack as a base, but like now lot of the logic is duplicated oh no
-		private void fireChipsCircle(int number, int delay) {
+		private void fireChipsCircle(int chips, int circles, int delay) {
 			//should be pointing to like left/right (doesn't matter) of her
 			Vec3 perp = dame.getLookAngle().cross(new Vec3(0,1,0)).normalize();
 			double sy = dame.getY() + 1;
-			float angle = Mth.PI / number;
+			float angle = Mth.TWO_PI / chips;
 			
-			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 40 + number*delay);
+			dame.shuffleAttackWait = Math.max(dame.shuffleAttackWait, 35 + 15*(circles-1));
+
+			double damex = dame.getX();
+			double damez = dame.getZ();
+			double sx = damex;
+			double sz = damez;
 			
-			for (int dir = -1; dir <= 1; dir += 2) {
-				double damex = dame.getX();
-				double damez = dame.getZ();
-				double sx = damex + perp.x*dir;
-				double sz = damez + perp.z*dir;
-				int intialdelay = dir == -1 ? 35 : 40;
-				//-1 and 1 to have both sides
-				Vec3 offset = perp.scale(dir);
-				for (int i = 0; i < number; i++) {
+			for (int c = 0; c < circles; c++) {
+				Vec3 offset = perp;
+				for (int i = 0; i < chips; i++) {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
-					proj.setPos(sx, sy + i*0.125, sz);
-					proj.setUp(intialdelay + (number-i-1)*delay, 15, target, 1, damex + 2*offset.x, sy+1, damez + 2*offset.z);
+					proj.setPos(sx, sy + (c*chips+i)*0.125, sz);
+					proj.setUp(delay + 15*c, 15, target, 1, damex + 2*offset.x, sy+1+c, damez + 2*offset.z);
 					dame.level.addFreshEntity(proj);
 					offset = offset.yRot(angle);
 				}
@@ -790,7 +817,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		@Override
 		public void stop() {
 			dame.cooldownNextAttack();
-			dame.rollNextAttack(ATK_CHIPS);
+			dame.rollNextAttack(chosenPattern);
 			//if we going to shuffle phase, let that handle the next animation
 			if (dame.isAttackPhase()) dame.setAnimation(ANIM_IDLE);
 		}

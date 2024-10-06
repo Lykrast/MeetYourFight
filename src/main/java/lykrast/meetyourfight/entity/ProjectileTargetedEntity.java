@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +23,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 	//For now just Fortuna's chips
 	private static final EntityDataAccessor<Byte> COLOR = SynchedEntityData.defineId(ProjectileTargetedEntity.class, EntityDataSerializers.BYTE);
 
-	private double startX, startY, startZ, speed;
+	private double startX, startY, startZ, speed, angleOffset;
 	private int setupTime;
 	@Nullable
 	private Entity finalTarget;
@@ -44,6 +45,10 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 	}
 
 	public void setUp(int delay, int setupTime, Entity target, double speed, double startX, double startY, double startZ) {
+		setUp(delay, setupTime, target, speed, startX, startY, startZ, 0);
+	}
+
+	public void setUp(int delay, int setupTime, Entity target, double speed, double startX, double startY, double startZ, double angleOffset) {
 		fired = false;
 		timer = delay;
 		this.setupTime = setupTime;
@@ -52,6 +57,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 		this.startX = startX;
 		this.startY = startY;
 		this.startZ = startZ;
+		this.angleOffset = angleOffset;
 	}
 
 	@Override
@@ -77,7 +83,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 			else {
 				fired = true;
 				timer = 30;
-				setDeltaMovement(new Vec3(finalTarget.getX() - x, finalTarget.getEyeY() - y, finalTarget.getZ() - z).normalize().scale(speed));
+				setDeltaMovement(new Vec3(finalTarget.getX() - x, finalTarget.getEyeY() - y, finalTarget.getZ() - z).normalize().scale(speed).yRot((float)angleOffset * Mth.DEG_TO_RAD));
 				playSound(ModSounds.dameFortunaChipsFire.get(), 2.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 		}
@@ -104,6 +110,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 		compound.putDouble("SX", startX);
 		compound.putDouble("SY", startY);
 		compound.putDouble("SZ", startZ);
+		compound.putDouble("angle", angleOffset);
 		compound.putInt("Variant", getVariant());
 		compound.putInt("setuptime", setupTime);
 		if (finalTarget != null) compound.putUUID("Target", finalTarget.getUUID());
@@ -116,6 +123,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 		startX = compound.getDouble("SX");
 		startY = compound.getDouble("SY");
 		startZ = compound.getDouble("SZ");
+		angleOffset = compound.getDouble("angle");
 		setupTime = compound.getInt("setuptime");
 		setVariant(compound.getInt("Variant"));
 		if (compound.hasUUID("Target")) targetId = compound.getUUID("Target");
