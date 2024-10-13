@@ -60,7 +60,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	private static final int ATK_DICE = 0, ATK_SPIN = 1, ATK_CHIPS_CIRCLE = 2, ATK_CHIPS_STRAFE = 3;
 	//Animations
 	public static final int ANIM_IDLE = 0, ANIM_CHIPS_WINDUP = 1, ANIM_CHIPS_LAUNCH = 2, ANIM_DICE_WINDUP = 3, ANIM_DICE_LAUNCH = 4, ANIM_SPIN = 5, ANIM_SPIN_POSE = 6,
-			ANIM_SNAP_PRE = 7, ANIM_SNAP_POST = 8, ANIM_CARD_WAIT = 9, ANIM_FINALE = 10;
+			ANIM_SNAP_PRE = 7, ANIM_SNAP_POST = 8, ANIM_CARD_WAIT = 9, ANIM_FINALE = 10, ANIM_CLAP = 11;
 	private static final int PHASE_MASK = 0b111, ANIMATION_MASK = ~PHASE_MASK;
 	private int attackCooldown, nextAttack, shuffleAttackWait;
 	private int phase;
@@ -144,7 +144,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				}
 				else if (clientAnim == ANIM_CHIPS_LAUNCH) animDur = 4;
 				else if (clientAnim == ANIM_DICE_WINDUP) animDur = 8;
-				else if (clientAnim == ANIM_SNAP_POST) animDur = 2;
+				else if (clientAnim == ANIM_SNAP_POST || clientAnim == ANIM_CLAP) animDur = 2;
 			}
 			else if (animProg < animDur) animProg++;
 			
@@ -671,6 +671,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
 		private int attackRemaining, attackDelay, chosenPattern, circleDelay, circleDirection;
+		private int clapTime;
 
 		public ChipsAttack(DameFortunaEntity dame) {
 			super(dame);
@@ -702,14 +703,19 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					else if (dame.phase == PHASE_2) attackRemaining = 3 + dame.random.nextInt(2);
 					else attackRemaining = 2 + dame.random.nextInt(2);
 					//first fire all the chips, then they get fired at 15 ticks interval
-					//first one is fire 15 ticks after last one, so (20*(totalAttacks-1) + 15) after being placed
+					//first one is fire 20 (was 15, not updating formula here) ticks after last one, so (20*(totalAttacks-1) + 15) after being placed
 					//the next one fires 15 ticks later but is placed 20 later, so -5 to that delay
 					//so each one should have a delay of 15*totalAttacks + 5*attackRemaining
-					circleDelay = 15*attackRemaining;
+					circleDelay = 15*attackRemaining + 5;
 					circleDirection = dame.random.nextBoolean() ? 1 : -1;
+					//clap 7 ticks before the circles are launched
+					//so that we sound 5 ticks before they're launch (when animation is finished)
+					//delay is at 45 the tick we fire the last circle
+					clapTime = 32;
 					break;
 				case ATK_CHIPS_STRAFE:
 					attackRemaining = 2;
+					clapTime = 17;
 					break;
 				case 0:
 					//TODO find a phase 3 attack
@@ -728,6 +734,11 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				performAttack();
 			}
 			else if (attackDelay == 15 && attackRemaining > 0) dame.setAnimation(ANIM_CHIPS_WINDUP);
+			else if (attackRemaining == 0) {
+				//clap
+				if (attackDelay == clapTime) dame.setAnimation(ANIM_CLAP);
+				else if (attackDelay == clapTime - 2) dame.playSound(ModSounds.dameFortunaClap.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.1F + 1.0F);
+			}
 		}
 		
 		private void performAttack() {
@@ -741,8 +752,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					if (attackRemaining > 0) rotateAroundTarget();
 					break;
 				case ATK_CHIPS_STRAFE:
-					if (attackRemaining == 1) fireChipsStack(16);
-					else fireChipsCircle(8, 3 + dame.random.nextInt(2), 35);
+					if (attackRemaining == 1) fireChipsStack(dame.phase == PHASE_3 ? 20 : 16);
+					else fireChipsCircle(8, (dame.phase == PHASE_3 ? 5 : 3) + dame.random.nextInt(2), 35);
 					break;
 				case 0:
 					//TODO find a phase 3 attack
@@ -779,7 +790,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				for (int i = 0; i < number; i++) {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
 					proj.setPos(sx, sy + i*0.125, sz);
-					proj.setUp(intialdelay + (number-i-1)*6, 15, target, 0.75, sx, sy + i*0.25 + 0.25, sz, dir*-17.5);
+					proj.setUp(intialdelay + (number-i-1)*6, 15, target, 0.75, sx, sy + i*0.25 + 0.25, sz, dir*-20);
 					dame.level.addFreshEntity(proj);
 				}
 			}

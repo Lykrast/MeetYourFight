@@ -121,6 +121,14 @@
 			"meetyourfight:fortuna/snap"
 		]
 	},
+	"entity.dame_fortuna.clap": {
+		"subtitle": "subtitles.meetyourfight.entity.dame_fortuna.clap",
+		"sounds": [
+			"meetyourfight:fortuna/clap1",
+			"meetyourfight:fortuna/clap2",
+			"meetyourfight:fortuna/clap3"
+		]
+	},
 	"entity.swampjaw.idle": {
 		"subtitle": "subtitles.meetyourfight.entity.swampjaw.idle",
 		"sounds": [

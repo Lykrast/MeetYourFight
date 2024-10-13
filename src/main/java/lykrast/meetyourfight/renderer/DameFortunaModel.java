@@ -30,7 +30,8 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 			new Pose(135,70,0, 0,0,0), //ANIM_SNAP_PRE
 			new Pose(110,70,0, 0,0,0), //ANIM_SNAP_POST
 			new Pose(35,20,55, 35,-20,-55), //ANIM_CARD_WAIT
-			new Pose(0,0,-100, 0,0,-50) //ANIM_FINALE
+			new Pose(0,0,-100, 0,0,-50), //ANIM_FINALE
+			new Pose(110,-40,0, 110,40,0) //ANIM_CLAP
 			};
 	private Pose pose, prevPose;
 	private float headProgress, headScale;
