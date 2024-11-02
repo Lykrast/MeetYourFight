@@ -671,7 +671,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		private DameFortunaEntity dame;
 		private LivingEntity target;
 		private int attackRemaining, attackDelay, chosenPattern, circleDelay, circleDirection;
-		private int clapTime;
+		private int clapTime, midStrafe;
 
 		public ChipsAttack(DameFortunaEntity dame) {
 			super(dame);
@@ -699,19 +699,27 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			switch (chosenPattern) {
 				default:
 				case ATK_CHIPS_CIRCLE:
-					if (dame.phase == PHASE_3) attackRemaining = 4 + dame.random.nextInt(3);
+					//midStrafe is the second clap
+					midStrafe = 0;
+					if (dame.phase == PHASE_3) {
+						attackRemaining = 3 + dame.random.nextInt(3);
+						//midStrafe is 1 + attacks on second strafe
+						midStrafe = 4 + dame.random.nextInt(3);
+						attackRemaining += midStrafe;
+					}
 					else if (dame.phase == PHASE_2) attackRemaining = 3 + dame.random.nextInt(2);
-					else attackRemaining = 2 + dame.random.nextInt(2);
+					else attackRemaining = 3;
 					//first fire all the chips, then they get fired at 15 ticks interval
 					//first one is fire 20 (was 15, not updating formula here) ticks after last one, so (20*(totalAttacks-1) + 15) after being placed
 					//the next one fires 15 ticks later but is placed 20 later, so -5 to that delay
 					//so each one should have a delay of 15*totalAttacks + 5*attackRemaining
-					circleDelay = 15*attackRemaining + 5;
+					circleDelay = 15*(midStrafe > 0 ? attackRemaining-midStrafe : attackRemaining) + 5;
 					circleDirection = dame.random.nextBoolean() ? 1 : -1;
 					//clap 7 ticks before the circles are launched
 					//so that we sound 5 ticks before they're launch (when animation is finished)
 					//delay is at 45 the tick we fire the last circle
-					clapTime = 32;
+					//for the midstrafe the delay will be at 20
+					clapTime = midStrafe > 0 ? 7 : 32;
 					break;
 				case ATK_CHIPS_STRAFE:
 					attackRemaining = 2;
@@ -728,16 +736,27 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			super.tick();
 			attackDelay--;
-			if (attackDelay <= 0 && attackRemaining > 0) {
-				attackRemaining--;
-				dame.setAnimation(ANIM_CHIPS_LAUNCH);
-				performAttack();
+			if (attackRemaining > 0 && attackRemaining != midStrafe) {
+				if (attackDelay <= 0) {
+					attackRemaining--;
+					dame.setAnimation(ANIM_CHIPS_LAUNCH);
+					performAttack();
+				}
+				else if (attackDelay == 15) dame.setAnimation(ANIM_CHIPS_WINDUP);
 			}
-			else if (attackDelay == 15 && attackRemaining > 0) dame.setAnimation(ANIM_CHIPS_WINDUP);
-			else if (attackRemaining == 0) {
+			else {
 				//clap
 				if (attackDelay == clapTime) dame.setAnimation(ANIM_CLAP);
 				else if (attackDelay == clapTime - 2) dame.playSound(ModSounds.dameFortunaClap.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.1F + 1.0F);
+				//second strafe
+				else if (attackDelay <= 0 && attackRemaining > 0 && attackRemaining == midStrafe) {
+					attackRemaining--;
+					midStrafe = 0;
+					circleDelay = 15*attackRemaining + 5;
+					clapTime = 32;
+					attackDelay = 20;
+					rotateAroundTarget();
+				}
 			}
 		}
 		
@@ -748,8 +767,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			switch (chosenPattern) {
 				default:
 				case ATK_CHIPS_CIRCLE:
-					fireChipsCircle(8, 1, circleDelay + 5*attackRemaining);
-					if (attackRemaining > 0) rotateAroundTarget();
+					fireChipsCircle(8, 1, circleDelay + 5*(midStrafe > 0 ? attackRemaining-midStrafe-1 : attackRemaining));
+					if (attackRemaining > 0 && attackRemaining != midStrafe) rotateAroundTarget();
 					break;
 				case ATK_CHIPS_STRAFE:
 					if (attackRemaining == 1) fireChipsStack(dame.phase == PHASE_3 ? 20 : 16);
@@ -772,7 +791,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					target.getX() + offset.x * distance, 
 					target.getY() + 1 + dame.random.nextDouble() * 2, 
 					target.getZ() + offset.z * distance,
-					2);
+					3);
 		}
 		
 		private void fireChipsStack(int number) {
