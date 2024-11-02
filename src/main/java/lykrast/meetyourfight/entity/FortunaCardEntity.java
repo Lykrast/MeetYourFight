@@ -29,7 +29,7 @@ public class FortunaCardEntity extends Entity {
 	private int phase, timer = 20, hideTime;
 	private boolean correct;
 	private static final int PHASE_START = 0, PHASE_SPIN = 1, PHASE_GOTODEST = 2, PHASE_ACTIVE = 3, PHASE_REVEAL = 4;
-	public static final int START_TIME = 7*20, GOTODEST_TIME = 60, SPIN_TIME = 3*20, REVEAL_TIME = 3*20;
+	public static final int START_TIME = 5*20+10, GOTODEST_TIME = 35, SPIN_TIME = 4*20, REVEAL_TIME = 3*20;
 	//Stuff for movement
 	private double spinX, spinY, spinZ, destX, destY, destZ;
 	private int spinOffset;
@@ -163,9 +163,15 @@ public class FortunaCardEntity extends Entity {
 			//Movement
 			if (phase == PHASE_SPIN) {
 				int spintimer = SPIN_TIME - timer;
-				//12° per tick = 360° per 1.5 second
-				//At the start, get in position before spinning (hence the max(0,timer-20))
-				Vec3 offset = SPINVEC.yRot(((Math.max(0, spintimer-20)*12+spinOffset) % 360) * Mth.DEG_TO_RAD);
+				//0.5x^2 means we spin a full 450° after 30 ticks
+				//20 ticks get in position, then 30 accelerate, then 30 decelerate
+				float angle = 0;
+				if (spintimer > 50) angle = 80 - spintimer; //decelerate, timer 30-0
+				else if (spintimer > 20) angle = spintimer - 20; //accelerate, timer 0-30
+				angle = 0.5f*angle*angle;
+				//we spin a total of 900°, and because that's fixed it means the cards will just 180° from their starting position
+				if (spintimer > 50) angle = 900-angle;
+				Vec3 offset = SPINVEC.yRot(((angle+spinOffset) % 360) * Mth.DEG_TO_RAD);
 				double tx = spinX + offset.x;
 				double tz = spinZ + offset.z;
 				if (spintimer <= 20) {
@@ -179,8 +185,8 @@ public class FortunaCardEntity extends Entity {
 				else setDeltaMovement(tx - getX(), spinY - getY(), tz - getZ());
 			}
 			else if (phase == PHASE_GOTODEST) {
-				//delay dependend on the spin offset, so like a 180 offset takes 20 ticks more before going to the dest
-				int timeOffset = spinOffset / 9 + 1;
+				//delay dependend on the spin offset, so like a 180 offset takes 5 ticks more before going to the dest
+				int timeOffset = spinOffset / 36 + 1;
 				Vec3 speed = new Vec3(destX - getX(), destY - getY(), destZ - getZ());
 				if (timer <= timeOffset) {
 					setDeltaMovement(speed);
