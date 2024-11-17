@@ -15,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -97,7 +98,7 @@ public class RoseSpiritEntity extends Monster {
 	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (!source.isBypassInvul() && getStatus() == HIDING) {
+		if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && getStatus() == HIDING) {
 			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
@@ -108,6 +109,7 @@ public class RoseSpiritEntity extends Monster {
 		return false;
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void tick() {
 		noPhysics = true;
@@ -116,7 +118,7 @@ public class RoseSpiritEntity extends Monster {
 		setNoGravity(true);
 		
 		//Animations
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			if (prevStatus != getStatus()) {
 				prevStatus = getStatus();
 				animProg = 0;
@@ -184,7 +186,7 @@ public class RoseSpiritEntity extends Monster {
 	}
 	
 	private ProjectileLineEntity readyAttack() {
-		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this);
+		ProjectileLineEntity ghost = new ProjectileLineEntity(level(), this);
 		ghost.setOwner(this);
 		ghost.setPos(getX(), getY()+0.625, getZ());
 		ghost.setVariant(ProjectileLineEntity.VAR_ROSALYNE);
@@ -227,7 +229,7 @@ public class RoseSpiritEntity extends Monster {
 				for (int i = 0; i < 8; i++) {
 					ProjectileLineEntity ghost = mob.readyAttack();
 					ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
-					mob.level.addFreshEntity(ghost);
+					mob.level().addFreshEntity(ghost);
 					dir = dir.yRot(Mth.HALF_PI / 2);
 				}
 				mob.playSound(ModSounds.roseSpiritShoot.get(), 1, 1);
@@ -376,7 +378,7 @@ public class RoseSpiritEntity extends Monster {
 			Vec3 dir = new Vec3(target.getX() - sx,  target.getY()+1 - sy, target.getZ() - sz).normalize();
 			ProjectileLineEntity ghost = mob.readyAttack();
 			ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
-			mob.level.addFreshEntity(ghost);
+			mob.level().addFreshEntity(ghost);
 			mob.playSound(ModSounds.roseSpiritShoot.get(), 1, 1);
 		}
 

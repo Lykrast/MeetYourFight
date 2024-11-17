@@ -97,7 +97,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		super.tick();
 		noPhysics = false;
 		
-		if (level.isClientSide()) {
+		if (level().isClientSide()) {
 			int newanim = getAnimation();
 			if (clientAnim != newanim) {
 				prevAnim = clientAnim;
@@ -110,6 +110,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 		}
 	}
 
+	//this one is fine to override
+	@SuppressWarnings("deprecation")
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
 		orbitPosition = this.blockPosition().above(5);
@@ -148,10 +150,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 		return Mth.approachDegrees(tailPitch, getXRot(), 2 * partialTick);
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			tailYaw = Mth.approachDegrees(tailYaw, getYRot(), 6);
 			tailPitch = Mth.approachDegrees(tailPitch, getXRot(), 2);
 		}
@@ -207,7 +210,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	
 	private void swipeAttack() {
 		playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 10.0F, 0.95F + random.nextFloat() * 0.1F);
-        for(LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 1, 1.75))) {
+        for(LivingEntity target : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 1, 1.75))) {
         	if (target.isAlive() && !target.isInvulnerable() && target != this) {
         		if (doHurtTarget(target)) {
 					double mult = Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
@@ -335,12 +338,12 @@ public class SwampjawEntity extends BossFlyingEntity {
 				updateOffset();
 			}
 
-			if (swampjaw.orbitOffset.y < swampjaw.getY() && !swampjaw.level.isEmptyBlock(swampjaw.blockPosition().below(1))) {
+			if (swampjaw.orbitOffset.y < swampjaw.getY() && !swampjaw.level().isEmptyBlock(swampjaw.blockPosition().below(1))) {
 				height = Math.max(1, height);
 				updateOffset();
 			}
 
-			if (swampjaw.orbitOffset.y > swampjaw.getY() && !swampjaw.level.isEmptyBlock(swampjaw.blockPosition().above(1))) {
+			if (swampjaw.orbitOffset.y > swampjaw.getY() && !swampjaw.level().isEmptyBlock(swampjaw.blockPosition().above(1))) {
 				height = Math.min(-1, height);
 				updateOffset();
 			}
@@ -517,11 +520,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 						else swampjaw.attackDelay = 30;
 						updateOrbit();
 						swampjaw.playSound(ModSounds.swampjawBomb.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
-						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level, swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
+						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level(), swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
 						//The ellpeck idea
 						Vec3 motion = swampjaw.getDeltaMovement();
 						tntentity.setDeltaMovement(tntentity.getDeltaMovement().add(motion.x * 0.5, 0, motion.z * 0.5));
-						swampjaw.level.addFreshEntity(tntentity);
+						swampjaw.level().addFreshEntity(tntentity);
 					}
 				}
 				//animation change

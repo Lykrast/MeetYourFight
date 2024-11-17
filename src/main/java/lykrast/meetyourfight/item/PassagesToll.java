@@ -22,6 +22,7 @@ public class PassagesToll extends Item {
 		super(properties);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		Level world = context.getLevel();
@@ -40,13 +41,14 @@ public class PassagesToll extends Item {
 			mut.move(dir);
 			//Prevent players getting in the void
 			if (mut.getY() <= world.getMinBuildHeight()) break;
-			if (!world.getBlockState(mut).getMaterial().blocksMotion()) {
+			//I dunno why blocksmotion is deprecated and I have no sign of what to replace it with
+			if (!world.getBlockState(mut).blocksMotion()) {
 				found = true;
 				//Bring down to player's height as much as possible
 				double targetY = player.getY();
 				while (mut.getY() > targetY && mut.getY() > 1) {
 					mut.move(0, -1, 0);
-					if (world.getBlockState(mut).getMaterial().blocksMotion()) {
+					if (world.getBlockState(mut).blocksMotion()) {
 						mut.move(0, 1, 0);
 						break;
 					}

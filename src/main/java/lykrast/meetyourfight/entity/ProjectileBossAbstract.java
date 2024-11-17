@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -37,23 +38,24 @@ public abstract class ProjectileBossAbstract extends AbstractHurtingProjectile {
 	
 	protected abstract float getDamage(LivingEntity shooter, Entity hit);
 
+	@SuppressWarnings("resource")
 	@Override
 	protected void onHitEntity(EntityHitResult raytrace) {
 		super.onHitEntity(raytrace);
-		if (!level.isClientSide && fired) {
+		if (!level().isClientSide && fired) {
 			Entity hit = raytrace.getEntity();
 			Entity shooter = this.getOwner();
 			boolean wasHit;
 			if (shooter instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) shooter;
-				wasHit = hit.hurt(DamageSource.indirectMobAttack(this, livingentity).setProjectile().setMagic(), getDamage(livingentity, hit));
+				wasHit = hit.hurt(damageSources().mobProjectile(this, livingentity), getDamage(livingentity, hit));
 				if (wasHit) {
 					if (hit.isAlive()) doEnchantDamageEffects(livingentity, hit);
 				}
 				remove(RemovalReason.KILLED);
 			}
 			else {
-				wasHit = hit.hurt(DamageSource.MAGIC, 5);
+				wasHit = hit.hurt(damageSources().magic(), 5);
 			}
 		}
 	}
@@ -66,19 +68,19 @@ public abstract class ProjectileBossAbstract extends AbstractHurtingProjectile {
 	
 	protected void particles(double targetx, double targety, double targetz) {}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "resource" })
 	@Override
 	public void tick() {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			timer--;
 			projTick();
 		}
 
 		// Started from copy of the above tick
 		Entity shooter = this.getOwner();
-		if (level.isClientSide || (shooter == null || !shooter.isRemoved()) && level.hasChunkAt(blockPosition())) {
+		if (level().isClientSide || (shooter == null || !shooter.isRemoved()) && level().hasChunkAt(blockPosition())) {
 			superTick();
-			HitResult raytraceresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+			HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
 			if (raytraceresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
 				onHit(raytraceresult);
 			}
@@ -98,8 +100,9 @@ public abstract class ProjectileBossAbstract extends AbstractHurtingProjectile {
 	}
 	
 	//Inlined tick() from stuff above because I need to bypass quite a bit
+	@SuppressWarnings("resource")
 	private void superTick() {
-	      if (!level.isClientSide) {
+	      if (!level().isClientSide) {
 	         setSharedFlag(6, isCurrentlyGlowing());
 	      }
 	      baseTick();
@@ -141,7 +144,7 @@ public abstract class ProjectileBossAbstract extends AbstractHurtingProjectile {
 
 	@Nonnull
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

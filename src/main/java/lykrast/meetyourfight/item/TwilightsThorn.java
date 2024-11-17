@@ -26,7 +26,7 @@ public class TwilightsThorn extends SwordItem {
 		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", getDamage(), AttributeModifier.Operation.ADDITION));
 		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION));
-		builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(RANGE, "Weapon modifier", 1, AttributeModifier.Operation.ADDITION));
+		builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(RANGE, "Weapon modifier", 1, AttributeModifier.Operation.ADDITION));
 		defaultModifiers = builder.build();
 	}
 

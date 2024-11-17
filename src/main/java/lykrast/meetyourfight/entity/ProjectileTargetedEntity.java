@@ -69,7 +69,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 	protected void projTick() {
 		//Copied from shulker bullets
 		if (finalTarget == null && targetId != null) {
-			finalTarget = ((ServerLevel) level).getEntity(targetId);
+			finalTarget = ((ServerLevel) level()).getEntity(targetId);
 			if (finalTarget == null) targetId = null;
 		}
 

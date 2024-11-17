@@ -1,10 +1,11 @@
 package lykrast.meetyourfight.renderer;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.RoseSpiritEntity;
@@ -50,8 +51,8 @@ public class RoseSpiritRenderer extends MobRenderer<RoseSpiritEntity, RoseSpirit
 		float dist = Mth.sqrt(x * x + y * y + z * z);
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 1, 0);
-		matrixStackIn.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(z, x) - Math.PI / 2F)));
-		matrixStackIn.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(dist2D, y) - Math.PI / 2F)));
+		matrixStackIn.mulPose(Axis.YP.rotation((float) (-Math.atan2(z, x) - Math.PI / 2F)));
+		matrixStackIn.mulPose(Axis.XP.rotation((float) (-Math.atan2(dist2D, y) - Math.PI / 2F)));
 		VertexConsumer vertexconsumer = bufferIn.getBuffer(BEAM);
 		float f2 = 0.0F - ((float) ticks + partialTicks) * 0.01F;
 		float f3 = Mth.sqrt(x * x + y * y + z * z) / 32.0F - ((float) ticks + partialTicks) * 0.01F;

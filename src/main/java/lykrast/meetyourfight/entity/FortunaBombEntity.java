@@ -6,6 +6,7 @@ import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -72,6 +73,7 @@ public class FortunaBombEntity extends Entity {
 		return false;
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void tick() {
 		if (moveFuse > 0) {
@@ -90,12 +92,12 @@ public class FortunaBombEntity extends Entity {
 		if (remaining <= 0) {
 			remove(RemovalReason.KILLED);
 			playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 0.5F);
-			if (!level.isClientSide) explode();
+			if (!level().isClientSide) explode();
 		}
 		else {
 			updateInWaterStateAndDoFluidPushing();
-			if (level.isClientSide) {
-				level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
+			if (level().isClientSide) {
+				level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 
@@ -117,12 +119,12 @@ public class FortunaBombEntity extends Entity {
 	}
 
 	private void projectile(double dx, double dz) {
-		ProjectileLineEntity proj = new ProjectileLineEntity(level, bomber);
+		ProjectileLineEntity proj = new ProjectileLineEntity(level(), bomber);
 		proj.setOwner(bomber);
 		proj.setPos(position());
 		proj.setVariant(ProjectileLineEntity.VAR_DAME_FORTUNA);
 		proj.setUp(1, dx, 0, dz, getX() + dx * 0.1, getY(), getZ() + dz * 0.1);
-		level.addFreshEntity(proj);
+		level().addFreshEntity(proj);
 	}
 
 	@Override
@@ -143,7 +145,7 @@ public class FortunaBombEntity extends Entity {
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

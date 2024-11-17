@@ -21,6 +21,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -44,6 +45,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	/**
@@ -122,6 +124,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		checkInsideBlocks();
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void tick() {
 		noPhysics = true;
@@ -130,7 +133,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		setNoGravity(true);
 		
 		//Animations
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			int newanim = getAnimation();
 			if (clientAnim != newanim) {
 				prevAnim = clientAnim;
@@ -271,7 +274,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		if (!player.getAbilities().instabuild) dame.setTarget(player);
 		dame.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
-		dame.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
+		ForgeEventFactory.onFinalizeSpawn(dame, (ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
 	}
 
@@ -301,7 +304,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (!source.isBypassInvul() && isPowered()) {
+		if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && isPowered()) {
 			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
@@ -322,7 +325,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		if (phase != getPhase()) phase = getPhase();
 		//Start phase transitions
 		if (isShuffling() && tickCount % 10 == 0) {
-			if (hasSpawnedShuffle && level.getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32)).isEmpty()) {
+			if (hasSpawnedShuffle && level().getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32)).isEmpty()) {
 				//If we hit a correct card we get booted out of the shuffle phase, so here if it's failed
 				if (phase == SHUFFLE_1) {
 					setHealth(getMaxHealth()*RESET_1);
@@ -406,7 +409,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 //	}
 	
 	private ProjectileTargetedEntity readyTargeted() {
-		ProjectileTargetedEntity proj = new ProjectileTargetedEntity(level, this);
+		ProjectileTargetedEntity proj = new ProjectileTargetedEntity(level(), this);
 		proj.setOwner(this);
 		proj.setPos(getX(), getEyeY() + 1, getZ());
 		return proj;
@@ -538,17 +541,17 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				//Which card will be the correct one
 				int correct = dame.random.nextInt(cards);
 				//Evenly space out the cards on the line
-				BlockPos center = new BlockPos(dame.getX(), target.getY() + 1, dame.getZ());
+				BlockPos center = BlockPos.containing(dame.getX(), target.getY() + 1, dame.getZ());
 				Vec3 start = new Vec3(center.getX() - side.getStepX() * 1.5 * (cards - 1), center.getY(), center.getZ() - side.getStepZ() * 1.5 * (cards - 1));
 				for (int i = 0; i < cards; i++) {
-					FortunaCardEntity card = new FortunaCardEntity(dame.level, start.x + 3 * i * side.getStepX(), start.y, start.z + 3 * i * side.getStepZ());
+					FortunaCardEntity card = new FortunaCardEntity(dame.level(), start.x + 3 * i * side.getStepX(), start.y, start.z + 3 * i * side.getStepZ());
 					card.setYRot(dir.toYRot());
 					//aaaaaaa this was hell to figure out to make it consistent across all orientations
 					//the minus sign on the yrot was hard part (and 360 is cause negative mod in java gives negative)
 					int angleOffset = (i * (360 / cards) + 360 - (int)dir.toYRot()) % 360;
 					card.setup(i, correct, i == correct, i * 10 + 5, center.getX(), center.getY() + 3, center.getZ(), angleOffset, start.x + 3 * shuffled[i] * side.getStepX(), start.y,
 							start.z + 3 * shuffled[i] * side.getStepZ());
-					dame.level.addFreshEntity(card);
+					dame.level().addFreshEntity(card);
 				}
 				//Hang around a bit before going in the wait animation
 				timer = FortunaCardEntity.START_TIME;
@@ -649,11 +652,11 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			double bombX = tx + offset.x*3;
 			double bombY = ty + 0.5;
 			double bombZ = tz + offset.z*3;
-			if (target.isOnGround()) bombY += 0.75;
-			FortunaBombEntity bomb = new FortunaBombEntity(dame.level, dame.getX(), dame.getY() + 2, dame.getZ(), dame);
+			if (target.onGround()) bombY += 0.75;
+			FortunaBombEntity bomb = new FortunaBombEntity(dame.level(), dame.getX(), dame.getY() + 2, dame.getZ(), dame);
 			int dettime = dame.phase == PHASE_1 ? 0 : dame.random.nextInt(11);
 			bomb.setup(25 + dettime, 15 + dettime, bombX, bombY, bombZ);
-			dame.level.addFreshEntity(bomb);
+			dame.level().addFreshEntity(bomb);
 			dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
 
@@ -810,7 +813,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
 					proj.setPos(sx, sy + i*0.125, sz);
 					proj.setUp(intialdelay + (number-i-1)*6, 15, target, 0.75, sx, sy + i*0.25 + 0.25, sz, dir*-20);
-					dame.level.addFreshEntity(proj);
+					dame.level().addFreshEntity(proj);
 				}
 			}
 			
@@ -836,7 +839,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					ProjectileTargetedEntity proj = dame.readyTargeted();
 					proj.setPos(sx, sy + (c*chips+i)*0.125, sz);
 					proj.setUp(delay + 15*c, 15, target, 1, damex + 2*offset.x, sy+1+c, damez + 2*offset.z);
-					dame.level.addFreshEntity(proj);
+					dame.level().addFreshEntity(proj);
 					offset = offset.yRot(angle);
 				}
 			}
@@ -947,7 +950,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			ProjectileTargetedEntity proj = dame.readyTargeted();
 			proj.setPos(damex, sy, damez);
 			proj.setUp(10, 15, target, 1, damex + 1*perp.x, sy+1, damez + 1*perp.z);
-			dame.level.addFreshEntity(proj);
+			dame.level().addFreshEntity(proj);
 		}
 
 		@Override

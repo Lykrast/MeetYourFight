@@ -57,7 +57,7 @@ public class ProjectileLineEntity extends ProjectileBossAbstract {
 	
 	@Override
 	protected void particles(double targetx, double targety, double targetz) {
-		level.addParticle(ParticleTypes.END_ROD, targetx, targety + 0.5, targetz, 0, 0, 0);
+		level().addParticle(ParticleTypes.END_ROD, targetx, targety + 0.5, targetz, 0, 0, 0);
 	}
 
 	@Override

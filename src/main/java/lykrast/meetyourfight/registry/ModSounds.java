@@ -73,6 +73,6 @@ public class ModSounds {
 		musicFrogPunch = initSound("music.frog_punch");
 	}
 	public static RegistryObject<SoundEvent> initSound(String name) {
-		return REG.register(name, () -> new SoundEvent(MeetYourFight.rl(name)));
+		return REG.register(name, () -> SoundEvent.createVariableRangeEvent(MeetYourFight.rl(name)));
 	}
 }

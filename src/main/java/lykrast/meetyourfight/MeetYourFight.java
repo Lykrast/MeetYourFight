@@ -22,6 +22,7 @@ public class MeetYourFight {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		//You know giving them generic names like that was a bad idea cause it kept getting mixed up with the GWR ones...
 		ModItems.REG.register(bus);
+		bus.addListener(ModItems::makeCreativeTab);
 		ModEntities.REG.register(bus);
 		ModSounds.REG.register(bus);
 	}

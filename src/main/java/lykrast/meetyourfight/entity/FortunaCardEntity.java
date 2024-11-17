@@ -6,6 +6,7 @@ import lykrast.meetyourfight.registry.ModEntities;
 import lykrast.meetyourfight.registry.ModSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -107,9 +108,10 @@ public class FortunaCardEntity extends Entity {
 		return isAlive() && correct;
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void tick() {
-		if (!level.isClientSide) {
+		if (!level().isClientSide) {
 			timer--;
 			if (timer <= 0) {
 				switch (phase) {
@@ -155,7 +157,7 @@ public class FortunaCardEntity extends Entity {
 					setAnimation(ANIM_IDLE_SHOW);
 					playSound(correct ? ModSounds.dameFortunaCardRight.get() : ModSounds.dameFortunaCardWrong.get(), 1, 1);
 					if (correct) {
-						List<DameFortunaEntity> dames = level.getEntitiesOfClass(DameFortunaEntity.class, getBoundingBox().inflate(32), (dame) -> dame.isAlive());
+						List<DameFortunaEntity> dames = level().getEntitiesOfClass(DameFortunaEntity.class, getBoundingBox().inflate(32), (dame) -> dame.isAlive());
 						for (var d : dames) d.progressShuffle();
 					}
 				}
@@ -201,7 +203,7 @@ public class FortunaCardEntity extends Entity {
 
 		move(MoverType.SELF, getDeltaMovement());
 		
-		if (level.isClientSide) updateClientAnimation();
+		if (level().isClientSide) updateClientAnimation();
 	}
 	
 	@Override
@@ -210,7 +212,7 @@ public class FortunaCardEntity extends Entity {
 			//Despawn other nearby cards, turn around
 			phase = PHASE_REVEAL;
 			timer = REVEAL_TIME;
-			List<FortunaCardEntity> others = level.getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32), (card) -> card.phase != PHASE_REVEAL);
+			List<FortunaCardEntity> others = level().getEntitiesOfClass(FortunaCardEntity.class, getBoundingBox().inflate(32), (card) -> card.phase != PHASE_REVEAL);
 			for (var other : others) other.remove(RemovalReason.KILLED);
 			setYRot(lookToward(source.getEntity().getX(), source.getEntity().getZ()));
 			return true;
@@ -296,7 +298,7 @@ public class FortunaCardEntity extends Entity {
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

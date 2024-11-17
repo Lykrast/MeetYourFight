@@ -10,7 +10,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -57,7 +56,7 @@ public class DepthStar extends SwordItem {
 					//world.explode(player, end.x, end.y, end.z, strength * 2, Explosion.BlockInteraction.NONE);
 					for (LivingEntity ent : world.getEntitiesOfClass(LivingEntity.class, new AABB(end.add(-3, -3, -3), end.add(3, 3, 3)))) {
 						if (ent.isAlive() && !ent.isInvulnerable() && ent != entityLiving) {
-							if (ent.hurt(DamageSource.explosion(entityLiving), (float)((damage+EnchantmentHelper.getDamageBonus(stack, ent.getMobType()))*strength))) {
+							if (ent.hurt(entityLiving.damageSources().explosion(entityLiving, entityLiving), (float)((damage+EnchantmentHelper.getDamageBonus(stack, ent.getMobType()))*strength))) {
 								double mult = Math.max(0, 1 - ent.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 								ent.setDeltaMovement(ent.getDeltaMovement().add(0, 0.4*mult*strength, 0));
 								//fire aspect, like how vanilla applies it

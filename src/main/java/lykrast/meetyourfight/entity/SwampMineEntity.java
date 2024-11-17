@@ -6,6 +6,7 @@ import lykrast.meetyourfight.registry.ModEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -46,6 +46,7 @@ public class SwampMineEntity extends Entity {
 		return !this.isRemoved();
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void tick() {
 		int fuse = getFuse();
@@ -59,7 +60,7 @@ public class SwampMineEntity extends Entity {
 			//else setMotion(getMotion().scale(0.98));
 			setDeltaMovement(getDeltaMovement().scale(0.98));
 			
-			if (onGround) {
+			if (onGround()) {
 				setFuse(10);
 				setDeltaMovement(0, 0, 0);
 			}
@@ -68,19 +69,19 @@ public class SwampMineEntity extends Entity {
 		else setFuse(--fuse);
 		if (fuse <= 0) {
 			remove(RemovalReason.KILLED);
-			if (!level.isClientSide) explode();
+			if (!level().isClientSide) explode();
 		}
 		else {
 			updateInWaterStateAndDoFluidPushing();
-			if (level.isClientSide) {
-				level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
+			if (level().isClientSide) {
+				level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
 			}
 		}
 
 	}
 
 	protected void explode() {
-		level.explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2.5f, Explosion.BlockInteraction.NONE);
+		level().explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2.5f, Level.ExplosionInteraction.NONE);
 	}
 
 	@Override
@@ -112,7 +113,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 

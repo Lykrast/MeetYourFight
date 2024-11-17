@@ -38,6 +38,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class BellringerEntity extends BossEntity {
 	public int attackCooldown;
@@ -89,7 +90,7 @@ public class BellringerEntity extends BossEntity {
 		if (!player.getAbilities().instabuild) bellringer.setTarget(player);
 		bellringer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
 
-		bellringer.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(bellringer.blockPosition()), MobSpawnType.EVENT, null, null);
+		ForgeEventFactory.onFinalizeSpawn(bellringer, (ServerLevel) world, world.getCurrentDifficultyAt(bellringer.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(bellringer);
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 2, 1);
 	}
@@ -106,7 +107,7 @@ public class BellringerEntity extends BossEntity {
 	}
 	
 	private ProjectileLineEntity readyAttack() {
-		ProjectileLineEntity ghost = new ProjectileLineEntity(level, this);
+		ProjectileLineEntity ghost = new ProjectileLineEntity(level(), this);
 		ghost.setOwner(this);
 		ghost.setPos(getX() - 2 + random.nextDouble() * 4, getY() - 2 + random.nextDouble() * 4, getZ() - 2 + random.nextDouble() * 4);
 		ghost.setVariant(ProjectileLineEntity.VAR_BELLRINGER);
@@ -203,6 +204,7 @@ public class BellringerEntity extends BossEntity {
 			}
 		}
 		
+		@SuppressWarnings("deprecation")
 		private void performAttack() {
 			//BlockPos rounds values so +0.5 for center of block
 			BlockPos tgt = target.blockPosition();
@@ -210,7 +212,8 @@ public class BellringerEntity extends BossEntity {
 			double tz = tgt.getZ() + 0.5;
 			double ty = tgt.getY() + 0.1;
 			//Prevents lines being unjumpable if an attack is launched mid jump
-			if (!target.isOnGround() && !target.isInWater() && !ringer.level.getBlockState(tgt.below()).getMaterial().blocksMotion()) ty -= 1;
+			//uuh no clue what I'm supposed to replace the blocksMotion() with
+			if (!target.onGround() && !target.isInWater() && !ringer.level().getBlockState(tgt.below()).blocksMotion()) ty -= 1;
 			switch (chosenAttack) {
 				default:
 				case 0:
@@ -225,7 +228,7 @@ public class BellringerEntity extends BossEntity {
 					for (int i = -4; i <= 4; i++) {
 						ProjectileLineEntity ghost = ringer.readyAttack();
 						ghost.setUp(20, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
-						ringer.level.addFreshEntity(ghost);
+						ringer.level().addFreshEntity(ghost);
 					}
 					break;
 				case 1:
@@ -234,7 +237,7 @@ public class BellringerEntity extends BossEntity {
 						for (int z = -1; z <= 1; z++) {
 							ProjectileLineEntity ghost = ringer.readyAttack();
 							ghost.setUp(20, 0, -1, 0, tx + x, ty + 7, tz + z);
-							ringer.level.addFreshEntity(ghost);
+							ringer.level().addFreshEntity(ghost);
 						}
 					}
 					break;
@@ -291,7 +294,7 @@ public class BellringerEntity extends BossEntity {
 			dir = Direction.getNearest(tx - sx, 0, tz - sz);
 			
 			//Slowness
-			List<Entity> list = ringer.level.getEntities(ringer, ringer.getBoundingBox().inflate(16), e -> e instanceof LivingEntity && e.isAlive() && e.canChangeDimensions());
+			List<Entity> list = ringer.level().getEntities(ringer, ringer.getBoundingBox().inflate(16), e -> e instanceof LivingEntity && e.isAlive() && e.canChangeDimensions());
 			list.add(target);
 			for (Entity e : list) {
 				//Duration should last through the whole attack
@@ -301,6 +304,7 @@ public class BellringerEntity extends BossEntity {
 			ringer.playSound(SoundEvents.BELL_RESONATE, 2, 1);
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void tick() {
 			ringer.attackCooldown = 2;
@@ -316,7 +320,8 @@ public class BellringerEntity extends BossEntity {
 				double tz = tgt.getZ() + 0.5;
 				double ty = tgt.getY() + 0.1;
 				//Prevents lines being unjumpable if an attack is launched mid jump
-				if (!target.isOnGround() && !target.isInWater() && !ringer.level.getBlockState(tgt.below()).getMaterial().blocksMotion()) ty -= 1;
+				//uuh no clue what I'm supposed to replace the blocksMotion() with
+				if (!target.onGround() && !target.isInWater() && !ringer.level().getBlockState(tgt.below()).blocksMotion()) ty -= 1;
 
 				double cx = dir.getStepX();
 				double cz = dir.getStepZ();
@@ -325,7 +330,7 @@ public class BellringerEntity extends BossEntity {
 				for (int i = -5; i <= 5; i++) {
 					ProjectileLineEntity ghost = ringer.readyAttack();
 					ghost.setUp(15 + off*i, cx, 0, cz, tx - 7*cx + i*cz, ty, tz - 7*cz + i*cx);
-					ringer.level.addFreshEntity(ghost);
+					ringer.level().addFreshEntity(ghost);
 				}
 				
 				if (attackRemaining <= 0) stop();
