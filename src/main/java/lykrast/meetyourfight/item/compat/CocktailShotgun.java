@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Triple;
 
+import lykrast.gunswithoutroses.item.GunItem;
 import lykrast.gunswithoutroses.item.IBullet;
-import lykrast.gunswithoutroses.item.ShotgunItem;
 import lykrast.meetyourfight.item.LuckCurio;
 import lykrast.meetyourfight.misc.MYFConstants;
 import net.minecraft.ChatFormatting;
@@ -26,7 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 
-public class CocktailShotgun extends ShotgunItem {
+public class CocktailShotgun extends GunItem {
 	private static final List<Triple<MobEffect, Integer, Boolean>> EFFECTS = new ArrayList<>();
 	
 	public static void initEffects() {
@@ -39,8 +39,8 @@ public class CocktailShotgun extends ShotgunItem {
 		EFFECTS.add(Triple.of(MobEffects.LEVITATION, 5*20, false));
 	}
 
-	public CocktailShotgun(Properties properties, int bonusDamage, double damageMultiplier, int fireDelay, double inaccuracy, int enchantability, int bulletCount) {
-		super(properties, bonusDamage, damageMultiplier, fireDelay, inaccuracy, enchantability, bulletCount);
+	public CocktailShotgun(Properties properties, int bonusDamage, double damageMultiplier, int fireDelay, double inaccuracy, int enchantability) {
+		super(properties, bonusDamage, damageMultiplier, fireDelay, inaccuracy, enchantability);
 	}
 	
 	@Override
