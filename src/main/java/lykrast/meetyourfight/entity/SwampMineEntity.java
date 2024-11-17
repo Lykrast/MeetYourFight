@@ -2,7 +2,7 @@ package lykrast.meetyourfight.entity;
 
 import javax.annotation.Nullable;
 
-import lykrast.meetyourfight.registry.ModEntities;
+import lykrast.meetyourfight.registry.MYFEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -30,7 +30,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	public SwampMineEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
-		this(ModEntities.SWAMP_MINE.get(), worldIn);
+		this(MYFEntities.SWAMP_MINE.get(), worldIn);
 		this.setPos(x, y, z);
 		double angle = worldIn.random.nextDouble() * Math.PI * 2;
 		setDeltaMovement(-Math.sin(angle) * 0.06, 0.05, -Math.cos(angle) * 0.06);

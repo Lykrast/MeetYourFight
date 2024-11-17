@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MeetYourFight.MODID)
-public class ModEntities {
+public class MYFEntities {
 	public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MeetYourFight.MODID);
 	//Bosses
 	public static RegistryObject<EntityType<BellringerEntity>> BELLRINGER;

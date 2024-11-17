@@ -1,8 +1,8 @@
 package lykrast.meetyourfight;
 
 import lykrast.meetyourfight.registry.CompatGWRItems;
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFItems;
 import lykrast.meetyourfight.renderer.*;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -22,19 +22,19 @@ public class ClientStuff {
     @SubscribeEvent
     public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
 		//Entities
-    	event.registerEntityRenderer(ModEntities.BELLRINGER.get(), (context) -> new BellringerRenderer(context));
-    	event.registerEntityRenderer(ModEntities.DAME_FORTUNA.get(), (context) -> new DameFortunaRenderer(context));
-    	event.registerEntityRenderer(ModEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
-    	event.registerEntityRenderer(ModEntities.ROSALYNE.get(), (context) -> new RosalyneRenderer(context));
-    	event.registerEntityRenderer(ModEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.BELLRINGER.get(), (context) -> new BellringerRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.DAME_FORTUNA.get(), (context) -> new DameFortunaRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.ROSALYNE.get(), (context) -> new RosalyneRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
     	//TODO Vela
     	//event.registerEntityRenderer(ModEntities.VELA.get(), (context) -> new VelaRenderer(context));
 		
-    	event.registerEntityRenderer(ModEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
-    	event.registerEntityRenderer(ModEntities.PROJECTILE_TARGETED.get(), (context) -> new ProjectileTargetedRenderer(context));
-    	event.registerEntityRenderer(ModEntities.FORTUNA_BOMB.get(), (context) -> new FortunaBombRenderer(context));
-    	event.registerEntityRenderer(ModEntities.FORTUNA_CARD.get(), (context) -> new FortunaCardRenderer(context));
-		event.registerEntityRenderer(ModEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.PROJECTILE_TARGETED.get(), (context) -> new ProjectileTargetedRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.FORTUNA_BOMB.get(), (context) -> new FortunaBombRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.FORTUNA_CARD.get(), (context) -> new FortunaCardRenderer(context));
+		event.registerEntityRenderer(MYFEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
 		//event.registerEntityRenderer(ModEntities.WATER_BOULDER.get(), (context) -> new WaterBoulderRenderer(context));
 		//event.registerEntityRenderer(ModEntities.VELA_VORTEX.get(), (context) -> new VelaVortexRenderer(context));
     }
@@ -62,7 +62,7 @@ public class ClientStuff {
 
 	@SubscribeEvent
     public static void itemColors(final RegisterColorHandlersEvent.Item event) {
-		event.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, ModItems.cocktailCutlass.get());
+		event.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 1, 1) : -1, MYFItems.cocktailCutlass.get());
 		if (MeetYourFight.loadedGunsWithoutRoses()) event.register((s, t) -> t == 1 ? Mth.hsvToRgb(((Util.getMillis() / 1000) % 360) / 360f, 0.75f, 0.75f) : -1, CompatGWRItems.cocktailShotgun.get());
     }
 
@@ -70,9 +70,9 @@ public class ClientStuff {
 	public static void clientStuff(final FMLClientSetupEvent event) {
 
 		//Same as Bow
-		ItemProperties.register(ModItems.depthStar.get(), MeetYourFight.rl("charge"),
+		ItemProperties.register(MYFItems.depthStar.get(), MeetYourFight.rl("charge"),
 				(stack, world, entity, someint) -> entity == null || entity.getUseItem() != stack ? 0 : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F);
-		ItemProperties.register(ModItems.depthStar.get(), MeetYourFight.rl("charging"),
+		ItemProperties.register(MYFItems.depthStar.get(), MeetYourFight.rl("charging"),
 				(stack, world, entity, someint) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0);
 	}
 

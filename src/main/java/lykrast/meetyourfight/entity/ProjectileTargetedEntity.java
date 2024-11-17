@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -35,7 +35,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 	}
 
 	public ProjectileTargetedEntity(Level worldIn, LivingEntity shooter) {
-		super(ModEntities.PROJECTILE_TARGETED.get(), shooter, 0, 0, 0, worldIn);
+		super(MYFEntities.PROJECTILE_TARGETED.get(), shooter, 0, 0, 0, worldIn);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 				fired = true;
 				timer = 30;
 				setDeltaMovement(new Vec3(finalTarget.getX() - x, finalTarget.getEyeY() - y, finalTarget.getZ() - z).normalize().scale(speed).yRot((float)angleOffset * Mth.DEG_TO_RAD));
-				playSound(ModSounds.dameFortunaChipsFire.get(), 2.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+				playSound(MYFSounds.dameFortunaChipsFire.get(), 2.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 		}
 

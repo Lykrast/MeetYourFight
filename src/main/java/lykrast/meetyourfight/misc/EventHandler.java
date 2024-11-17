@@ -1,8 +1,8 @@
 package lykrast.meetyourfight.misc;
 
 import lykrast.meetyourfight.MeetYourFight;
-import lykrast.meetyourfight.registry.ModItems;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFItems;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -37,14 +37,14 @@ public class EventHandler {
 		if (attacked instanceof Player) {
 			Player pattacked = (Player) attacked;
 			//Ace of Iron
-			if (!event.isCanceled() && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && isWearing(pattacked, ModItems.aceOfIron)) {
+			if (!event.isCanceled() && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && isWearing(pattacked, MYFItems.aceOfIron)) {
 				float luck = pattacked.getLuck();
 				double chance = MYFConstants.ACE_OF_IRON_CHANCE;
 				if (luck >= 0) chance = (1.0 + luck) / (6.0 + 2 * luck);
 				else chance = 1.0 / (6.0 - 3 * luck);
 				if (pattacked.getRandom().nextDouble() <= chance) {
 					event.setCanceled(true);
-					pattacked.level().playSound(null, attacked.blockPosition(), ModSounds.aceOfIronProc.get(), SoundSource.PLAYERS, 1, 1);
+					pattacked.level().playSound(null, attacked.blockPosition(), MYFSounds.aceOfIronProc.get(), SoundSource.PLAYERS, 1, 1);
 				}
 			}
 		}
@@ -57,19 +57,19 @@ public class EventHandler {
 		if (attacker != null && attacker instanceof Player) {
 			Player pattacker = (Player) attacker;
 			//Slicer's Dice
-			if (isWearing(pattacker, ModItems.slicersDice)) {
+			if (isWearing(pattacker, MYFItems.slicersDice)) {
 				float luck = pattacker.getLuck();
 				double chance = MYFConstants.SLICER_DICE_CHANCE;
 				if (luck >= 0) chance = (1.0 + luck) / (6.0 + luck);
 				else chance = 1.0 / (6.0 - 3 * luck);
 				if (pattacker.getRandom().nextDouble() <= chance) {
 					event.setAmount(event.getAmount() * MYFConstants.SLICER_DICE_MULT);
-					pattacker.level().playSound(null, attacked.blockPosition(), ModSounds.slicersDiceProc.get(), SoundSource.PLAYERS, 1, 1);
+					pattacker.level().playSound(null, attacked.blockPosition(), MYFSounds.slicersDiceProc.get(), SoundSource.PLAYERS, 1, 1);
 					((ServerLevel) pattacker.level()).sendParticles(ParticleTypes.CRIT, attacked.getX(), attacked.getEyeY(), attacked.getZ(), 15, 0.2, 0.2, 0.2, 0);
 				}
 			}
 			//Wilted Ideals
-			if (isWearing(pattacker, ModItems.wiltedIdeals)) {
+			if (isWearing(pattacker, MYFItems.wiltedIdeals)) {
 				event.setAmount(event.getAmount() * MYFConstants.WILTED_IDEALS_MULT);
 			}
 		}
@@ -78,11 +78,11 @@ public class EventHandler {
 		if (attacked instanceof Player) {
 			Player pattacked = (Player) attacked;
 			//Caged Heart
-			if (isWearing(pattacked, ModItems.cagedHeart)) {
+			if (isWearing(pattacked, MYFItems.cagedHeart)) {
 				float treshold = pattacked.getMaxHealth() * MYFConstants.CAGED_HEART_TRESHOLD;
 				if (event.getAmount() > treshold) {
 					event.setAmount((event.getAmount() - treshold) * MYFConstants.CAGED_HEART_MULT + treshold);
-					pattacked.level().playSound(null, attacked.blockPosition(), ModSounds.cagedHeartProc.get(), SoundSource.PLAYERS, 1, 1);
+					pattacked.level().playSound(null, attacked.blockPosition(), MYFSounds.cagedHeartProc.get(), SoundSource.PLAYERS, 1, 1);
 				}
 			}
 		}
@@ -96,7 +96,7 @@ public class EventHandler {
 			Player pkiller = (Player) killer;
 			LivingEntity killed = event.getEntity();
 			//Tomb Planter
-			if (isWearing(pkiller, ModItems.tombPlanter)) {
+			if (isWearing(pkiller, MYFItems.tombPlanter)) {
 				Level lvl = killed.level();
 				BlockPos pos = killed.blockPosition();
 				//Only works if the target is at most 1 block above bonemealabe ground
@@ -119,7 +119,7 @@ public class EventHandler {
 		Player killer = event.getAttackingPlayer();
 		if (killer != null) {
 			//Blossoming Mind
-			if (event.getOriginalExperience() >= 2 && isWearing(killer, ModItems.blossomingMind)) {
+			if (event.getOriginalExperience() >= 2 && isWearing(killer, MYFItems.blossomingMind)) {
 				//Ensorcellation Insight I is 1-5 per kill and Insight III 3-15
 				//A monster is 5, blaze 10, ravager 20
 				//50% to 150% bonus, cap at 15 bonus cause I don't want it to be optimal on bosses

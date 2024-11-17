@@ -26,7 +26,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModItems {
+public class MYFItems {
 	public static final DeferredRegister<Item> REG = DeferredRegister.create(ForgeRegistries.ITEMS, MeetYourFight.MODID);
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
@@ -79,14 +79,14 @@ public class ModItems {
 		petalCream = initItem("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
 		
 		//Lasts 1:30.92
-		discMagnum = initItem("music_disc_magnum", () -> new RecordItem(1, ModSounds.musicMagnum, disc(), 1818));
+		discMagnum = initItem("music_disc_magnum", () -> new RecordItem(1, MYFSounds.musicMagnum, disc(), 1818));
 		//Lasts 3:40.44
-		discFrogPunch = initItem("music_disc_frogpunch", () -> new RecordItem(1, ModSounds.musicFrogPunch, disc(), 4408));
+		discFrogPunch = initItem("music_disc_frogpunch", () -> new RecordItem(1, MYFSounds.musicFrogPunch, disc(), 4408));
 		
-		eggBellringer = initItem("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
-		eggDameFortuna = initItem("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
-		eggSwampjaw = initItem("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
-		eggRosalyne = initItem("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
+		eggBellringer = initItem("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
+		eggDameFortuna = initItem("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
+		eggSwampjaw = initItem("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
+		eggRosalyne = initItem("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
 		//initItem("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems();

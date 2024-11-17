@@ -2,7 +2,7 @@ package lykrast.meetyourfight.entity;
 
 import javax.annotation.Nullable;
 
-import lykrast.meetyourfight.registry.ModEntities;
+import lykrast.meetyourfight.registry.MYFEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -34,7 +34,7 @@ public class FortunaBombEntity extends Entity {
 	}
 
 	public FortunaBombEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
-		this(ModEntities.FORTUNA_BOMB.get(), worldIn);
+		this(MYFEntities.FORTUNA_BOMB.get(), worldIn);
 		this.setPos(x, y, z);
 		xo = x;
 		yo = y;

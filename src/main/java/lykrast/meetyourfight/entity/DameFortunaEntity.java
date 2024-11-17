@@ -8,8 +8,8 @@ import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.misc.FortunaSpinSound;
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -267,7 +267,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	
 	public static void spawn(Player player, Level world) {
 		RandomSource rand = player.getRandom();
-		DameFortunaEntity dame = ModEntities.DAME_FORTUNA.get().create(world);
+		DameFortunaEntity dame = MYFEntities.DAME_FORTUNA.get().create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
 		dame.nextAttack = ATK_CHIPS_CIRCLE;
@@ -305,7 +305,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && isPowered()) {
-			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
+			if (amount > 1) playSound(MYFSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
 		else if (amount > 1 && getPhase() == DEATH) return super.hurt(source, Math.max(getHealth()*2, amount));
@@ -437,22 +437,22 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSounds.dameFortunaIdle.get();
+		return MYFSounds.dameFortunaIdle.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.dameFortunaHurt.get();
+		return MYFSounds.dameFortunaHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.dameFortunaDeath.get();
+		return MYFSounds.dameFortunaDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicMagnum.get();
+		return MYFSounds.musicMagnum.get();
 	}
 	
 	@Override
@@ -517,7 +517,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			dame.attackCooldown = 2;
 			target = dame.getTarget();
 			dame.setAnimation(ANIM_SNAP_PRE);
-			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+			dame.playSound(MYFSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 			//Wait for attacks to be done if possible
 			timer = Math.max(40, dame.shuffleAttackWait + 30);
 		}
@@ -558,7 +558,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			}
 			else if (timer == 10 && !dame.hasSpawnedShuffle) {
 				//Snap!
-				dame.playSound(ModSounds.dameFortunaSnap.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.1F + 1.0F);
+				dame.playSound(MYFSounds.dameFortunaSnap.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.1F + 1.0F);
 				dame.setAnimation(ANIM_SNAP_POST);
 			}
 			else if (timer == (FortunaCardEntity.START_TIME - 20) && dame.hasSpawnedShuffle) {
@@ -615,7 +615,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			dame.setAnimation(ANIM_DICE_WINDUP);
 			attackDelay = 30;
 			attackRemaining = getAttackCount();
-			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+			dame.playSound(MYFSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 		}
 
 		private int getAttackCount() {
@@ -657,7 +657,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			int dettime = dame.phase == PHASE_1 ? 0 : dame.random.nextInt(11);
 			bomb.setup(25 + dettime, 15 + dettime, bombX, bombY, bombZ);
 			dame.level().addFreshEntity(bomb);
-			dame.playSound(ModSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+			dame.playSound(MYFSounds.dameFortunaShoot.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
 
 		@Override
@@ -697,7 +697,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			target = dame.getTarget();
 			dame.setAnimation(ANIM_CHIPS_WINDUP);
 			attackDelay = 20;
-			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+			dame.playSound(MYFSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 			chosenPattern = dame.nextAttack;
 			switch (chosenPattern) {
 				default:
@@ -750,7 +750,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			else {
 				//clap
 				if (attackDelay == clapTime) dame.setAnimation(ANIM_CLAP);
-				else if (attackDelay == clapTime - 2) dame.playSound(ModSounds.dameFortunaClap.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.1F + 1.0F);
+				else if (attackDelay == clapTime - 2) dame.playSound(MYFSounds.dameFortunaClap.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.1F + 1.0F);
 				//second strafe
 				else if (attackDelay <= 0 && attackRemaining > 0 && attackRemaining == midStrafe) {
 					attackRemaining--;
@@ -817,7 +817,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				}
 			}
 			
-			dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+			dame.playSound(MYFSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
 		
 		private void fireChipsCircle(int chips, int circles, int delay) {
@@ -844,7 +844,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				}
 			}
 			
-			dame.playSound(ModSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
+			dame.playSound(MYFSounds.dameFortunaChipsStart.get(), 2.0F, (dame.random.nextFloat() - dame.random.nextFloat()) * 0.2F + 1.0F);
 		}
 
 		@Override
@@ -895,8 +895,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			holdz = dame.getZ();
 			dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
 			dame.setAnimation(ANIM_SPIN);
-			dame.playSound(ModSounds.dameFortunaSpinStart.get(), 2, 1);
-			dame.playSound(ModSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
+			dame.playSound(MYFSounds.dameFortunaSpinStart.get(), 2, 1);
+			dame.playSound(MYFSounds.dameFortunaAttack.get(), dame.getSoundVolume(), dame.getVoicePitch());
 		}
 		
 		@Override
@@ -928,7 +928,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 						holdz = dame.getZ();
 						dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
 						dame.setAnimation(ANIM_SPIN_POSE);
-						dame.playSound(ModSounds.dameFortunaSpinStop.get(), 2, 1);
+						dame.playSound(MYFSounds.dameFortunaSpinStop.get(), 2, 1);
 					}
 				}
 			}

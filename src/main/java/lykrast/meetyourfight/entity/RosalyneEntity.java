@@ -8,8 +8,8 @@ import lykrast.meetyourfight.entity.ai.MoveFrontOfTarget;
 import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -126,7 +126,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	
 	public static void spawn(Player player, Level world) {
 		RandomSource rand = player.getRandom();
-		RosalyneEntity dame = ModEntities.ROSALYNE.get().create(world);
+		RosalyneEntity dame = MYFEntities.ROSALYNE.get().create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) dame.setTarget(player);
@@ -138,7 +138,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	
 	private void createSpirits() {
 		for (int i = 0; i < 4; i++) {
-			RoseSpiritEntity spirit = ModEntities.ROSE_SPIRIT.get().create(level());
+			RoseSpiritEntity spirit = MYFEntities.ROSE_SPIRIT.get().create(level());
 			spirit.moveTo(getX() + (i/2)*4 - 2, getY(), getZ() + (i%2)*4 - 2);
 			spirit.setOwner(this);
 			if (getTarget() != null) spirit.setTarget(getTarget());
@@ -151,7 +151,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && getPhase() != PHASE_1 && getPhase() != PHASE_3) {
-			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
+			if (amount > 1) playSound(MYFSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
 		return super.hurt(source, amount);
@@ -192,7 +192,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
         for(LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(2, 0.2, 2))) {
         	if (!(entity instanceof RosalyneEntity) && !(entity instanceof RoseSpiritEntity) && entity.isAlive()) doHurtTarget(entity);
         }
-        playSound(ModSounds.rosalyneSwing.get(), 1, 1);
+        playSound(MYFSounds.rosalyneSwing.get(), 1, 1);
         //attack cycle goes OUTDN, INUP, OUTUP, INDN, repeat
         switch (getAnimation()) {
             //special case for the vertical swing of the crash attack
@@ -275,17 +275,17 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.rosalyneHurt.get();
+		return MYFSounds.rosalyneHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.rosalyneDeath.get();
+		return MYFSounds.rosalyneDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicFrogPunch.get();
+		return MYFSounds.musicFrogPunch.get();
 	}
 	
 	@Override
@@ -349,7 +349,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 						rosalyne.playSound(SoundEvents.STONE_BREAK);
 						break;
 					case MADDENING:
-						rosalyne.playSound(ModSounds.rosalyneCrack.get());
+						rosalyne.playSound(MYFSounds.rosalyneCrack.get());
 						break;
 				}
 			}
@@ -532,7 +532,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 					holdz = tz;
 					timer = rosalyne.phase == PHASE_3 ? 15 : 20;
 					rosalyne.setAnimation(ANIM_ARM_OUT_DN);
-					rosalyne.playSound(ModSounds.rosalyneSwingPrepare.get(), 1, 1);
+					rosalyne.playSound(MYFSounds.rosalyneSwingPrepare.get(), 1, 1);
 				}
 			}
 			//Holding still before the swing

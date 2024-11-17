@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
-import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.MYFItems;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.ForgeMod;
 
 public class TwilightsThorn extends SwordItem {
-	private static final Tier TIER = new CustomTier(3, 3873, 8, 6, 16, () -> Ingredient.of(ModItems.violetBloom.get()));
+	private static final Tier TIER = new CustomTier(3, 3873, 8, 6, 16, () -> Ingredient.of(MYFItems.violetBloom.get()));
 	// Well it's private and final in the constructor, so gotta remake it to add my own stuff
 	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 	public static final UUID RANGE = UUID.fromString("3080eef9-4ab7-4f8b-9a90-774208857fc9");

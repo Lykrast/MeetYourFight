@@ -6,7 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModSounds {
+public class MYFSounds {
 	public static final DeferredRegister<SoundEvent> REG = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MeetYourFight.MODID);
 	//Bosses
 	public static RegistryObject<SoundEvent> bellringerIdle, bellringerHurt, bellringerDeath;

@@ -2,8 +2,8 @@ package lykrast.meetyourfight.entity;
 
 import java.util.List;
 
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -45,7 +45,7 @@ public class FortunaCardEntity extends Entity {
 	}
 
 	public FortunaCardEntity(Level worldIn, double x, double y, double z) {
-		this(ModEntities.FORTUNA_CARD.get(), worldIn);
+		this(MYFEntities.FORTUNA_CARD.get(), worldIn);
 		setPos(x, y, z);
 		xo = x;
 		yo = y;
@@ -140,7 +140,7 @@ public class FortunaCardEntity extends Entity {
 				//card appear
 				if (timer == START_TIME - hideTime) {
 					setAnimation(ANIM_APPEAR);
-					playSound(ModSounds.dameFortunaCardStart.get(), 1, 1);
+					playSound(MYFSounds.dameFortunaCardStart.get(), 1, 1);
 				}
 				//finish appearing or hinting
 				else if (timer == START_TIME - hideTime - ANIM_APPEAR_DUR || (timer == 30 && isCorrect())) setAnimation(ANIM_IDLE_SHOW);
@@ -155,7 +155,7 @@ public class FortunaCardEntity extends Entity {
 				if (timer == REVEAL_TIME - 5) setAnimation(ANIM_REVEAL);
 				if (timer == REVEAL_TIME - ANIM_REVEAL_DUR - 5) {
 					setAnimation(ANIM_IDLE_SHOW);
-					playSound(correct ? ModSounds.dameFortunaCardRight.get() : ModSounds.dameFortunaCardWrong.get(), 1, 1);
+					playSound(correct ? MYFSounds.dameFortunaCardRight.get() : MYFSounds.dameFortunaCardWrong.get(), 1, 1);
 					if (correct) {
 						List<DameFortunaEntity> dames = level().getEntitiesOfClass(DameFortunaEntity.class, getBoundingBox().inflate(32), (dame) -> dame.isAlive());
 						for (var d : dames) d.progressShuffle();

@@ -11,13 +11,13 @@ public class CompatGWRItems {
 	
 	public static void registerItems() {
 		//Does not have the increased projectile speed of the sniper for more reliable hit through walls
-		phantasmalRifle = ModItems.initItem("phantasmal_rifle",
-				() -> new PhantasmalRifle(ModItems.bossNS().durability(2376), 0, 1.6, 22, 0, 22)
+		phantasmalRifle = MYFItems.initItem("phantasmal_rifle",
+				() -> new PhantasmalRifle(MYFItems.bossNS().durability(2376), 0, 1.6, 22, 0, 22)
 				.fireSound(GWRSounds.sniper)
-				.repair(() -> Ingredient.of(ModItems.phantoplasm.get())));
-		cocktailShotgun = ModItems.initItem("cocktail_shotgun",
-				() -> new CocktailShotgun(ModItems.bossNS().durability(3473), 0, 0.45, 16, 5, 14, 6)	
+				.repair(() -> Ingredient.of(MYFItems.phantoplasm.get())));
+		cocktailShotgun = MYFItems.initItem("cocktail_shotgun",
+				() -> new CocktailShotgun(MYFItems.bossNS().durability(3473), 0, 0.45, 16, 5, 14, 6)	
 				.fireSound(GWRSounds.shotgun)
-				.repair(() -> Ingredient.of(ModItems.fortunesFavor.get())));
+				.repair(() -> Ingredient.of(MYFItems.fortunesFavor.get())));
 	}
 }

@@ -8,7 +8,7 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -99,7 +99,7 @@ public class RoseSpiritEntity extends Monster {
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
 		if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && getStatus() == HIDING) {
-			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
+			if (amount > 1) playSound(MYFSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
 		if (super.hurt(source, amount)) {
@@ -167,17 +167,17 @@ public class RoseSpiritEntity extends Monster {
 	
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSounds.roseSpiritIdle.get();
+		return MYFSounds.roseSpiritIdle.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.roseSpiritHurt.get();
+		return MYFSounds.roseSpiritHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.roseSpiritDeath.get();
+		return MYFSounds.roseSpiritDeath.get();
 	}
 	
 	@Override
@@ -210,7 +210,7 @@ public class RoseSpiritEntity extends Monster {
 		public void start() {
 			mob.attackCooldown = 100 + mob.random.nextInt(61);
 			timer = 60;
-			mob.playSound(ModSounds.roseSpiritHurtBig.get(), 1, 1);
+			mob.playSound(MYFSounds.roseSpiritHurtBig.get(), 1, 1);
 		}
 		
 		@Override
@@ -232,7 +232,7 @@ public class RoseSpiritEntity extends Monster {
 					mob.level().addFreshEntity(ghost);
 					dir = dir.yRot(Mth.HALF_PI / 2);
 				}
-				mob.playSound(ModSounds.roseSpiritShoot.get(), 1, 1);
+				mob.playSound(MYFSounds.roseSpiritShoot.get(), 1, 1);
 			}
 		}
 		
@@ -345,7 +345,7 @@ public class RoseSpiritEntity extends Monster {
 						mob.setStatus(ATTACKING);
 						phase = 2;
 						attackDelay = 25;
-						mob.playSound(ModSounds.roseSpiritWarn.get(), 1, 1);
+						mob.playSound(MYFSounds.roseSpiritWarn.get(), 1, 1);
 						break;
 					case 2:
 						attackDelay = 25;
@@ -379,7 +379,7 @@ public class RoseSpiritEntity extends Monster {
 			ProjectileLineEntity ghost = mob.readyAttack();
 			ghost.setUp(1, dir.x, dir.y, dir.z, sx, sy, sz);
 			mob.level().addFreshEntity(ghost);
-			mob.playSound(ModSounds.roseSpiritShoot.get(), 1, 1);
+			mob.playSound(MYFSounds.roseSpiritShoot.get(), 1, 1);
 		}
 
 		@Override

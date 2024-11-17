@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 
 import lykrast.meetyourfight.misc.MYFConstants;
-import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.MYFItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +24,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 public class CocktailCutlass extends SwordItem {
-	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor.get()));
+	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(MYFItems.fortunesFavor.get()));
 	private static final List<Triple<MobEffect, Integer, Boolean>> EFFECTS = new ArrayList<>();
 	
 	public static void initEffects() {

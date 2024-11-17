@@ -6,8 +6,8 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.MoveFrontOfTarget;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -84,7 +84,7 @@ public class BellringerEntity extends BossEntity {
 	
 	public static void spawn(Player player, Level world) {
 		RandomSource rand = player.getRandom();
-		BellringerEntity bellringer = ModEntities.BELLRINGER.get().create(world);
+		BellringerEntity bellringer = MYFEntities.BELLRINGER.get().create(world);
 		bellringer.moveTo(player.getX() + rand.nextInt(15) - 7, player.getY() + rand.nextInt(9) - 1, player.getZ() + rand.nextInt(15) - 7, rand.nextFloat() * 360 - 180, 0);
 		bellringer.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) bellringer.setTarget(player);
@@ -136,22 +136,22 @@ public class BellringerEntity extends BossEntity {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSounds.bellringerIdle.get();
+		return MYFSounds.bellringerIdle.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.bellringerHurt.get();
+		return MYFSounds.bellringerHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.bellringerDeath.get();
+		return MYFSounds.bellringerDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicMagnum.get();
+		return MYFSounds.musicMagnum.get();
 	}
 	
 	@Override

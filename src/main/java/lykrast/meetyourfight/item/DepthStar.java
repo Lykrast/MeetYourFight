@@ -2,7 +2,7 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.MYFItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class DepthStar extends SwordItem {
-	private static final Tier TIER = new CustomTier(2, 693, 6, 0, 14, () -> Ingredient.of(ModItems.mossyTooth.get()));
+	private static final Tier TIER = new CustomTier(2, 693, 6, 0, 14, () -> Ingredient.of(MYFItems.mossyTooth.get()));
 
 	public DepthStar(Properties builderIn) {
 		super(TIER, 9, -3.2f, builderIn);
