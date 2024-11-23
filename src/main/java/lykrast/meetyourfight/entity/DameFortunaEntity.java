@@ -705,9 +705,9 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 					//midStrafe is the second clap
 					midStrafe = 0;
 					if (dame.phase == PHASE_3) {
-						attackRemaining = 3 + dame.random.nextInt(3);
+						attackRemaining = 3 + dame.random.nextInt(2);
 						//midStrafe is 1 + attacks on second strafe
-						midStrafe = 4 + dame.random.nextInt(3);
+						midStrafe = 4 + dame.random.nextInt(2);
 						attackRemaining += midStrafe;
 					}
 					else if (dame.phase == PHASE_2) attackRemaining = 3 + dame.random.nextInt(2);
