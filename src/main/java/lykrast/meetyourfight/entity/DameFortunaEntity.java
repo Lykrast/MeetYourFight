@@ -543,14 +543,16 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				//Evenly space out the cards on the line
 				BlockPos center = BlockPos.containing(dame.getX(), target.getY() + 1, dame.getZ());
 				Vec3 start = new Vec3(center.getX() - side.getStepX() * 1.5 * (cards - 1), center.getY(), center.getZ() - side.getStepZ() * 1.5 * (cards - 1));
+				int sus = dame.random.nextInt(1000) == 0 ? dame.random.nextInt(cards) : -1; //shh don't tell anyone
 				for (int i = 0; i < cards; i++) {
 					FortunaCardEntity card = new FortunaCardEntity(dame.level(), start.x + 3 * i * side.getStepX(), start.y, start.z + 3 * i * side.getStepZ());
 					card.setYRot(dir.toYRot());
 					//aaaaaaa this was hell to figure out to make it consistent across all orientations
 					//the minus sign on the yrot was hard part (and 360 is cause negative mod in java gives negative)
 					int angleOffset = (i * (360 / cards) + 360 - (int)dir.toYRot()) % 360;
-					card.setup(i, correct, i == correct, i * 10 + 5, center.getX(), center.getY() + 3, center.getZ(), angleOffset, start.x + 3 * shuffled[i] * side.getStepX(), start.y,
-							start.z + 3 * shuffled[i] * side.getStepZ());
+					card.setup(i == sus ? 4 : i, correct == sus ? 4 : correct, i == correct, i * 10 + 5,
+							center.getX(), center.getY() + 3, center.getZ(), angleOffset,
+							start.x + 3 * shuffled[i] * side.getStepX(), start.y, start.z + 3 * shuffled[i] * side.getStepZ());
 					dame.level().addFreshEntity(card);
 				}
 				//Hang around a bit before going in the wait animation
