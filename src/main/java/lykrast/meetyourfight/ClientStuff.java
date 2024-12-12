@@ -41,23 +41,19 @@ public class ClientStuff {
     
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
-    	event.registerLayerDefinition(BellringerModel.MODEL, BellringerModel::createBodyLayer);
+    	event.registerLayerDefinition(BellringerModel.MODEL, () -> BellringerModel.createBodyLayer(CubeDeformation.NONE));
     	event.registerLayerDefinition(DameFortunaModel.MODEL, () -> DameFortunaModel.createBodyLayer(CubeDeformation.NONE));
     	event.registerLayerDefinition(DameFortunaModel.MODEL_ARMOR, () -> DameFortunaModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION));
     	event.registerLayerDefinition(SwampjawModel.MODEL, SwampjawModel::createBodyLayer);
     	event.registerLayerDefinition(RosalyneModel.MODEL, () -> RosalyneModel.createBodyLayer(CubeDeformation.NONE, true));
     	event.registerLayerDefinition(RosalyneModel.MODEL_ARMOR, () -> RosalyneModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION, false));
     	event.registerLayerDefinition(RoseSpiritModel.MODEL, RoseSpiritModel::createBodyLayer);
-    	//TODO Vela
-    	//event.registerLayerDefinition(VelaModel.MODEL, VelaModel::createBodyLayer);
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
     	event.registerLayerDefinition(ProjectileChipsModel.MODEL, ProjectileChipsModel::createBodyLayer);
     	event.registerLayerDefinition(FortunaBombModel.MODEL, FortunaBombModel::createBodyLayer);
     	event.registerLayerDefinition(FortunaCardModel.MODEL, FortunaCardModel::createBodyLayer);
     	event.registerLayerDefinition(SwampMineModel.MODEL, SwampMineModel::createBodyLayer);
-    	//event.registerLayerDefinition(WaterBoulderModel.MODEL, WaterBoulderModel::createBodyLayer);
-    	//event.registerLayerDefinition(VelaVortexModel.MODEL, VelaVortexModel::createBodyLayer);
     }
 
 	@SubscribeEvent
