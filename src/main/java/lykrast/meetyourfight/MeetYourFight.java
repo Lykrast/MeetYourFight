@@ -3,6 +3,7 @@ package lykrast.meetyourfight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import lykrast.meetyourfight.registry.MYFBlocks;
 import lykrast.meetyourfight.registry.MYFEntities;
 import lykrast.meetyourfight.registry.MYFItems;
 import lykrast.meetyourfight.registry.MYFSounds;
@@ -22,6 +23,8 @@ public class MeetYourFight {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		//You know giving them generic names like that was a bad idea cause it kept getting mixed up with the GWR ones...
 		MYFItems.REG.register(bus);
+		MYFBlocks.REG.register(bus);
+		MYFBlocks.REG_BE.register(bus);
 		bus.addListener(MYFItems::makeCreativeTab);
 		MYFEntities.REG.register(bus);
 		MYFSounds.REG.register(bus);

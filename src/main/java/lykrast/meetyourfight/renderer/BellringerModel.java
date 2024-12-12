@@ -18,6 +18,7 @@ import net.minecraft.util.Mth;
 
 public class BellringerModel extends HumanoidModel<BellringerEntity> {
 	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("bellringer"), "main");
+	public static final ModelLayerLocation MODEL_HEAD = new ModelLayerLocation(MeetYourFight.rl("bellringer"), "head");
 	// Mostly copied from Vex
 	private final ModelPart bell, rightSleeve, leftSleeve, jacket;
 

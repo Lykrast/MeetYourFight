@@ -8,6 +8,7 @@ import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.*;
 import lykrast.meetyourfight.misc.MYFConstants;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -20,6 +21,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,7 +36,8 @@ public class MYFItems {
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
 	public static RegistryObject<Item> discMagnum, discFrogPunch;
-	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne, eggVela;
+	public static RegistryObject<Item> headBellringer, headFortuna, headSwampjaw, headRosalyne, headRosalyneCracked;
+	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne;
 	
 	private static List<RegistryObject<? extends Item>> orderedItemsCreative = new ArrayList<>();
 	
@@ -83,6 +87,12 @@ public class MYFItems {
 		//Lasts 3:40.44
 		discFrogPunch = initItem("music_disc_frogpunch", () -> new RecordItem(1, MYFSounds.musicFrogPunch, disc(), 4408));
 		
+		headBellringer = initItem("bellringer_head", skull(MYFBlocks.bellringerHead, MYFBlocks.bellringerHeadWall));
+		headFortuna = initItem("dame_fortuna_head", skull(MYFBlocks.fortunaHead, MYFBlocks.fortunaHeadWall));
+		headSwampjaw = initItem("swampjaw_head", skull(MYFBlocks.swampjawHead, MYFBlocks.swampjawHeadWall));
+		headRosalyne = initItem("rosalyne_head", skull(MYFBlocks.rosalyneHead, MYFBlocks.rosalyneHeadWall));
+		headRosalyneCracked = initItem("rosalyne_head_cracked", skull(MYFBlocks.rosalyneCracked, MYFBlocks.rosalyneCrackedWall));
+		
 		eggBellringer = initItem("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
 		eggDameFortuna = initItem("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
 		eggSwampjaw = initItem("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
@@ -112,6 +122,10 @@ public class MYFItems {
 
 	public static Item.Properties disc() {
 		return noStack().rarity(Rarity.RARE).fireResistant();
+	}
+	
+	public static Supplier<Item> skull(RegistryObject<Block> normal, RegistryObject<Block> wall) {
+		return () -> new StandingAndWallBlockItem(normal.get(), wall.get(), boss(), Direction.DOWN);
 	}
 	
 	public static <I extends Item> RegistryObject<I> initItem(String name, Supplier<I> item) {

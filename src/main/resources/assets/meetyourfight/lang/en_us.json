@@ -59,6 +59,12 @@
 	"item.meetyourfight.music_disc_magnum.desc": "Monkey Warhol - Magnum",
 	"item.meetyourfight.music_disc_frogpunch": "Music Disc",
 	"item.meetyourfight.music_disc_frogpunch.desc": "Guifrog - Frog Punch",
+
+	"block.meetyourfight.bellringer_head": "Bellringer's Head",
+	"block.meetyourfight.dame_fortuna_head": "Dame Fortuna's Head",
+	"block.meetyourfight.swampjaw_head": "Swampjaw's Downscaled Skull",
+	"block.meetyourfight.rosalyne_head": "Rosalyne's Head",
+	"block.meetyourfight.rosalyne_head_cracked": "Rosalyne's Cracked Head",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Bellringer Spawn Egg",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Dame Fortuna Spawn Egg",

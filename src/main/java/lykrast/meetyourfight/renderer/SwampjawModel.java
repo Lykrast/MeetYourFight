@@ -21,6 +21,7 @@ import net.minecraft.util.Mth;
 // Paste this class into your mod and generate all required imports
 public class SwampjawModel extends EntityModel<SwampjawEntity> {
 	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("swampjaw"), "main");
+	public static final ModelLayerLocation MODEL_HEAD = new ModelLayerLocation(MeetYourFight.rl("swampjaw"), "head");
 	private final ModelPart bodyMain;
 	private final ModelPart finRight;
 	private final ModelPart finLeft;

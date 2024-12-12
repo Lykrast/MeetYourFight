@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class DameFortunaRenderer extends HumanoidMobRenderer<DameFortunaEntity, DameFortunaModel> {
-	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png"), GLOW = MeetYourFight.rl("textures/entity/dame_fortuna_glow.png");
+	public static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/dame_fortuna.png"), GLOW = MeetYourFight.rl("textures/entity/dame_fortuna_glow.png");
 
 	public DameFortunaRenderer(Context context) {
 		super(context, new DameFortunaModel(context.bakeLayer(DameFortunaModel.MODEL)), 0.5F);
