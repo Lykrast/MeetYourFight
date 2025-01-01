@@ -2,7 +2,7 @@
 	"type": "minecraft:crafting_shapeless",
 	"ingredients": [
 		{ "tag": "minecraft:music_discs" },
-		{ "tag": "meetyourfight:drop_magnum" }
+		{ "item": "meetyourfight:violet_bloom" }
 	],
-	"result": { "item": "meetyourfight:music_disc_magnum" }
+	"result": { "item": "meetyourfight:music_disc_rosalyne" }
 }

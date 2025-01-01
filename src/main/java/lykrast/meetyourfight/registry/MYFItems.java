@@ -35,7 +35,7 @@ public class MYFItems {
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
-	public static RegistryObject<Item> discMagnum, discFrogPunch;
+	public static RegistryObject<Item> discBellringer, discRosalyne;
 	public static RegistryObject<Item> headBellringer, headFortuna, headSwampjaw, headRosalyne, headRosalyneCracked;
 	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne;
 	
@@ -83,9 +83,9 @@ public class MYFItems {
 		petalCream = initItem("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
 		
 		//Lasts 1:30.92
-		discMagnum = initItem("music_disc_magnum", () -> new RecordItem(1, MYFSounds.musicMagnum, disc(), 1818));
+		discBellringer = initItem("music_disc_bellringer", () -> new RecordItem(1, MYFSounds.musicMagnum, disc(), 1818));
 		//Lasts 3:40.44
-		discFrogPunch = initItem("music_disc_frogpunch", () -> new RecordItem(1, MYFSounds.musicFrogPunch, disc(), 4408));
+		discRosalyne = initItem("music_disc_rosalyne", () -> new RecordItem(1, MYFSounds.musicFrogPunch, disc(), 4408));
 		
 		headBellringer = initItem("bellringer_head", skull(MYFBlocks.bellringerHead, MYFBlocks.bellringerHeadWall));
 		headFortuna = initItem("dame_fortuna_head", skull(MYFBlocks.fortunaHead, MYFBlocks.fortunaHeadWall));

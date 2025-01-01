@@ -55,10 +55,10 @@
 	"item.meetyourfight.tomb_planter.desc": "Fertilizes where you slain grounded mobs",
 	"item.meetyourfight.petal_cream": "Petal Cream",
 	
-	"item.meetyourfight.music_disc_magnum": "Music Disc",
-	"item.meetyourfight.music_disc_magnum.desc": "Monkey Warhol - Magnum",
-	"item.meetyourfight.music_disc_frogpunch": "Music Disc",
-	"item.meetyourfight.music_disc_frogpunch.desc": "Guifrog - Frog Punch",
+	"item.meetyourfight.music_disc_bellringer": "Music Disc",
+	"item.meetyourfight.music_disc_bellringer.desc": "Monkey Warhol - Magnum",
+	"item.meetyourfight.music_disc_rosalyne": "Music Disc",
+	"item.meetyourfight.music_disc_rosalyne.desc": "Guifrog - Frog Punch",
 
 	"block.meetyourfight.bellringer_head": "Bellringer's Head",
 	"block.meetyourfight.dame_fortuna_head": "Dame Fortuna's Head",

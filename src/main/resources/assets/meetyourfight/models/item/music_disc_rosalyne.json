@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "meetyourfight:item/music_disc_magnum"
+		"layer0": "meetyourfight:item/music_disc_rosalyne"
 	}
 }
