@@ -13,6 +13,7 @@ import lykrast.meetyourfight.renderer.FortunaBombModel;
 import lykrast.meetyourfight.renderer.FortunaBombRenderer;
 import lykrast.meetyourfight.renderer.FortunaCardModel;
 import lykrast.meetyourfight.renderer.FortunaCardRenderer;
+import lykrast.meetyourfight.renderer.MYFSkullBlockRenderer;
 import lykrast.meetyourfight.renderer.ProjectileChipsModel;
 import lykrast.meetyourfight.renderer.ProjectileLineModel;
 import lykrast.meetyourfight.renderer.ProjectileLineRenderer;
@@ -59,7 +60,7 @@ public class ClientStuff {
     	event.registerEntityRenderer(MYFEntities.FORTUNA_CARD.get(), (context) -> new FortunaCardRenderer(context));
 		event.registerEntityRenderer(MYFEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
 		
-		event.registerBlockEntityRenderer(MYFBlocks.headType.get(), SkullBlockRenderer::new);
+		event.registerBlockEntityRenderer(MYFBlocks.headType.get(), MYFSkullBlockRenderer::new);
     }
     
     @SubscribeEvent
@@ -88,12 +89,14 @@ public class ClientStuff {
     	EntityModelSet set = event.getEntityModelSet();
     	event.registerSkullModel(MYFHeads.BELLRINGER, new SkullModel(set.bakeLayer(BellringerModel.MODEL_HEAD)));
     	event.registerSkullModel(MYFHeads.DAME_FORTUNA, new SkullModel(set.bakeLayer(DameFortunaModel.MODEL_HEAD)));
-    	event.registerSkullModel(MYFHeads.SWAMPJAW, new SwampjawHeadModel(set.bakeLayer(SwampjawModel.MODEL_HEAD)));
+    	//this one separated to work around extending the vanilla renderer for the block
+    	MYFSkullBlockRenderer.swampjawModel = new SwampjawHeadModel(set.bakeLayer(SwampjawModel.MODEL_HEAD));
+    	event.registerSkullModel(MYFHeads.SWAMPJAW, MYFSkullBlockRenderer.swampjawModel);
     	event.registerSkullModel(MYFHeads.ROSALYNE, new SkullModel(set.bakeLayer(RosalyneModel.MODEL_HEAD)));
     	event.registerSkullModel(MYFHeads.ROSALYNE_CRACKED, new SkullModel(set.bakeLayer(RosalyneModel.MODEL_HEAD)));
     	
     	//I don't know when I should do this or if this is the correct way but it works and prevents a crash
-    	//TODO get bellringer and fortuna their glow
+    	//TODO get bellringer and fortuna their glow, which won't work through my renderer cause it's only for the block
     	SkullBlockRenderer.SKIN_BY_TYPE.put(MYFHeads.BELLRINGER, BellringerRenderer.TEXTURE);
     	SkullBlockRenderer.SKIN_BY_TYPE.put(MYFHeads.DAME_FORTUNA, DameFortunaRenderer.TEXTURE);
     	SkullBlockRenderer.SKIN_BY_TYPE.put(MYFHeads.SWAMPJAW, SwampjawRenderer.TEXTURE);
