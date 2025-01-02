@@ -35,7 +35,7 @@ public class MYFItems {
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
-	public static RegistryObject<Item> discBellringer, discRosalyne;
+	public static RegistryObject<Item> discSwampjaw, discBellringer, discRosalyne;
 	public static RegistryObject<Item> headBellringer, headFortuna, headSwampjaw, headRosalyne, headRosalyneCracked;
 	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne;
 	
@@ -81,7 +81,9 @@ public class MYFItems {
 		blossomingMind = initItem("blossoming_mind", () -> new CurioBaseItem(bossNS(), true, MYFConstants.BLOSSOMING_MIND_INCREASE));
 		tombPlanter = initItem("tomb_planter", () -> new CurioBaseItem(bossNS(), true));
 		petalCream = initItem("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
-		
+
+		//Lasts 1:24.52
+		discSwampjaw = initItem("music_disc_swampjaw", () -> new RecordItem(1, MYFSounds.musicShadows, disc(), 1691));
 		//Lasts 1:30.92
 		discBellringer = initItem("music_disc_bellringer", () -> new RecordItem(1, MYFSounds.musicMagnum, disc(), 1818));
 		//Lasts 3:40.44

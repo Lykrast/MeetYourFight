@@ -48,8 +48,9 @@
 	"item.meetyourfight.tomb_planter.desc": "Fertilise l'emplacement des monstres terrestres tués",
 	"item.meetyourfight.petal_cream": "Crême aux pétales",
 	
-	"item.meetyourfight.music_disc_magnum": "Disque",
-	"item.meetyourfight.music_disc_frogpunch": "Disque",
+	"item.meetyourfight.music_disc_swampjaw": "Disque",
+	"item.meetyourfight.music_disc_bellringer": "Disque",
+	"item.meetyourfight.music_disc_rosalyne": "Disque",
 	
 	"item.meetyourfight.bellringer_spawn_egg": "Oeuf d'apparition de Sonneur",
 	"item.meetyourfight.dame_fortuna_spawn_egg": "Oeuf d'apparition de Dame Fortuna",

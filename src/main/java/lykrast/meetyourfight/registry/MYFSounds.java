@@ -19,7 +19,7 @@ public class MYFSounds {
 	//Items
 	public static RegistryObject<SoundEvent> slicersDiceProc, aceOfIronProc, cagedHeartProc;
 	//Music
-	public static RegistryObject<SoundEvent> musicMagnum, musicFrogPunch;
+	public static RegistryObject<SoundEvent> musicShadows, musicMagnum, musicFrogPunch;
 	
 	static {
 		//Bosses
@@ -69,6 +69,7 @@ public class MYFSounds {
 		cagedHeartProc = initSound("item.proc.caged_heart");
 
 		//Music
+		musicShadows = initSound("music.shadows");
 		musicMagnum = initSound("music.magnum");
 		musicFrogPunch = initSound("music.frog_punch");
 	}

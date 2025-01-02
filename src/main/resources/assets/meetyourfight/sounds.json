@@ -292,6 +292,7 @@
 		]
 	},
 	
+	"music.shadows": { "sounds": [{"name": "meetyourfight:music/kainvinosec_shadows_falling_in_lush_forests", "stream": true, "volume": 0.2}] },
 	"music.magnum": { "sounds": [{"name": "meetyourfight:music/monkey_warhol_magnum", "stream": true, "volume": 0.2}] },
 	"music.frog_punch": { "sounds": [{"name": "meetyourfight:music/guifrog_frog_punch", "stream": true, "volume": 0.2}] }
 }
