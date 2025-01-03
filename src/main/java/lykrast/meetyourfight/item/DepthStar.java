@@ -51,7 +51,10 @@ public class DepthStar extends SwordItem {
 					//entityLiving.swing(entityLiving.getUsedItemHand(), true);
 					world.playSound(null, end.x, end.y, end.z, SoundEvents.GENERIC_EXPLODE, entityLiving.getSoundSource(), 1, (1 + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 					
+					//whoopsies I forgot you don't get attack damage in off hand
+					//uuuuuh let's add a lower cap here, and well that makes that immune to weakness effect...
 					double damage = entityLiving.getAttributeValue(Attributes.ATTACK_DAMAGE);
+					damage = Math.max(damage, 10);
 
 					//world.explode(player, end.x, end.y, end.z, strength * 2, Explosion.BlockInteraction.NONE);
 					for (LivingEntity ent : world.getEntitiesOfClass(LivingEntity.class, new AABB(end.add(-3, -3, -3), end.add(3, 3, 3)))) {
@@ -105,6 +108,7 @@ public class DepthStar extends SwordItem {
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc2").withStyle(ChatFormatting.GRAY));
 	}
 
 }

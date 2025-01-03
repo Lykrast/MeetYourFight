@@ -38,6 +38,7 @@
 	"item.meetyourfight.bone_raker": "Bone Raker",
 	"item.meetyourfight.depth_star": "Depth Star",
 	"item.meetyourfight.depth_star.desc": "Can charge a short range shockwave",
+	"item.meetyourfight.depth_star.desc2": "Damage increases with attack damage",
 	"item.meetyourfight.caged_heart": "Caged Heart",
 	"item.meetyourfight.caged_heart.desc": "Reduces damage that exceeds %1$d%% of max health by %2$d%%",
 	"item.meetyourfight.marshy_delight": "Marshy Delight",
