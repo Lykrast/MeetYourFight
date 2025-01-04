@@ -31,13 +31,13 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class MYFItems {
 	public static final DeferredRegister<Item> REG = DeferredRegister.create(ForgeRegistries.ITEMS, MeetYourFight.MODID);
+	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
-	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
 	public static RegistryObject<Item> discSwampjaw, discBellringer, discRosalyne;
-	public static RegistryObject<Item> headBellringer, headFortuna, headSwampjaw, headRosalyne, headRosalyneCracked;
-	public static RegistryObject<Item> eggBellringer, eggDameFortuna, eggSwampjaw, eggRosalyne;
+	public static RegistryObject<Item> headSwampjaw, headBellringer, headFortuna, headRosalyne, headRosalyneCracked;
+	public static RegistryObject<Item> eggSwampjaw, eggBellringer, eggDameFortuna, eggRosalyne;
 	
 	private static List<RegistryObject<? extends Item>> orderedItemsCreative = new ArrayList<>();
 	
@@ -53,6 +53,13 @@ public class MYFItems {
 	}
 	
 	static {
+		fossilBait = initItem("fossil_bait", () -> new SummonItem(noStack(), SwampjawEntity::spawn));
+		mossyTooth = initItem("mossy_tooth", () -> new Item(boss()));
+		boneRaker = initItem("bone_raker", () -> new BoneRaker(bossNS()));
+		depthStar = initItem("depth_star", () -> new DepthStar(bossNS()));
+		cagedHeart = initItem("caged_heart", () -> new CurioBaseItem(bossNS(), true, MYFConstants.percent(MYFConstants.CAGED_HEART_TRESHOLD), MYFConstants.percent(1 - MYFConstants.CAGED_HEART_MULT)));
+		marshyDelight = initItem("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
+		
 		hauntedBell = initItem("haunted_bell", () -> new SummonItem(noStack(), BellringerEntity::spawn));
 		phantoplasm = initItem("phantoplasm", () -> new Item(boss()));
 		passagesToll = initItem("passages_toll", () -> new PassagesToll(bossNS()));
@@ -66,13 +73,6 @@ public class MYFItems {
 		aceOfIron = initItem("ace_of_iron", () -> new LuckCurio(bossNS(), MYFConstants.percent(MYFConstants.ACE_OF_IRON_CHANCE)));
 		cocktailCutlass = initItem("cocktail_cutlass", () -> new CocktailCutlass(bossNS()));
 		velvetFortune = initItem("velvet_fortune", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(2).saturationMod(0.1f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LUCK, 10*60*20), 1).build()))));
-		
-		fossilBait = initItem("fossil_bait", () -> new SummonItem(noStack(), SwampjawEntity::spawn));
-		mossyTooth = initItem("mossy_tooth", () -> new Item(boss()));
-		boneRaker = initItem("bone_raker", () -> new BoneRaker(bossNS()));
-		depthStar = initItem("depth_star", () -> new DepthStar(bossNS()));
-		cagedHeart = initItem("caged_heart", () -> new CurioBaseItem(bossNS(), true, MYFConstants.percent(MYFConstants.CAGED_HEART_TRESHOLD), MYFConstants.percent(1 - MYFConstants.CAGED_HEART_MULT)));
-		marshyDelight = initItem("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
 		
 		duskKey = initItem("dusk_key", () -> new SummonItem(noStack(), RosalyneEntity::spawn));
 		violetBloom = initItem("violet_bloom", () -> new Item(boss()));
@@ -94,10 +94,10 @@ public class MYFItems {
 		headFortuna = initItem("dame_fortuna_head", skull(MYFBlocks.fortunaHead, MYFBlocks.fortunaHeadWall));
 		headRosalyne = initItem("rosalyne_head", skull(MYFBlocks.rosalyneHead, MYFBlocks.rosalyneHeadWall));
 		headRosalyneCracked = initItem("rosalyne_head_cracked", skull(MYFBlocks.rosalyneCracked, MYFBlocks.rosalyneCrackedWall));
-		
+
+		eggSwampjaw = initItem("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
 		eggBellringer = initItem("bellringer_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.BELLRINGER, 0x560080, 0xDFFFF9, defP()));
 		eggDameFortuna = initItem("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
-		eggSwampjaw = initItem("swampjaw_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.SWAMPJAW, 0xFCFBED, 0x738552, defP()));
 		eggRosalyne = initItem("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
 		//initItem("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
 		
