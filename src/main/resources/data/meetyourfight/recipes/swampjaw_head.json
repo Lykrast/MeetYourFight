@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{ "tag": "forge:heads" },
+		{ "item": "meetyourfight:mossy_tooth" }
+	],
+	"result": { "item": "meetyourfight:swampjaw_head" }
+}

@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"group": "meetyourfight_rosalyne_head",
+	"ingredients": [
+		{ "tag": "forge:heads" },
+		{ "item": "meetyourfight:violet_bloom" }
+	],
+	"result": { "item": "meetyourfight:rosalyne_head" }
+}

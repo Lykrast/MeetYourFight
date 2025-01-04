@@ -1,8 +1,8 @@
 {
 	"type": "minecraft:crafting_shapeless",
 	"ingredients": [
-		{ "tag": "minecraft:music_discs" },
+		{ "tag": "forge:heads" },
 		{ "item": "meetyourfight:phantoplasm" }
 	],
-	"result": { "item": "meetyourfight:music_disc_bellringer" }
+	"result": { "item": "meetyourfight:bellringer_head" }
 }

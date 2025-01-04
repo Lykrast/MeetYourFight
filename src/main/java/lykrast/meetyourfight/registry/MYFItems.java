@@ -88,10 +88,10 @@ public class MYFItems {
 		discBellringer = initItem("music_disc_bellringer", () -> new RecordItem(1, MYFSounds.musicMagnum, disc(), 1818));
 		//Lasts 3:40.44
 		discRosalyne = initItem("music_disc_rosalyne", () -> new RecordItem(1, MYFSounds.musicFrogPunch, disc(), 4408));
-		
+
+		headSwampjaw = initItem("swampjaw_head", skull(MYFBlocks.swampjawHead, MYFBlocks.swampjawHeadWall));
 		headBellringer = initItem("bellringer_head", skull(MYFBlocks.bellringerHead, MYFBlocks.bellringerHeadWall));
 		headFortuna = initItem("dame_fortuna_head", skull(MYFBlocks.fortunaHead, MYFBlocks.fortunaHeadWall));
-		headSwampjaw = initItem("swampjaw_head", skull(MYFBlocks.swampjawHead, MYFBlocks.swampjawHeadWall));
 		headRosalyne = initItem("rosalyne_head", skull(MYFBlocks.rosalyneHead, MYFBlocks.rosalyneHeadWall));
 		headRosalyneCracked = initItem("rosalyne_head_cracked", skull(MYFBlocks.rosalyneCracked, MYFBlocks.rosalyneCrackedWall));
 		
