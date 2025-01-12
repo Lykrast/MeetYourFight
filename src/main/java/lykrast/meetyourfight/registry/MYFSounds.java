@@ -19,7 +19,7 @@ public class MYFSounds {
 	//Items
 	public static RegistryObject<SoundEvent> slicersDiceProc, aceOfIronProc, cagedHeartProc;
 	//Music
-	public static RegistryObject<SoundEvent> musicShadows, musicMagnum, musicFrogPunch;
+	public static RegistryObject<SoundEvent> musicSwampjaw, musicBellringer, musicFortuna, musicRosalyne;
 	
 	static {
 		//Bosses
@@ -69,9 +69,10 @@ public class MYFSounds {
 		cagedHeartProc = initSound("item.proc.caged_heart");
 
 		//Music
-		musicShadows = initSound("music.shadows");
-		musicMagnum = initSound("music.magnum");
-		musicFrogPunch = initSound("music.frog_punch");
+		musicSwampjaw = initSound("music.swampjaw");
+		musicBellringer = initSound("music.bellringer");
+		musicFortuna = initSound("music.fortuna");
+		musicRosalyne = initSound("music.rosalyne");
 	}
 	public static RegistryObject<SoundEvent> initSound(String name) {
 		return REG.register(name, () -> SoundEvent.createVariableRangeEvent(MeetYourFight.rl(name)));

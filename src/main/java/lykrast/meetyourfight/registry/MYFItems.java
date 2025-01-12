@@ -35,7 +35,7 @@ public class MYFItems {
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
-	public static RegistryObject<Item> discSwampjaw, discBellringer, discRosalyne;
+	public static RegistryObject<Item> discSwampjaw, discBellringer, discFortuna, discRosalyne;
 	public static RegistryObject<Item> headSwampjaw, headBellringer, headFortuna, headRosalyne, headRosalyneCracked;
 	public static RegistryObject<Item> eggSwampjaw, eggBellringer, eggDameFortuna, eggRosalyne;
 	
@@ -83,11 +83,13 @@ public class MYFItems {
 		petalCream = initItem("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
 
 		//Lasts 1:24.52
-		discSwampjaw = initItem("music_disc_swampjaw", () -> new RecordItem(1, MYFSounds.musicShadows, disc(), 1691));
+		discSwampjaw = initItem("music_disc_swampjaw", () -> new RecordItem(1, MYFSounds.musicSwampjaw, disc(), 1691));
 		//Lasts 1:30.92
-		discBellringer = initItem("music_disc_bellringer", () -> new RecordItem(1, MYFSounds.musicMagnum, disc(), 1818));
+		discBellringer = initItem("music_disc_bellringer", () -> new RecordItem(1, MYFSounds.musicBellringer, disc(), 1818));
+		//Lasts 3:30.00 (well it's 29.995)
+		discFortuna = initItem("music_disc_fortuna", () -> new RecordItem(1, MYFSounds.musicFortuna, disc(), 4200));
 		//Lasts 3:40.44
-		discRosalyne = initItem("music_disc_rosalyne", () -> new RecordItem(1, MYFSounds.musicFrogPunch, disc(), 4408));
+		discRosalyne = initItem("music_disc_rosalyne", () -> new RecordItem(1, MYFSounds.musicRosalyne, disc(), 4408));
 
 		headSwampjaw = initItem("swampjaw_head", skull(MYFBlocks.swampjawHead, MYFBlocks.swampjawHeadWall));
 		headBellringer = initItem("bellringer_head", skull(MYFBlocks.bellringerHead, MYFBlocks.bellringerHeadWall));

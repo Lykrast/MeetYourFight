@@ -285,7 +285,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 
 	@Override
 	protected SoundEvent getMusic() {
-		return MYFSounds.musicFrogPunch.get();
+		return MYFSounds.musicRosalyne.get();
 	}
 	
 	@Override

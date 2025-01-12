@@ -151,7 +151,7 @@ public class BellringerEntity extends BossEntity {
 
 	@Override
 	protected SoundEvent getMusic() {
-		return MYFSounds.musicMagnum.get();
+		return MYFSounds.musicBellringer.get();
 	}
 	
 	@Override

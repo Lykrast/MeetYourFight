@@ -452,7 +452,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 	@Override
 	protected SoundEvent getMusic() {
-		return MYFSounds.musicMagnum.get();
+		return MYFSounds.musicFortuna.get();
 	}
 	
 	@Override
