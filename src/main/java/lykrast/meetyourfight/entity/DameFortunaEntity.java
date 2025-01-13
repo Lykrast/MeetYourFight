@@ -905,6 +905,8 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			timer--;
 			LivingEntity target = dame.getTarget();
+			//I don't know how it can be null here because the ai is supposed to stop, but it happened to someone
+			if (target == null) return;
 			//Start animation
 			if (attackPhase == 0) {
 				dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
@@ -926,7 +928,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 						attackPhase = 2;
 						timer = 30;
 						holdx = dame.getX();
-						holdy = dame.getTarget().getY() + 1;
+						holdy = target.getY() + 1;
 						holdz = dame.getZ();
 						dame.moveControl.setWantedPosition(holdx, holdy, holdz, 1);
 						dame.setAnimation(ANIM_SPIN_POSE);
