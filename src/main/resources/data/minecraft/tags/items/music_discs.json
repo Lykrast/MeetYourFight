@@ -1,7 +1,8 @@
 {
-	"replace": false,
 	"values": [
-		"meetyourfight:music_disc_magnum",
-		"meetyourfight:music_disc_frogpunch"
+		"meetyourfight:music_disc_swampjaw",
+		"meetyourfight:music_disc_bellringer",
+		"meetyourfight:music_disc_fortuna",
+		"meetyourfight:music_disc_rosalyne"
 	]
 }

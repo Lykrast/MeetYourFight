@@ -6,7 +6,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import lykrast.meetyourfight.misc.MYFConstants;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -29,7 +28,7 @@ public class WiltedIdeals extends CurioBaseItem {
 	@Override
 	public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
 		//That should help the health update on the UI
-		if (prevStack != stack && slotContext.entity() != null) slotContext.entity().hurt(DamageSource.STARVE, 1);
+		if (prevStack != stack && slotContext.entity() != null) slotContext.entity().hurt(slotContext.entity().damageSources().starve(), 1);
 	}
 
 }

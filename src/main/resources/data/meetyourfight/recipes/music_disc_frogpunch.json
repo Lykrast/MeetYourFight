@@ -1,8 +1,0 @@
-{
-	"type": "minecraft:crafting_shapeless",
-	"ingredients": [
-		{ "tag": "minecraft:music_discs" },
-		{ "item": "meetyourfight:violet_bloom" }
-	],
-	"result": { "item": "meetyourfight:music_disc_frogpunch" }
-}

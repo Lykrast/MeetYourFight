@@ -8,8 +8,8 @@ import lykrast.meetyourfight.entity.ai.MoveFrontOfTarget;
 import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,9 +37,9 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class RosalyneEntity extends BossEntity implements PowerableMob {
 	//Phase is lowest 3 bits, rest is animation 0xAAAAAPPP
@@ -103,7 +104,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		noPhysics = false;
 		setNoGravity(true);
 		
-		if (level.isClientSide()) {
+		if (level().isClientSide()) {
 			int newanim = getAnimation();
 			if (clientAnim != newanim) {
 				prevAnim = clientAnim;
@@ -125,32 +126,32 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	
 	public static void spawn(Player player, Level world) {
 		RandomSource rand = player.getRandom();
-		RosalyneEntity dame = ModEntities.ROSALYNE.get().create(world);
+		RosalyneEntity dame = MYFEntities.ROSALYNE.get().create(world);
 		dame.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(3) + 3, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		dame.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) dame.setTarget(player);
 
-		dame.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
+		ForgeEventFactory.onFinalizeSpawn(dame, (ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
 		dame.createSpirits();
 	}
 	
 	private void createSpirits() {
 		for (int i = 0; i < 4; i++) {
-			RoseSpiritEntity spirit = ModEntities.ROSE_SPIRIT.get().create(level);
+			RoseSpiritEntity spirit = MYFEntities.ROSE_SPIRIT.get().create(level());
 			spirit.moveTo(getX() + (i/2)*4 - 2, getY(), getZ() + (i%2)*4 - 2);
 			spirit.setOwner(this);
 			if (getTarget() != null) spirit.setTarget(getTarget());
 			spirit.attackCooldown = 80 + 60*i;
-			spirit.finalizeSpawn((ServerLevel)level, level.getCurrentDifficultyAt(blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
-			level.addFreshEntity(spirit);
+			ForgeEventFactory.onFinalizeSpawn(spirit, (ServerLevel)level(), level().getCurrentDifficultyAt(blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+			level().addFreshEntity(spirit);
 		}
 	}
 	
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (!source.isBypassInvul() && getPhase() != PHASE_1 && getPhase() != PHASE_3) {
-			if (amount > 1) playSound(ModSounds.aceOfIronProc.get(), 1, 1);
+		if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && getPhase() != PHASE_1 && getPhase() != PHASE_3) {
+			if (amount > 1) playSound(MYFSounds.aceOfIronProc.get(), 1, 1);
 			return false;
 		}
 		return super.hurt(source, amount);
@@ -188,10 +189,10 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	}
 	
 	public void swing() {
-        for(LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(2, 0.2, 2))) {
+        for(LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(2, 0.2, 2))) {
         	if (!(entity instanceof RosalyneEntity) && !(entity instanceof RoseSpiritEntity) && entity.isAlive()) doHurtTarget(entity);
         }
-        playSound(ModSounds.rosalyneSwing.get(), 1, 1);
+        playSound(MYFSounds.rosalyneSwing.get(), 1, 1);
         //attack cycle goes OUTDN, INUP, OUTUP, INDN, repeat
         switch (getAnimation()) {
             //special case for the vertical swing of the crash attack
@@ -218,7 +219,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		//That's where the ender dragon detects crystals so copying that
 		super.aiStep();
 		if ((phase == ENCASED || phase == PHASE_2) && tickCount % 20 == 0) {
-			List<RoseSpiritEntity> list = level.getNearbyEntities(RoseSpiritEntity.class, spiritCountTargeting, this, getBoundingBox().inflate(32));
+			List<RoseSpiritEntity> list = level().getNearbyEntities(RoseSpiritEntity.class, spiritCountTargeting, this, getBoundingBox().inflate(32));
 			for (RoseSpiritEntity spirit : list) {
 				spirit.setOwner(this);
 			}
@@ -233,7 +234,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		if (phase != getPhase()) phase = getPhase();
 		//Start phase transitions
 		if ((phase == ENCASED || phase == PHASE_2) && tickCount % 10 == 0) {
-			if (level.getNearbyEntities(RoseSpiritEntity.class, spiritCountTargeting, this, getBoundingBox().inflate(32)).isEmpty()) {
+			if (level().getNearbyEntities(RoseSpiritEntity.class, spiritCountTargeting, this, getBoundingBox().inflate(32)).isEmpty()) {
 				if (phase == ENCASED) {
 					setPhase(BREAKING_OUT);
 					phase = BREAKING_OUT;
@@ -274,17 +275,17 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.rosalyneHurt.get();
+		return MYFSounds.rosalyneHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.rosalyneDeath.get();
+		return MYFSounds.rosalyneDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicFrogPunch.get();
+		return MYFSounds.musicRosalyne.get();
 	}
 	
 	@Override
@@ -348,7 +349,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 						rosalyne.playSound(SoundEvents.STONE_BREAK);
 						break;
 					case MADDENING:
-						rosalyne.playSound(ModSounds.rosalyneCrack.get());
+						rosalyne.playSound(MYFSounds.rosalyneCrack.get());
 						break;
 				}
 			}
@@ -356,7 +357,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 				switch (rosalyne.phase) {
 					case BREAKING_OUT:
 						rosalyne.setPhase(PHASE_1);
-						rosalyne.level.explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 6, Explosion.BlockInteraction.NONE);
+						rosalyne.level().explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 6, Level.ExplosionInteraction.NONE);
 						break;
 					case SUMMONING:
 						rosalyne.setPhase(PHASE_2);
@@ -364,7 +365,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 						break;
 					case MADDENING:
 						rosalyne.setPhase(PHASE_3);
-						rosalyne.level.explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 4, Explosion.BlockInteraction.NONE);
+						rosalyne.level().explode(rosalyne, rosalyne.getX(), rosalyne.getY(), rosalyne.getZ(), 4, Level.ExplosionInteraction.NONE);
 						break;
 				}
 				rosalyne.setAnimation(ANIM_NEUTRAL);
@@ -512,7 +513,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 				double tz = target.getZ() + offset.z;
 				if (timer <= 0 || rosalyne.distanceToSqr(tx, ty, tz) < 1) {
 					attackPhase = 1;
-					//5° per tick, but also we need to not take too long or it's boring, so right now it's between 90° and 270°
+					//5ï¿½ per tick, but also we need to not take too long or it's boring, so right now it's between 90ï¿½ and 270ï¿½
 					timer = 18 + rosalyne.random.nextInt(36);
 				}
 				rosalyne.moveControl.setWantedPosition(tx, ty, tz, 4);
@@ -531,7 +532,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 					holdz = tz;
 					timer = rosalyne.phase == PHASE_3 ? 15 : 20;
 					rosalyne.setAnimation(ANIM_ARM_OUT_DN);
-					rosalyne.playSound(ModSounds.rosalyneSwingPrepare.get(), 1, 1);
+					rosalyne.playSound(MYFSounds.rosalyneSwingPrepare.get(), 1, 1);
 				}
 			}
 			//Holding still before the swing

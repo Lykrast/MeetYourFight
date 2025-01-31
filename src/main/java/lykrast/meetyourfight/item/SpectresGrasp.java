@@ -19,7 +19,7 @@ public class SpectresGrasp extends CurioBaseItem {
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
 		Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-		map.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(uuid, "Reach bonus", 2, AttributeModifier.Operation.ADDITION));
+		map.put(ForgeMod.BLOCK_REACH.get(), new AttributeModifier(uuid, "Reach bonus", 2, AttributeModifier.Operation.ADDITION));
 
 		return map;
 	}

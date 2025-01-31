@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class RosalyneRenderer extends MobRenderer<RosalyneEntity, RosalyneModel> {
-	private static final ResourceLocation BASE = MeetYourFight.rl("textures/entity/rosalyne.png"), 
+	public static final ResourceLocation BASE = MeetYourFight.rl("textures/entity/rosalyne.png"), 
 			COFFIN = MeetYourFight.rl("textures/entity/rosalyne_coffin.png"), 
 			CRACKED = MeetYourFight.rl("textures/entity/rosalyne_cracked.png");
 

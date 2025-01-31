@@ -2,7 +2,7 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.MYFItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -10,7 +10,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +29,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class DepthStar extends SwordItem {
-	private static final Tier TIER = new CustomTier(2, 693, 6, 0, 14, () -> Ingredient.of(ModItems.mossyTooth.get()));
+	private static final Tier TIER = new CustomTier(2, 693, 6, 0, 14, () -> Ingredient.of(MYFItems.mossyTooth.get()));
 
 	public DepthStar(Properties builderIn) {
 		super(TIER, 9, -3.2f, builderIn);
@@ -52,12 +51,15 @@ public class DepthStar extends SwordItem {
 					//entityLiving.swing(entityLiving.getUsedItemHand(), true);
 					world.playSound(null, end.x, end.y, end.z, SoundEvents.GENERIC_EXPLODE, entityLiving.getSoundSource(), 1, (1 + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 					
+					//whoopsies I forgot you don't get attack damage in off hand
+					//uuuuuh let's add a lower cap here, and well that makes that immune to weakness effect...
 					double damage = entityLiving.getAttributeValue(Attributes.ATTACK_DAMAGE);
+					damage = Math.max(damage, 10);
 
 					//world.explode(player, end.x, end.y, end.z, strength * 2, Explosion.BlockInteraction.NONE);
 					for (LivingEntity ent : world.getEntitiesOfClass(LivingEntity.class, new AABB(end.add(-3, -3, -3), end.add(3, 3, 3)))) {
 						if (ent.isAlive() && !ent.isInvulnerable() && ent != entityLiving) {
-							if (ent.hurt(DamageSource.explosion(entityLiving), (float)((damage+EnchantmentHelper.getDamageBonus(stack, ent.getMobType()))*strength))) {
+							if (ent.hurt(entityLiving.damageSources().explosion(entityLiving, entityLiving), (float)((damage+EnchantmentHelper.getDamageBonus(stack, ent.getMobType()))*strength))) {
 								double mult = Math.max(0, 1 - ent.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 								ent.setDeltaMovement(ent.getDeltaMovement().add(0, 0.4*mult*strength, 0));
 								//fire aspect, like how vanilla applies it
@@ -106,6 +108,7 @@ public class DepthStar extends SwordItem {
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc2").withStyle(ChatFormatting.GRAY));
 	}
 
 }

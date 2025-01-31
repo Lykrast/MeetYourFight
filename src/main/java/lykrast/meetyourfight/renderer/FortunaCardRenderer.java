@@ -19,13 +19,15 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 			MeetYourFight.rl("textures/entity/fortuna_card_club.png"),
 			MeetYourFight.rl("textures/entity/fortuna_card_heart.png"),
 			MeetYourFight.rl("textures/entity/fortuna_card_diamond.png"),
-			MeetYourFight.rl("textures/entity/fortuna_card_spade.png")
+			MeetYourFight.rl("textures/entity/fortuna_card_spade.png"),
+			MeetYourFight.rl("textures/entity/fortuna_card_amogus.png") //shh don't tell anyone
 	};
 	private static final RenderType[] TEXTURES_OVERLAY = {
 			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_club.png"), false),
 			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_heart.png"), false),
 			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_diamond.png"), false),
-			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_spade.png"), false)
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_spade.png"), false),
+			RenderType.entityTranslucentEmissive(MeetYourFight.rl("textures/entity/fortuna_card_ask_amogus.png"), false) //shh don't tell anyone
 		};
 	private static final ResourceLocation TEXTURE_HIDDEN = MeetYourFight.rl("textures/entity/fortuna_card_hidden.png");
 	private final FortunaCardModel model;
@@ -76,7 +78,7 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 		model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		//addlayer is on the mob rendered so whoops gotta redo it hope it works
 		if (entityIn.clientAnim == FortunaCardEntity.ANIM_IDLE_QUESTION) {
-			ivertexbuilder = bufferIn.getBuffer(TEXTURES_OVERLAY[Mth.clamp(entityIn.getVariantQuestion(), 0, TEXTURES_OVERLAY.length)]);
+			ivertexbuilder = bufferIn.getBuffer(TEXTURES_OVERLAY[Mth.clamp(entityIn.getVariantQuestion(), 0, TEXTURES_OVERLAY.length-1)]);
 			model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		matrixStackIn.popPose();
@@ -89,7 +91,7 @@ public class FortunaCardRenderer extends EntityRenderer<FortunaCardEntity> {
 	public ResourceLocation getTextureLocation(FortunaCardEntity entity) {
 		int anim = entity.clientAnim;
 		if (anim == FortunaCardEntity.ANIM_IDLE_HIDDEN || anim == FortunaCardEntity.ANIM_IDLE_QUESTION || (anim == FortunaCardEntity.ANIM_HIDE && entity.animTimer <= HIDE_HALF) || (anim == FortunaCardEntity.ANIM_REVEAL && entity.animTimer >= REVEAL_HALF)) return TEXTURE_HIDDEN;
-		return TEXTURES[Mth.clamp(entity.getVariant(), 0, TEXTURES.length)];
+		return TEXTURES[Mth.clamp(entity.getVariant(), 0, TEXTURES.length-1)];
 	}
 
 }

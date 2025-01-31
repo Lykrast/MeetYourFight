@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.ai.PhantomAttackPlayer;
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -71,7 +71,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	
 	public static void spawn(Player player, Level world) {
 		RandomSource rand = player.getRandom();
-		SwampjawEntity fish = ModEntities.SWAMPJAW.get().create(world);
+		SwampjawEntity fish = MYFEntities.SWAMPJAW.get().create(world);
 		fish.moveTo(player.getX() + rand.nextInt(5) - 2, player.getY() + rand.nextInt(10) + 5, player.getZ() + rand.nextInt(5) - 2, rand.nextFloat() * 360 - 180, 0);
 		//fish.attackCooldown = 100;
 		if (!player.getAbilities().instabuild) fish.setTarget(player);
@@ -97,7 +97,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 		super.tick();
 		noPhysics = false;
 		
-		if (level.isClientSide()) {
+		if (level().isClientSide()) {
 			int newanim = getAnimation();
 			if (clientAnim != newanim) {
 				prevAnim = clientAnim;
@@ -110,6 +110,8 @@ public class SwampjawEntity extends BossFlyingEntity {
 		}
 	}
 
+	//this one is fine to override
+	@SuppressWarnings("deprecation")
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
 		orbitPosition = this.blockPosition().above(5);
@@ -148,10 +150,11 @@ public class SwampjawEntity extends BossFlyingEntity {
 		return Mth.approachDegrees(tailPitch, getXRot(), 2 * partialTick);
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			tailYaw = Mth.approachDegrees(tailYaw, getYRot(), 6);
 			tailPitch = Mth.approachDegrees(tailPitch, getXRot(), 2);
 		}
@@ -177,22 +180,22 @@ public class SwampjawEntity extends BossFlyingEntity {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return ModSounds.swampjawIdle.get();
+		return MYFSounds.swampjawIdle.get();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return ModSounds.swampjawHurt.get();
+		return MYFSounds.swampjawHurt.get();
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return ModSounds.swampjawDeath.get();
+		return MYFSounds.swampjawDeath.get();
 	}
 
 	@Override
 	protected SoundEvent getMusic() {
-		return ModSounds.musicMagnum.get();
+		return MYFSounds.musicSwampjaw.get();
 	}
 
 	@Override
@@ -207,7 +210,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	
 	private void swipeAttack() {
 		playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 10.0F, 0.95F + random.nextFloat() * 0.1F);
-        for(LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 1, 1.75))) {
+        for(LivingEntity target : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(1.75, 1, 1.75))) {
         	if (target.isAlive() && !target.isInvulnerable() && target != this) {
         		if (doHurtTarget(target)) {
 					double mult = Math.max(0, 1 - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
@@ -335,12 +338,12 @@ public class SwampjawEntity extends BossFlyingEntity {
 				updateOffset();
 			}
 
-			if (swampjaw.orbitOffset.y < swampjaw.getY() && !swampjaw.level.isEmptyBlock(swampjaw.blockPosition().below(1))) {
+			if (swampjaw.orbitOffset.y < swampjaw.getY() && !swampjaw.level().isEmptyBlock(swampjaw.blockPosition().below(1))) {
 				height = Math.max(1, height);
 				updateOffset();
 			}
 
-			if (swampjaw.orbitOffset.y > swampjaw.getY() && !swampjaw.level.isEmptyBlock(swampjaw.blockPosition().above(1))) {
+			if (swampjaw.orbitOffset.y > swampjaw.getY() && !swampjaw.level().isEmptyBlock(swampjaw.blockPosition().above(1))) {
 				height = Math.min(-1, height);
 				updateOffset();
 			}
@@ -437,7 +440,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
 			}
 			else if (swampjaw.hurtTime > 0) {
-				swampjaw.playSound(ModSounds.swampjawStun.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
+				swampjaw.playSound(MYFSounds.swampjawStun.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 				swampjaw.attackDelay = 50;
 				swampjaw.behavior = STUNNED;
 				swampjaw.setAnimation(ANIM_STUN);
@@ -503,7 +506,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 						swampjaw.setAnimation(ANIM_SWOOP);
 						updateOrbit();
 						swampjaw.attackDelay = (4 + swampjaw.random.nextInt(4)) * 20;
-						swampjaw.playSound(ModSounds.swampjawCharge.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
+						swampjaw.playSound(MYFSounds.swampjawCharge.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 					}
 					//Switch to bomb mode
 					else if (swampjaw.behavior == CIRCLE) {
@@ -516,12 +519,12 @@ public class SwampjawEntity extends BossFlyingEntity {
 						if (bombLeft <= 0) swampjaw.attackDelay = 30 + swampjaw.random.nextInt(30);
 						else swampjaw.attackDelay = 30;
 						updateOrbit();
-						swampjaw.playSound(ModSounds.swampjawBomb.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
-						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level, swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
+						swampjaw.playSound(MYFSounds.swampjawBomb.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
+						SwampMineEntity tntentity = new SwampMineEntity(swampjaw.level(), swampjaw.getX() + 0.5, swampjaw.getY(), swampjaw.getZ() + 0.5, swampjaw);
 						//The ellpeck idea
 						Vec3 motion = swampjaw.getDeltaMovement();
 						tntentity.setDeltaMovement(tntentity.getDeltaMovement().add(motion.x * 0.5, 0, motion.z * 0.5));
-						swampjaw.level.addFreshEntity(tntentity);
+						swampjaw.level().addFreshEntity(tntentity);
 					}
 				}
 				//animation change

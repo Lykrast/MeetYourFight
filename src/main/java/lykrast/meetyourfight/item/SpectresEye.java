@@ -22,7 +22,7 @@ public class SpectresEye extends CurioBaseItem {
 		LivingEntity livingEntity = slotContext.entity();
 		if (livingEntity.tickCount % 60 != 0 || !(livingEntity instanceof Player)) return;
 		
-		List<LivingEntity> list = livingEntity.level.getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(MYFConstants.SPECTRES_EYE_RANGE), e -> e instanceof Enemy);
+		List<LivingEntity> list = livingEntity.level().getEntitiesOfClass(LivingEntity.class, livingEntity.getBoundingBox().inflate(MYFConstants.SPECTRES_EYE_RANGE), e -> e instanceof Enemy);
 		for (LivingEntity e : list) {
 			e.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100));
 		}

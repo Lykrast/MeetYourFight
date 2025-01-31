@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 
 import lykrast.meetyourfight.misc.MYFConstants;
-import lykrast.meetyourfight.registry.ModItems;
+import lykrast.meetyourfight.registry.MYFItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +24,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 public class CocktailCutlass extends SwordItem {
-	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(ModItems.fortunesFavor.get()));
+	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(MYFItems.fortunesFavor.get()));
 	private static final List<Triple<MobEffect, Integer, Boolean>> EFFECTS = new ArrayList<>();
 	
 	public static void initEffects() {
@@ -54,23 +54,23 @@ public class CocktailCutlass extends SwordItem {
 			else chance = 1.0 / (5.0 - luck);
 			int effectLevel = -1;
 			//Using the Item random cause it seems like that's what vanilla item uses (and at least for bonemeal it's used a different amount of times in client)
-			if (attacker.getLevel().getRandom().nextDouble() <= chance) {
+			if (attacker.level().getRandom().nextDouble() <= chance) {
 				effectLevel = 0;
 				//Roll for extra strength
 				for (int i = 0; i < 2; i++) {
 					chance *= 0.5;
-					if (attacker.getLevel().getRandom().nextDouble() <= chance) effectLevel++;
+					if (attacker.level().getRandom().nextDouble() <= chance) effectLevel++;
 					else break;
 				}
 			}
 			if (effectLevel >= 0) {
 				//Choose effect
-				Triple<MobEffect, Integer, Boolean> triple = EFFECTS.get(attacker.getLevel().getRandom().nextInt(EFFECTS.size()));
+				Triple<MobEffect, Integer, Boolean> triple = EFFECTS.get(attacker.level().getRandom().nextInt(EFFECTS.size()));
 				//If the effect doesn't scale with potency, increase duration instead
 				int duration = triple.getRight() ? triple.getMiddle() * (1 + effectLevel) : triple.getMiddle();
 				int potency = triple.getRight() ? 0 : effectLevel;
 				attacker.addEffect(new MobEffectInstance(triple.getLeft(), duration, potency, false, false, true));
-				attacker.level.playSound(null, attacker.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1, 1);
+				attacker.level().playSound(null, attacker.blockPosition(), SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1, 1);
 			}
 		}
 		return super.hurtEnemy(stack, target, attacker);

@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"group": "meetyourfight_rosalyne_head",
+	"ingredients": [
+		{ "item": "meetyourfight:rosalyne_head_cracked" },
+		{ "item": "minecraft:bone_meal" }
+	],
+	"result": { "item": "meetyourfight:rosalyne_head" }
+}

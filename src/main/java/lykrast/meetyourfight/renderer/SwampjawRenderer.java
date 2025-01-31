@@ -1,7 +1,7 @@
 package lykrast.meetyourfight.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.SwampjawEntity;
@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class SwampjawRenderer extends MobRenderer<SwampjawEntity, SwampjawModel> {
-	private static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/swampjaw.png");
+	public static final ResourceLocation TEXTURE = MeetYourFight.rl("textures/entity/swampjaw.png");
 
 	public SwampjawRenderer(Context context) {
 		super(context, new SwampjawModel(context.bakeLayer(SwampjawModel.MODEL)), 0.75F);
@@ -31,7 +31,7 @@ public class SwampjawRenderer extends MobRenderer<SwampjawEntity, SwampjawModel>
 	@Override
 	protected void setupRotations(SwampjawEntity entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
 		super.setupRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
-		matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(entityLiving.getXRot()));
+		matrixStackIn.mulPose(Axis.XP.rotationDegrees(entityLiving.getXRot()));
 	}
 
 }

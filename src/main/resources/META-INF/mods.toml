@@ -7,8 +7,8 @@ license="MIT License https://github.com/Lykrast/MeetYourFight/blob/master/LICENS
 modId="meetyourfight"
 version="${file.jarVersion}"
 displayName="Meet Your Fight"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/meet-your-fight"
-credits="JTK22 for the Haunted Bell texture, Monkey Warhol (www.monkeywarhol.com) for the song Magnum (CC BY 4.0), Guifrog for the song Frog Punch (CC BY 4.0)"
+displayURL="https://modrinth.com/mod/meet-your-fight"
+credits="JTK22 for the Haunted Bell texture, Monkey Warhol, Guifrog, Kain Vinosec, PinpinNeon for their respective songs (resp. CC BY, CC BY, used under licence, commissionned for this mod)"
 authors="Lykrast"
 description='''
 Adds several bosses to fight, each giving you access to unique goodies, such as weapons, armors or curios. Theses bosses won't come to you on their own though, to call them you need to craft the appropriate summoning item.

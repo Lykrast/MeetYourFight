@@ -3,9 +3,10 @@ package lykrast.meetyourfight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import lykrast.meetyourfight.registry.ModEntities;
-import lykrast.meetyourfight.registry.ModItems;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFBlocks;
+import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.registry.MYFItems;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -21,9 +22,12 @@ public class MeetYourFight {
 	public MeetYourFight() {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		//You know giving them generic names like that was a bad idea cause it kept getting mixed up with the GWR ones...
-		ModItems.REG.register(bus);
-		ModEntities.REG.register(bus);
-		ModSounds.REG.register(bus);
+		MYFItems.REG.register(bus);
+		MYFBlocks.REG.register(bus);
+		MYFBlocks.REG_BE.register(bus);
+		bus.addListener(MYFItems::makeCreativeTab);
+		MYFEntities.REG.register(bus);
+		MYFSounds.REG.register(bus);
 	}
 	
 	public static ResourceLocation rl(String name) {

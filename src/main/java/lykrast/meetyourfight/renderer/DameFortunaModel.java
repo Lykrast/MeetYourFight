@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "main");
 	public static final ModelLayerLocation MODEL_ARMOR = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "armor");
+	public static final ModelLayerLocation MODEL_HEAD = new ModelLayerLocation(MeetYourFight.rl("dame_fortuna"), "head");
 	//Arm poses, they take degrees from blockbench for readability
 	//ANIM_IDLE = 0, ANIM_CHIPS_WINDUP = 1, ANIM_CHIPS_LAUNCH = 2, ANIM_DICE_WINDUP = 3, ANIM_DICE_LAUNCH = 4, ANIM_SPIN = 5, ANIM_SPIN_POSE = 6
 	//ANIM_SNAP_PRE = 7, ANIM_SNAP_POST = 8, ANIM_CARD_WAIT = 9, ANIM_FINALE = 10

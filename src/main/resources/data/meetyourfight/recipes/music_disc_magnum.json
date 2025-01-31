@@ -1,8 +1,0 @@
-{
-	"type": "minecraft:crafting_shapeless",
-	"ingredients": [
-		{ "tag": "minecraft:music_discs" },
-		{ "tag": "meetyourfight:drop_magnum" }
-	],
-	"result": { "item": "meetyourfight:music_disc_magnum" }
-}

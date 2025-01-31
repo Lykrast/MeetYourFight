@@ -8,7 +8,7 @@ import lykrast.gunswithoutroses.entity.BulletEntity;
 import lykrast.gunswithoutroses.item.GunItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -18,7 +18,7 @@ public class PhantasmalRifle extends GunItem {
 	}
 
 	@Override
-	protected void changeBullet(Level world, Player player, ItemStack gun, BulletEntity bullet, boolean bulletFree) {
+	protected void affectBulletEntity(LivingEntity shooter, ItemStack gun, BulletEntity bullet, boolean bulletFree) {
 		bullet.noPhysics = true;
 	}
 

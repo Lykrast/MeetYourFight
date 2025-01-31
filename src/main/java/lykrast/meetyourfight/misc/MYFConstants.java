@@ -2,7 +2,7 @@ package lykrast.meetyourfight.misc;
 
 public class MYFConstants {
 	//Bellringer
-	public static final int SPECTRES_EYE_RANGE = 20, PASSAGES_TOLL_RANGE = 16;
+	public static final int SPECTRES_EYE_RANGE = 32, PASSAGES_TOLL_RANGE = 16;
 	//Dame Fortuna
 	public static final float SLICER_DICE_MULT = 2;
 	//Those are mostly for the tooltip, cause if luck is not 0 then the formula kicks in

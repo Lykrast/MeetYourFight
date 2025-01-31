@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{ "tag": "minecraft:music_discs" },
+		{ "item": "meetyourfight:phantoplasm" }
+	],
+	"result": { "item": "meetyourfight:music_disc_bellringer" }
+}

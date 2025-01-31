@@ -21,6 +21,7 @@ import net.minecraft.util.Mth;
 public class RosalyneModel extends EntityModel<RosalyneEntity> {
 	public static final ModelLayerLocation MODEL = new ModelLayerLocation(MeetYourFight.rl("rosalyne"), "main");
 	public static final ModelLayerLocation MODEL_ARMOR = new ModelLayerLocation(MeetYourFight.rl("rosalyne"), "armor");
+	public static final ModelLayerLocation MODEL_HEAD = new ModelLayerLocation(MeetYourFight.rl("rosalyne"), "head");
 	private final ModelPart head;
 	private final ModelPart body;
 	private final ModelPart rightArm;

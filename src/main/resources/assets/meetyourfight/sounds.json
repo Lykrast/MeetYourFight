@@ -292,6 +292,8 @@
 		]
 	},
 	
-	"music.magnum": { "sounds": [{"name": "meetyourfight:music/monkey_warhol_magnum", "stream": true, "volume": 0.2}] },
-	"music.frog_punch": { "sounds": [{"name": "meetyourfight:music/guifrog_frog_punch", "stream": true, "volume": 0.2}] }
+	"music.swampjaw": { "sounds": [{"name": "meetyourfight:music/kainvinosec_shadows_falling_in_lush_forests", "stream": true, "volume": 0.2}] },
+	"music.bellringer": { "sounds": [{"name": "meetyourfight:music/monkey_warhol_magnum", "stream": true, "volume": 0.2}] },
+	"music.fortuna": { "sounds": [{"name": "meetyourfight:music/pinpinneon_place_your_bet-life_on_red", "stream": true, "volume": 0.2}] },
+	"music.rosalyne": { "sounds": [{"name": "meetyourfight:music/guifrog_frog_punch", "stream": true, "volume": 0.2}] }
 }

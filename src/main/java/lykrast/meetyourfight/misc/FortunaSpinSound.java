@@ -1,7 +1,7 @@
 package lykrast.meetyourfight.misc;
 
 import lykrast.meetyourfight.entity.DameFortunaEntity;
-import lykrast.meetyourfight.registry.ModSounds;
+import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,7 +13,7 @@ public class FortunaSpinSound extends AbstractTickableSoundInstance {
 	private final DameFortunaEntity dame;
 
 	public FortunaSpinSound(DameFortunaEntity dame) {
-		super(ModSounds.dameFortunaSpinLoop.get(), dame.getSoundSource(), SoundInstance.createUnseededRandom());
+		super(MYFSounds.dameFortunaSpinLoop.get(), dame.getSoundSource(), SoundInstance.createUnseededRandom());
 		this.dame = dame;
 		x = dame.getX();
 		y = dame.getY();

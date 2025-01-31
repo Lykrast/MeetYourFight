@@ -29,7 +29,7 @@ public class PhantomAttackPlayer extends Goal {
 		}
 		else {
 			this.tickDelay = 60;
-			List<Player> list = entity.level.getNearbyPlayers(predicate, entity, entity.getBoundingBox().inflate(16.0D, 64.0D, 16.0D));
+			List<Player> list = entity.level().getNearbyPlayers(predicate, entity, entity.getBoundingBox().inflate(16.0D, 64.0D, 16.0D));
 			if (!list.isEmpty()) {
 				list.sort(Comparator.<Entity, Double>comparing(Entity::getY).reversed());
 

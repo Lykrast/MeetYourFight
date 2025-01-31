@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{ "tag": "forge:heads" },
+		{ "item": "meetyourfight:phantoplasm" }
+	],
+	"result": { "item": "meetyourfight:bellringer_head" }
+}

@@ -1,6 +1,6 @@
 package lykrast.meetyourfight.entity;
 
-import lykrast.meetyourfight.registry.ModEntities;
+import lykrast.meetyourfight.registry.MYFEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,7 +25,7 @@ public class ProjectileLineEntity extends ProjectileBossAbstract {
 	}
 
 	public ProjectileLineEntity(Level worldIn, LivingEntity shooter) {
-		super(ModEntities.PROJECTILE_LINE.get(), shooter, 0, 0, 0, worldIn);
+		super(MYFEntities.PROJECTILE_LINE.get(), shooter, 0, 0, 0, worldIn);
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class ProjectileLineEntity extends ProjectileBossAbstract {
 	
 	@Override
 	protected void particles(double targetx, double targety, double targetz) {
-		level.addParticle(ParticleTypes.END_ROD, targetx, targety + 0.5, targetz, 0, 0, 0);
+		level().addParticle(ParticleTypes.END_ROD, targetx, targety + 0.5, targetz, 0, 0, 0);
 	}
 
 	@Override

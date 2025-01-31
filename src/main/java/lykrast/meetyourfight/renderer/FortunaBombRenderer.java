@@ -2,7 +2,7 @@ package lykrast.meetyourfight.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.FortunaBombEntity;
@@ -55,9 +55,9 @@ public class FortunaBombRenderer extends EntityRenderer<FortunaBombEntity> {
 		
 		//Copied from shulker bullet
 		float f2 = (float) entityIn.tickCount + partialTicks;
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.sin(f2 * 0.1F) * 180));
-		matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.cos(f2 * 0.1F) * 180));
-		matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.sin(f2 * 0.15F) * 360));
+		matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.sin(f2 * 0.1F) * 180));
+		matrixStackIn.mulPose(Axis.XP.rotationDegrees(Mth.cos(f2 * 0.1F) * 180));
+		matrixStackIn.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f2 * 0.15F) * 360));
 
 		model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, overlay, 1, 1, 1, 1);
 		matrixStackIn.popPose();
@@ -73,7 +73,7 @@ public class FortunaBombRenderer extends EntityRenderer<FortunaBombEntity> {
 			model.setupAnim(entityIn, 0, 0, 0, 0, 0);
 			for (int i = 0; i < 4; i++) {
 				//if I rotate after scaling it doesn't work like I want it, have to rotate then scale which means having to push stack ugh
-				matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(45));
+				matrixStackIn.mulPose(Axis.YP.rotationDegrees(45));
 				matrixStackIn.pushPose();
 				matrixStackIn.scale(64, scale, scale);
 				model.renderToBuffer(matrixStackIn, warningvertex, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
