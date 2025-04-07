@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.Tags;
 
 public class SummonItem extends Item {
 	private BossSpawner spawner;
@@ -29,7 +30,7 @@ public class SummonItem extends Item {
 		if (!(entityLiving instanceof Player)) return stack;
 		Player player = (Player)entityLiving;
 		if (!world.isClientSide) {
-			if (!world.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(32), e -> !e.canChangeDimensions() && e.isAlive()).isEmpty()) {
+			if (!world.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(32), e -> e.getType().is(Tags.EntityTypes.BOSSES) && e.isAlive()).isEmpty()) {
 				player.displayClientMessage(Component.translatable("status.meetyourfight.boss_nearby"), true);
 				return stack;
 			}
