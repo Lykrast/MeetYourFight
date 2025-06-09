@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[42,)"
 issueTrackerURL="https://github.com/Lykrast/MeetYourFight/issues"
-license="MIT License https://github.com/Lykrast/MeetYourFight/blob/master/LICENSE"
+license="All Rights Reserved https://github.com/Lykrast/MeetYourFight/blob/master/LICENSE"
 
 [[mods]]
 modId="meetyourfight"
