@@ -31,7 +31,7 @@ public class MYFConfigValues {
 	public static int BLOSSOMING_MIND_CAP = 10;
 
 	public static int percent(double percent) {
-		return (int)(100.0*percent);
+		return (int) Math.round(100.0*percent);
 	}
 	
 	public static void refresh(ModConfig config) {
