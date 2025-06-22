@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import lykrast.meetyourfight.MeetYourFight;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.ai.PhantomAttackPlayer;
 import lykrast.meetyourfight.registry.MYFEntities;
 import lykrast.meetyourfight.registry.MYFSounds;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -42,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 public class SwampjawEntity extends BossFlyingEntity {
 	private static final EntityDataAccessor<Byte> ANIMATION = SynchedEntityData.defineId(SwampjawEntity.class, EntityDataSerializers.BYTE);
 	public static final int ANIM_NEUTRAL = 0, ANIM_SWOOP = 1, ANIM_STUN = 2, ANIM_SWIPE = 3;
+	public static final int HP = 100, DMG_CHARGE = 12;
 	private int behavior;
 	private int attackDelay;
 	private static final int CIRCLE = 0, BOMB = 1, SWOOP = 2, STUNNED = 3, SWIPING = 4;
@@ -66,7 +69,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 100).add(Attributes.ATTACK_DAMAGE, 12).add(Attributes.KNOCKBACK_RESISTANCE, 0.8);
+		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, HP).add(Attributes.ATTACK_DAMAGE, DMG_CHARGE).add(Attributes.KNOCKBACK_RESISTANCE, 0.8);
 	}
 	
 	public static void spawn(Player player, Level world) {
@@ -115,6 +118,9 @@ public class SwampjawEntity extends BossFlyingEntity {
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
 		orbitPosition = this.blockPosition().above(5);
+		getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Config Health", MYFConfigValues.SWAMPJAW_HEALTH_MOD, AttributeModifier.Operation.ADDITION));
+		setHealth(getMaxHealth());
+		getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Config Damage", MYFConfigValues.SWAMPJAW_DMG_MOD, AttributeModifier.Operation.ADDITION));
 		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 

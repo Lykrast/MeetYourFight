@@ -1,6 +1,7 @@
 {
 	"item.meetyourfight.summon.use": "Consommé après invocation",
 	"item.meetyourfight.summon.gear": "Équipement recommandé : %s",
+	"item.meetyourfight.summon.configured": "Dégâts et/ou vie configurés",
 
 	"item.meetyourfight.haunted_bell": "Cloche hantée",
 	"item.meetyourfight.haunted_bell.desc": "Invoque Sonneur",

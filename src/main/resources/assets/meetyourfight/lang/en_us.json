@@ -1,6 +1,7 @@
 {
 	"item.meetyourfight.summon.use": "Consumed on summon",
 	"item.meetyourfight.summon.gear": "Recommended gear: %s",
+	"item.meetyourfight.summon.configured": "Damage and/or health configured",
 
 	"item.meetyourfight.haunted_bell": "Haunted Bell",
 	"item.meetyourfight.haunted_bell.desc": "Summons Bellringer",

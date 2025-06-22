@@ -2,6 +2,7 @@ package lykrast.meetyourfight.entity;
 
 import javax.annotation.Nullable;
 
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.registry.MYFEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -81,7 +82,7 @@ public class SwampMineEntity extends Entity {
 	}
 
 	protected void explode() {
-		level().explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), 2.5f, Level.ExplosionInteraction.NONE);
+		level().explode(bomber != null ? bomber : this, getX(), getY(0.0625D), getZ(), (float) MYFConfigValues.SWAMPJAW_EXPLOSION, Level.ExplosionInteraction.NONE);
 	}
 
 	@Override

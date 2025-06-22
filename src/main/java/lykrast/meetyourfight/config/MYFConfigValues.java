@@ -1,8 +1,13 @@
 package lykrast.meetyourfight.config;
 
+import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraftforge.fml.config.ModConfig;
 
 public class MYFConfigValues {
+	//stats
+	public static boolean SWAMPJAW_CHANGED = false, BELLRINGER_CHANGED = false, FORTUNA_CHANGED = false, ROSALYNE_CHANGED = false;
+	public static double SWAMPJAW_HEALTH_MOD = 0, SWAMPJAW_DMG_MOD = 0, SWAMPJAW_EXPLOSION = 2.5;
+	//items
 	//Swampjaw
 	public static double CAGED_HEART_TRESHOLD = 1.0 / 4, CAGED_HEART_MULT = 0.5, BONE_RAKER_BONUS = 2;
 	//Bellringer
@@ -23,6 +28,12 @@ public class MYFConfigValues {
 	}
 	
 	public static void refresh(ModConfig config) {
+		SWAMPJAW_HEALTH_MOD = SwampjawEntity.HP*MYFConfig.COMMON.swampjawHealth.get() - SwampjawEntity.HP;
+		SWAMPJAW_DMG_MOD = SwampjawEntity.DMG_CHARGE*MYFConfig.COMMON.swampjawMelee.get() - SwampjawEntity.DMG_CHARGE;
+		SWAMPJAW_EXPLOSION = MYFConfig.COMMON.swampjawExplosion.get();
+		if (Math.abs(SWAMPJAW_HEALTH_MOD) >= 1 || Math.abs(SWAMPJAW_DMG_MOD) >= 1 || Math.abs(2.5 - SWAMPJAW_EXPLOSION) >= 0.1) SWAMPJAW_CHANGED = true;
+		else SWAMPJAW_CHANGED = false;
+		
 		CAGED_HEART_TRESHOLD = MYFConfig.COMMON.cagedHeartTreshold.get();
 		CAGED_HEART_MULT = MYFConfig.COMMON.cagedHeartMultiplier.get().floatValue();
 		BONE_RAKER_BONUS = MYFConfig.COMMON.boneRakerBonus.get();

@@ -53,28 +53,28 @@ public class MYFItems {
 	}
 	
 	static {
-		fossilBait = initItem("fossil_bait", () -> new SummonItem(noStack(), SwampjawEntity::spawn));
+		fossilBait = initItem("fossil_bait", () -> new SummonItem(noStack(), SwampjawEntity::spawn, () -> MYFConfigValues.SWAMPJAW_CHANGED));
 		mossyTooth = initItem("mossy_tooth", () -> new Item(boss()));
 		boneRaker = initItem("bone_raker", () -> new BoneRaker(bossNS()));
 		depthStar = initItem("depth_star", () -> new DepthStar(bossNS()));
 		cagedHeart = initItem("caged_heart", () -> new CurioBaseItem(bossNS(), true, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.CAGED_HEART_TRESHOLD), MYFConfigValues.percent(1 - MYFConfigValues.CAGED_HEART_MULT)}));
 		marshyDelight = initItem("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
 		
-		hauntedBell = initItem("haunted_bell", () -> new SummonItem(noStack(), BellringerEntity::spawn));
+		hauntedBell = initItem("haunted_bell", () -> new SummonItem(noStack(), BellringerEntity::spawn, () -> MYFConfigValues.BELLRINGER_CHANGED));
 		phantoplasm = initItem("phantoplasm", () -> new Item(boss()));
 		passagesToll = initItem("passages_toll", () -> new PassagesToll(bossNS()));
 		spectresEye = initItem("spectres_eye", () -> new SpectresEye(bossNS()));
 		spectresGrasp = initItem("spectres_grasp", () -> new SpectresGrasp(bossNS()));
 		aetherGlazedCupcake = initItem("aether_glazed_cupcake", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(5).saturationMod(0.6f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LEVITATION, 5*20), 1).build()))));
 		
-		devilsAnte = initItem("devils_ante", () -> new SummonItem(noStack(), DameFortunaEntity::spawn));
+		devilsAnte = initItem("devils_ante", () -> new SummonItem(noStack(), DameFortunaEntity::spawn, () -> MYFConfigValues.FORTUNA_CHANGED));
 		fortunesFavor = initItem("fortunes_favor", () -> new Item(boss()));
 		slicersDice = initItem("slicers_dice", () -> new LuckCurio(bossNS(), () -> MYFConfigValues.SLICER_DICE_LUCK, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.SLICER_DICE_CHANCE), MYFConfigValues.percent(MYFConfigValues.SLICER_DICE_MULT - 1)}));
 		aceOfIron = initItem("ace_of_iron", () -> new LuckCurio(bossNS(), () -> MYFConfigValues.ACE_OF_IRON_LUCK, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.ACE_OF_IRON_CHANCE)}));
 		cocktailCutlass = initItem("cocktail_cutlass", () -> new CocktailCutlass(bossNS(), () -> MYFConfigValues.COCKTAIL_CUTLASS_LUCK));
 		velvetFortune = initItem("velvet_fortune", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(2).saturationMod(0.1f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LUCK, 10*60*20), 1).build()))));
 		
-		duskKey = initItem("dusk_key", () -> new SummonItem(noStack(), RosalyneEntity::spawn));
+		duskKey = initItem("dusk_key", () -> new SummonItem(noStack(), RosalyneEntity::spawn, () -> MYFConfigValues.ROSALYNE_CHANGED));
 		violetBloom = initItem("violet_bloom", () -> new Item(boss()));
 		twilightsThorn = initItem("twilights_thorn", () -> new TwilightsThorn(bossNS()));
 		wiltedIdeals = initItem("wilted_ideals", () -> new WiltedIdeals(bossNS()));

@@ -18,6 +18,8 @@ public class MYFConfig {
 		COMMON_SPEC = specPair.getRight();
 	}
 	
+	public final DoubleValue swampjawHealth, swampjawMelee, swampjawExplosion;
+	
 	public final DoubleValue cagedHeartTreshold, cagedHeartMultiplier, boneRakerBonus;
 	public final IntValue spectresEyeRange, passagesTollRange;
 	public final DoubleValue slicerDiceChance, slicerDiceMultiplier, aceOfIronChance, cocktailCutlassChance, jagershotChance;
@@ -27,7 +29,14 @@ public class MYFConfig {
 	
 	public MYFConfig(ForgeConfigSpec.Builder builder) {
 		builder.comment("Boss stats");
-		builder.push("boss");
+		builder.comment("Changing any of these values will change the recommended gear in the summoning item's tooltip to a notice");
+		builder.push("stats");
+		builder.comment("Swampjaw");
+		builder.push("swampjaw");
+		swampjawHealth = doubleval(builder, "health", 1, 0.1, 1000, "Max health multiplier for Swampjaw", "eg 2 means x2 max health", "Values above ~10 require AttributeFix mod", "Will not apply to already spawned bosses");
+		swampjawMelee = doubleval(builder, "melee", 1, 0.1, 1000, "Damage multiplier for Swampjaw's charge", "eg 2 means x2 damage", "Values above ~170 require AttributeFix mod", "Will not apply to already spawned bosses");
+		swampjawExplosion = doubleval(builder, "explosion", 2.5, 0.1, 20, "Explosion strength for Swampjaw's mines", "eg ghast fireballs are 1, creepers are 3, tnt 4, charged creeper 6");
+		builder.pop();
 		builder.pop();
 		builder.comment("Swampjaw loot");
 		builder.push("swampjaw");
