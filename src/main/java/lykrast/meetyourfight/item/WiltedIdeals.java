@@ -20,7 +20,7 @@ public class WiltedIdeals extends CurioBaseItem {
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
 		Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-		map.put(Attributes.MAX_HEALTH, new AttributeModifier(uuid, "Wilted Ideals", -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL));
+		map.put(Attributes.MAX_HEALTH, new AttributeModifier(uuid, "Wilted Ideals", MYFConfigValues.WILTED_IDEALS_PENALTY, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
 		return map;
 	}

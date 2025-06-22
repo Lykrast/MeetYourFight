@@ -4,7 +4,7 @@ import net.minecraftforge.fml.config.ModConfig;
 
 public class MYFConfigValues {
 	//Swampjaw
-	public static double CAGED_HEART_TRESHOLD = 1.0 / 4, CAGED_HEART_MULT = 0.5;
+	public static double CAGED_HEART_TRESHOLD = 1.0 / 4, CAGED_HEART_MULT = 0.5, BONE_RAKER_BONUS = 2;
 	//Bellringer
 	public static int SPECTRES_EYE_RANGE = 32, PASSAGES_TOLL_RANGE = 16;
 	//Dame Fortuna
@@ -14,7 +14,7 @@ public class MYFConfigValues {
 			COCKTAIL_CUTLASS_CHANCE = 1.0 / 5, COCKTAIL_SHOTGUN_CHANCE = 1.0 / 3;
 	public static boolean SLICER_DICE_LUCK = true, ACE_OF_IRON_LUCK = true, COCKTAIL_CUTLASS_LUCK = true, COCKTAIL_SHOTGUN_LUCK = true;
 	//Rosalyne
-	public static double WILTED_IDEALS_MULT = 1.5;
+	public static double WILTED_IDEALS_MULT = 1.5, WILTED_IDEALS_PENALTY = -0.5;
 	public static double BLOSSOMING_MIND_BONUS = 1;
 	public static int BLOSSOMING_MIND_CAP = 10;
 
@@ -25,6 +25,7 @@ public class MYFConfigValues {
 	public static void refresh(ModConfig config) {
 		CAGED_HEART_TRESHOLD = MYFConfig.COMMON.cagedHeartTreshold.get();
 		CAGED_HEART_MULT = MYFConfig.COMMON.cagedHeartMultiplier.get().floatValue();
+		BONE_RAKER_BONUS = MYFConfig.COMMON.boneRakerBonus.get();
 		
 		SPECTRES_EYE_RANGE = MYFConfig.COMMON.spectresEyeRange.get();
 		PASSAGES_TOLL_RANGE = MYFConfig.COMMON.passagesTollRange.get();
@@ -40,6 +41,7 @@ public class MYFConfigValues {
 		COCKTAIL_SHOTGUN_LUCK = MYFConfig.COMMON.jagershotLuck.get();
 		
 		WILTED_IDEALS_MULT = MYFConfig.COMMON.wiltedIdealsMultiplier.get();
+		WILTED_IDEALS_PENALTY = -MYFConfig.COMMON.wiltedIdealsPenalty.get(); //minus for the attribute to be good
 		BLOSSOMING_MIND_BONUS = MYFConfig.COMMON.blossomingMindBonus.get();
 		BLOSSOMING_MIND_CAP = MYFConfig.COMMON.blossomingMindCap.get();
 	}

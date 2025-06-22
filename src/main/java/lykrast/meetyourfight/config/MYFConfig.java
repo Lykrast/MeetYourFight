@@ -18,11 +18,11 @@ public class MYFConfig {
 		COMMON_SPEC = specPair.getRight();
 	}
 	
-	public final DoubleValue cagedHeartTreshold, cagedHeartMultiplier;
+	public final DoubleValue cagedHeartTreshold, cagedHeartMultiplier, boneRakerBonus;
 	public final IntValue spectresEyeRange, passagesTollRange;
 	public final DoubleValue slicerDiceChance, slicerDiceMultiplier, aceOfIronChance, cocktailCutlassChance, jagershotChance;
 	public final BooleanValue slicerDiceLuck, aceOfIronLuck, cocktailCutlassLuck, jagershotLuck;
-	public final DoubleValue wiltedIdealsMultiplier, blossomingMindBonus;
+	public final DoubleValue wiltedIdealsMultiplier, wiltedIdealsPenalty, blossomingMindBonus;
 	public final IntValue blossomingMindCap;
 	
 	public MYFConfig(ForgeConfigSpec.Builder builder) {
@@ -33,6 +33,7 @@ public class MYFConfig {
 		builder.push("swampjaw");
 		cagedHeartTreshold = doubleval(builder, "cagedHeartTreshold", 0.25, 0, 1, "Caged Heart will reduce damage over this fraction of max health", "eg 0.25 means it reduces damage over 25% max health");
 		cagedHeartMultiplier = doubleval(builder, "cagedHeartMultiplier", 0.5, 0, 1, "Caged Heart's damage multiplier for damage above the treshold", "eg 0.25 multiplies damage by 0.25 = 75% reduction");
+		boneRakerBonus = doubleval(builder, "boneRakerBonus", 2, 0, 100, "Bone Raker bonus attack damage", "Need to reequip or restart world to take effect");
 		builder.pop();
 		builder.comment("Bellringer loot");
 		builder.push("bellringer");
@@ -54,6 +55,7 @@ public class MYFConfig {
 		builder.comment("Rosalyne loot");
 		builder.push("rosalyne");
 		wiltedIdealsMultiplier = doubleval(builder, "wiltedIdealsMultiplier", 1.5, 1, 100, "Damage multiplier of the Wilted Ideals", "eg 2 means x2 damage = +100% damage");
+		wiltedIdealsPenalty = doubleval(builder, "wiltedIdealsPenalty", 0.5, 0, 0.9, "Percent max health penalty from the Wilted Ideals", "eg 0.4 means -40% max health", "Need to reequip or restart world to take effect");
 		blossomingMindBonus = doubleval(builder, "blossomingMindBonus", 1, 0, 100, "Average bonus experience (relative to the mob's xp drop) the Blossoming Mind gives", "eg 0.6 means adds an average of 0.6x the base xp drops (so +60%)");
 		blossomingMindCap = intval(builder, "blossomingMindCap", 10, 1, 10000, "Maximum bonus experiece the Blossoming Mind can give per kill", "The actual amount can vary between 0.5 and 1.5 times that and still depends on the experience dropped by the monster", "I capped it so that it's not 'optimal' to use it for bosses");
 		builder.pop();
