@@ -789,7 +789,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 			switch (chosenPattern) {
 				default:
 				case ATK_CHIPS_CIRCLE:
-					fireChipsCircle(8, 1, circleDelay + 5*(midStrafe > 0 ? attackRemaining-midStrafe-1 : attackRemaining));
+					fireChipsCircle(8, 1, circleDelay + 5*(midStrafe > 0 ? attackRemaining-midStrafe : attackRemaining));
 					if (attackRemaining > 0 && attackRemaining != midStrafe) rotateAroundTarget();
 					break;
 				case ATK_CHIPS_STRAFE:
