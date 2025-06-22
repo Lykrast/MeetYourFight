@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import lykrast.meetyourfight.MeetYourFight;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.*;
 import lykrast.meetyourfight.item.*;
-import lykrast.meetyourfight.misc.MYFConstants;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -57,7 +57,7 @@ public class MYFItems {
 		mossyTooth = initItem("mossy_tooth", () -> new Item(boss()));
 		boneRaker = initItem("bone_raker", () -> new BoneRaker(bossNS()));
 		depthStar = initItem("depth_star", () -> new DepthStar(bossNS()));
-		cagedHeart = initItem("caged_heart", () -> new CurioBaseItem(bossNS(), true, MYFConstants.percent(MYFConstants.CAGED_HEART_TRESHOLD), MYFConstants.percent(1 - MYFConstants.CAGED_HEART_MULT)));
+		cagedHeart = initItem("caged_heart", () -> new CurioBaseItem(bossNS(), true, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.CAGED_HEART_TRESHOLD), MYFConfigValues.percent(1 - MYFConfigValues.CAGED_HEART_MULT)}));
 		marshyDelight = initItem("marshy_delight", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(14).saturationMod(0.9f).meat().build()))));
 		
 		hauntedBell = initItem("haunted_bell", () -> new SummonItem(noStack(), BellringerEntity::spawn));
@@ -69,16 +69,16 @@ public class MYFItems {
 		
 		devilsAnte = initItem("devils_ante", () -> new SummonItem(noStack(), DameFortunaEntity::spawn));
 		fortunesFavor = initItem("fortunes_favor", () -> new Item(boss()));
-		slicersDice = initItem("slicers_dice", () -> new LuckCurio(bossNS(), MYFConstants.percent(MYFConstants.SLICER_DICE_CHANCE), MYFConstants.percent(MYFConstants.SLICER_DICE_MULT - 1)));
-		aceOfIron = initItem("ace_of_iron", () -> new LuckCurio(bossNS(), MYFConstants.percent(MYFConstants.ACE_OF_IRON_CHANCE)));
-		cocktailCutlass = initItem("cocktail_cutlass", () -> new CocktailCutlass(bossNS()));
+		slicersDice = initItem("slicers_dice", () -> new LuckCurio(bossNS(), () -> MYFConfigValues.SLICER_DICE_LUCK, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.SLICER_DICE_CHANCE), MYFConfigValues.percent(MYFConfigValues.SLICER_DICE_MULT - 1)}));
+		aceOfIron = initItem("ace_of_iron", () -> new LuckCurio(bossNS(), () -> MYFConfigValues.ACE_OF_IRON_LUCK, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.ACE_OF_IRON_CHANCE)}));
+		cocktailCutlass = initItem("cocktail_cutlass", () -> new CocktailCutlass(bossNS(), () -> MYFConfigValues.COCKTAIL_CUTLASS_LUCK));
 		velvetFortune = initItem("velvet_fortune", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(2).saturationMod(0.1f).alwaysEat().effect(() -> new MobEffectInstance(MobEffects.LUCK, 10*60*20), 1).build()))));
 		
 		duskKey = initItem("dusk_key", () -> new SummonItem(noStack(), RosalyneEntity::spawn));
 		violetBloom = initItem("violet_bloom", () -> new Item(boss()));
 		twilightsThorn = initItem("twilights_thorn", () -> new TwilightsThorn(bossNS()));
 		wiltedIdeals = initItem("wilted_ideals", () -> new WiltedIdeals(bossNS()));
-		blossomingMind = initItem("blossoming_mind", () -> new CurioBaseItem(bossNS(), true, MYFConstants.BLOSSOMING_MIND_INCREASE));
+		blossomingMind = initItem("blossoming_mind", () -> new CurioBaseItem(bossNS(), true, () -> new Object[] {MYFConfigValues.percent(MYFConfigValues.BLOSSOMING_MIND_BONUS)}));
 		tombPlanter = initItem("tomb_planter", () -> new CurioBaseItem(bossNS(), true));
 		petalCream = initItem("petal_cream", () -> new Item(boss().food((new FoodProperties.Builder().nutrition(4).saturationMod(0.8f).build()))));
 

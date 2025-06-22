@@ -2,7 +2,7 @@ package lykrast.meetyourfight.item;
 
 import java.util.List;
 
-import lykrast.meetyourfight.misc.MYFConstants;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +37,7 @@ public class PassagesToll extends Item {
 		//Query the wall to see if there's a hole
 		BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
 		boolean found = false;
-		for (int i = 0; i < MYFConstants.PASSAGES_TOLL_RANGE; i++) {
+		for (int i = 0; i < MYFConfigValues.PASSAGES_TOLL_RANGE; i++) {
 			mut.move(dir);
 			//Prevent players getting in the void
 			if (mut.getY() <= world.getMinBuildHeight()) break;
@@ -70,7 +70,7 @@ public class PassagesToll extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable(getDescriptionId() + ".desc", MYFConstants.PASSAGES_TOLL_RANGE).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc", MYFConfigValues.PASSAGES_TOLL_RANGE).withStyle(ChatFormatting.GRAY));
 	}
 
 }

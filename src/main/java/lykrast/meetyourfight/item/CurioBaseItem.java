@@ -1,6 +1,7 @@
 package lykrast.meetyourfight.item;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -13,16 +14,16 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 public class CurioBaseItem extends Item implements ICurioItem {
 	private boolean hasDescription;
-	private Object[] args;
+	private Supplier<Object[]> args;
 
-	public CurioBaseItem(Properties properties, boolean hasDescription, Object... args) {
+	public CurioBaseItem(Properties properties, boolean hasDescription, Supplier<Object[]> args) {
 		super(properties);
 		this.hasDescription = hasDescription;
 		this.args = args;
 	}
 
 	public CurioBaseItem(Properties properties, boolean hasDescription) {
-		this(properties, hasDescription, new Object[0]);
+		this(properties, hasDescription, null);
 	}
 
 	@Override
@@ -32,7 +33,10 @@ public class CurioBaseItem extends Item implements ICurioItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		if (hasDescription) tooltip.add(Component.translatable(getDescriptionId() + ".desc", args).withStyle(ChatFormatting.GRAY));
+		if (hasDescription) {
+			if (args != null) tooltip.add(Component.translatable(getDescriptionId() + ".desc", args.get()).withStyle(ChatFormatting.GRAY));
+			else tooltip.add(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
+		}
 	}
 
 }

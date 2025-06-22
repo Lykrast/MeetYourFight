@@ -2,10 +2,11 @@ package lykrast.meetyourfight.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Triple;
 
-import lykrast.meetyourfight.misc.MYFConstants;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.registry.MYFItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.Level;
 public class CocktailCutlass extends SwordItem {
 	private static final Tier TIER = new CustomTier(3, 3168, 8, 3, 14, () -> Ingredient.of(MYFItems.fortunesFavor.get()));
 	private static final List<Triple<MobEffect, Integer, Boolean>> EFFECTS = new ArrayList<>();
+	private Supplier<Boolean> hasLuck;
 	
 	public static void initEffects() {
 		//Effect, duration, scale duration instead of amplifier (for like Fire Resistance)
@@ -41,17 +43,20 @@ public class CocktailCutlass extends SwordItem {
 		EFFECTS.add(Triple.of(MobEffects.LUCK, 60*20, false));
 	}
 
-	public CocktailCutlass(Properties builderIn) {
+	public CocktailCutlass(Properties builderIn, Supplier<Boolean> hasLuck) {
 		super(TIER, 3, -2.4f, builderIn);
+		this.hasLuck = hasLuck;
 	}
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (target != null && attacker instanceof Player) {
 			float luck = ((Player)attacker).getLuck();
-			double chance = MYFConstants.COCKTAIL_CUTLASS_CHANCE;
-			if (luck >= 0) chance = (2.0 + luck) / (10.0 + luck);
-			else chance = 1.0 / (5.0 - luck);
+			double chance = MYFConfigValues.COCKTAIL_CUTLASS_CHANCE;
+			if (MYFConfigValues.COCKTAIL_CUTLASS_LUCK) {
+				if (luck >= 0) chance = (1.0 + 0.5*luck) / ((1.0/MYFConfigValues.COCKTAIL_CUTLASS_CHANCE) + 0.5*luck);
+				else chance = 1.0 / ((1.0/MYFConfigValues.COCKTAIL_CUTLASS_CHANCE) - luck);
+			}
 			int effectLevel = -1;
 			//Using the Item random cause it seems like that's what vanilla item uses (and at least for bonemeal it's used a different amount of times in client)
 			if (attacker.level().getRandom().nextDouble() <= chance) {
@@ -78,8 +83,8 @@ public class CocktailCutlass extends SwordItem {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable(getDescriptionId() + ".desc", MYFConstants.percent(MYFConstants.COCKTAIL_CUTLASS_CHANCE)).withStyle(ChatFormatting.GRAY));
-		tooltip.add(Component.translatable(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable(getDescriptionId() + ".desc", MYFConfigValues.percent(MYFConfigValues.COCKTAIL_CUTLASS_CHANCE)).withStyle(ChatFormatting.GRAY));
+		if (hasLuck.get()) tooltip.add(Component.translatable(LuckCurio.TOOLTIP_LUCK).withStyle(ChatFormatting.GRAY));
 	}
 
 }
