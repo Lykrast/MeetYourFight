@@ -47,7 +47,7 @@ public class MYFConfig {
 		builder.pop();
 		builder.comment("Dame Fortuna");
 		builder.push("fortuna");
-		fortunaHealth = doubleval(builder, "health", 1, 0.1, 1000, "Max health multiplier for Dame Fortuna", "eg 2 means x2 max health", "Values above ~3.4 require AttributeFix mod", "Will not apply to already spawned bosses");
+		fortunaHealth = doubleval(builder, "health", 1, 0.1, 1000, "Max health multiplier for Dame Fortuna, very low values may lead to skipped/wonky card transitions", "eg 2 means x2 max health", "Values above ~3.4 require AttributeFix mod", "Will not apply to already spawned bosses");
 		fortunaDamage = doubleval(builder, "damage", 1, 0.1, 1000, "Damage multiplier for Dame Fortuna's projectiles", "eg 2 means x2 damage");
 		builder.pop();
 		builder.comment("Rosalyne");
