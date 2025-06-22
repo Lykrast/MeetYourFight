@@ -2,7 +2,10 @@ package lykrast.meetyourfight.entity;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import lykrast.meetyourfight.MeetYourFight;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
 import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
@@ -24,6 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -33,6 +37,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PowerableMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -42,12 +48,14 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class DameFortunaEntity extends BossEntity implements PowerableMob {
+	public static final int HP = 300, DMG = 16;
 	/**
 	 * Look at me I can embed attacks AND rage in a single byte! 0x0000RRAA with R for rage (0-2) and A for attack (0-2)
 	 */
@@ -115,7 +123,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 300).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, HP).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
     }
 
 	@Override
@@ -276,6 +284,15 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 
 		ForgeEventFactory.onFinalizeSpawn(dame, (ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
+	}
+
+	//this one is fine to override
+	@SuppressWarnings("deprecation")
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+		getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Config Health", MYFConfigValues.FORTUNA_HEALTH_MOD, AttributeModifier.Operation.ADDITION));
+		setHealth(getMaxHealth());
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 
 	@Override

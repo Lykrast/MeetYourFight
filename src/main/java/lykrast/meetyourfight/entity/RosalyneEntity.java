@@ -3,7 +3,10 @@ package lykrast.meetyourfight.entity;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import lykrast.meetyourfight.MeetYourFight;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.ai.MoveFrontOfTarget;
 import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
@@ -21,6 +24,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,6 +32,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PowerableMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -38,10 +44,12 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class RosalyneEntity extends BossEntity implements PowerableMob {
+	public static final int HP = 500, DMG = 24;
 	//Phase is lowest 3 bits, rest is animation 0xAAAAAPPP
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RosalyneEntity.class, EntityDataSerializers.BYTE);
 	public static final int ENCASED = 0, BREAKING_OUT = 1, PHASE_1 = 2, SUMMONING = 3, PHASE_2 = 4, MADDENING = 5, PHASE_3 = 6;
@@ -84,10 +92,10 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 500)
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, HP)
         		.add(Attributes.ARMOR, 8).add(Attributes.ARMOR_TOUGHNESS, 4)
         		.add(Attributes.KNOCKBACK_RESISTANCE, 1)
-        		.add(Attributes.ATTACK_DAMAGE, 24)
+        		.add(Attributes.ATTACK_DAMAGE, DMG)
         		.add(Attributes.FOLLOW_RANGE, 64);
     }
 
@@ -134,6 +142,16 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		ForgeEventFactory.onFinalizeSpawn(dame, (ServerLevel) world, world.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
 		world.addFreshEntity(dame);
 		dame.createSpirits();
+	}
+
+	//this one is fine to override
+	@SuppressWarnings("deprecation")
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+		getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Config Health", MYFConfigValues.ROSALYNE_HEALTH_MOD, AttributeModifier.Operation.ADDITION));
+		setHealth(getMaxHealth());
+		getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Config Damage", MYFConfigValues.ROSALYNE_MELEE_MOD, AttributeModifier.Operation.ADDITION));
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 	
 	private void createSpirits() {

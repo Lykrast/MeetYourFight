@@ -1,5 +1,6 @@
 package lykrast.meetyourfight.entity;
 
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.registry.MYFEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -52,7 +53,15 @@ public class ProjectileLineEntity extends ProjectileBossAbstract {
 
 	@Override
 	protected float getDamage(LivingEntity shooter, Entity hit) {
-		return getVariant() == VAR_BELLRINGER ? 10 : 16;
+		switch (getVariant()) {
+			default:
+			case VAR_BELLRINGER:
+				return (float) (BellringerEntity.DMG * MYFConfigValues.BELLRINGER_DMG_MULT);
+			case VAR_DAME_FORTUNA:
+				return (float) (DameFortunaEntity.DMG * MYFConfigValues.FORTUNA_DMG_MULT);
+			case VAR_ROSALYNE:
+				return (float) (RoseSpiritEntity.DMG * MYFConfigValues.ROSALYNE_PROJECTILE_MULT);
+		}
 	}
 	
 	@Override

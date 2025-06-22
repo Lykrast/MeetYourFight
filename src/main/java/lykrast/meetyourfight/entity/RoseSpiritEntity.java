@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import lykrast.meetyourfight.MeetYourFight;
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
@@ -18,11 +19,15 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -35,9 +40,11 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
 public class RoseSpiritEntity extends Monster {
+	public static final int HP = 40, DMG = 16;
 	private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(RoseSpiritEntity.class, EntityDataSerializers.BYTE);
 	public static final int HIDING = 0, RISING = 1, OUT = 2, ATTACKING = 3, RETRACTING = 4, HURT = 5, RETRACTING_HURT = 6;
 	@Nullable
@@ -79,8 +86,17 @@ public class RoseSpiritEntity extends Monster {
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 40).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, HP).add(Attributes.ARMOR, 5).add(Attributes.FOLLOW_RANGE, 64);
     }
+
+	//this one is fine to override
+	@SuppressWarnings("deprecation")
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+		getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Config Health", MYFConfigValues.ROSE_SPIRIT_HEALTH_MOD, AttributeModifier.Operation.ADDITION));
+		setHealth(getMaxHealth());
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	}
 
 	public Mob getOwner() {
 		return owner;

@@ -1,5 +1,9 @@
 package lykrast.meetyourfight.config;
 
+import lykrast.meetyourfight.entity.BellringerEntity;
+import lykrast.meetyourfight.entity.DameFortunaEntity;
+import lykrast.meetyourfight.entity.RosalyneEntity;
+import lykrast.meetyourfight.entity.RoseSpiritEntity;
 import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -7,6 +11,9 @@ public class MYFConfigValues {
 	//stats
 	public static boolean SWAMPJAW_CHANGED = false, BELLRINGER_CHANGED = false, FORTUNA_CHANGED = false, ROSALYNE_CHANGED = false;
 	public static double SWAMPJAW_HEALTH_MOD = 0, SWAMPJAW_DMG_MOD = 0, SWAMPJAW_EXPLOSION = 2.5;
+	public static double BELLRINGER_HEALTH_MOD = 0, BELLRINGER_DMG_MULT = 1;
+	public static double FORTUNA_HEALTH_MOD = 0, FORTUNA_DMG_MULT = 1;
+	public static double ROSALYNE_HEALTH_MOD = 0, ROSE_SPIRIT_HEALTH_MOD = 0, ROSALYNE_MELEE_MOD = 0, ROSALYNE_PROJECTILE_MULT = 1;
 	//items
 	//Swampjaw
 	public static double CAGED_HEART_TRESHOLD = 1.0 / 4, CAGED_HEART_MULT = 0.5, BONE_RAKER_BONUS = 2;
@@ -33,6 +40,23 @@ public class MYFConfigValues {
 		SWAMPJAW_EXPLOSION = MYFConfig.COMMON.swampjawExplosion.get();
 		if (Math.abs(SWAMPJAW_HEALTH_MOD) >= 1 || Math.abs(SWAMPJAW_DMG_MOD) >= 1 || Math.abs(2.5 - SWAMPJAW_EXPLOSION) >= 0.1) SWAMPJAW_CHANGED = true;
 		else SWAMPJAW_CHANGED = false;
+		
+		BELLRINGER_HEALTH_MOD = BellringerEntity.HP*MYFConfig.COMMON.bellringerHealth.get() - BellringerEntity.HP;
+		BELLRINGER_DMG_MULT = MYFConfig.COMMON.bellringerDamage.get();
+		if (Math.abs(BELLRINGER_HEALTH_MOD) >= 1 || Math.abs(1 - BELLRINGER_DMG_MULT) >= 0.1) BELLRINGER_CHANGED = true;
+		else BELLRINGER_CHANGED = false;
+		
+		FORTUNA_HEALTH_MOD = DameFortunaEntity.HP*MYFConfig.COMMON.fortunaHealth.get() - DameFortunaEntity.HP;
+		FORTUNA_DMG_MULT = MYFConfig.COMMON.fortunaDamage.get();
+		if (Math.abs(FORTUNA_HEALTH_MOD) >= 1 || Math.abs(1 - FORTUNA_DMG_MULT) >= 0.1) FORTUNA_CHANGED = true;
+		else FORTUNA_CHANGED = false;
+		
+		ROSALYNE_HEALTH_MOD = RosalyneEntity.HP*MYFConfig.COMMON.rosalyneHealth.get() - RosalyneEntity.HP;
+		ROSE_SPIRIT_HEALTH_MOD = RoseSpiritEntity.HP*MYFConfig.COMMON.rosalyneHealth.get() - RoseSpiritEntity.HP;
+		ROSALYNE_MELEE_MOD = RosalyneEntity.DMG*MYFConfig.COMMON.rosalyneMelee.get() - RosalyneEntity.DMG;
+		ROSALYNE_PROJECTILE_MULT = MYFConfig.COMMON.rosalyneProjectile.get();
+		if (Math.abs(ROSALYNE_HEALTH_MOD) >= 1 || Math.abs(ROSE_SPIRIT_HEALTH_MOD) >= 1 || Math.abs(ROSALYNE_MELEE_MOD) >= 1 || Math.abs(1 - ROSALYNE_PROJECTILE_MULT) >= 0.1) ROSALYNE_CHANGED = true;
+		else ROSALYNE_CHANGED = false;
 		
 		CAGED_HEART_TRESHOLD = MYFConfig.COMMON.cagedHeartTreshold.get();
 		CAGED_HEART_MULT = MYFConfig.COMMON.cagedHeartMultiplier.get().floatValue();

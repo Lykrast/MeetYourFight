@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.registry.MYFEntities;
 import lykrast.meetyourfight.registry.MYFSounds;
 import net.minecraft.nbt.CompoundTag;
@@ -62,7 +63,7 @@ public class ProjectileTargetedEntity extends ProjectileBossAbstract {
 
 	@Override
 	protected float getDamage(LivingEntity shooter, Entity hit) {
-		return 16;
+		return (float) (DameFortunaEntity.DMG * MYFConfigValues.FORTUNA_DMG_MULT);
 	}
 
 	@Override
