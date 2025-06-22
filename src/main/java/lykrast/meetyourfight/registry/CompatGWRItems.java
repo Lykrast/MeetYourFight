@@ -11,10 +11,8 @@ public class CompatGWRItems {
 	public static RegistryObject<Item> phantasmalRifle, cocktailShotgun;
 	
 	public static void registerItems() {
-		//Does not have the increased projectile speed of the sniper for more reliable hit through walls
-		//hey update that got fixed, eeeh too lazy to change now
 		phantasmalRifle = MYFItems.initItem("phantasmal_rifle",
-				() -> new PhantasmalRifle(MYFItems.bossNS().durability(2376), 0, 1.6, 24, 0, 22).headshotMult(1.5)
+				() -> new PhantasmalRifle(MYFItems.bossNS().durability(2376), 0, 1.6, 24, 0, 22).headshotMult(1.5).projectileSpeed(4)
 				.fireSound(GWRSounds.sniper)
 				.repair(() -> Ingredient.of(MYFItems.phantoplasm.get())));
 		cocktailShotgun = MYFItems.initItem("cocktail_shotgun",
