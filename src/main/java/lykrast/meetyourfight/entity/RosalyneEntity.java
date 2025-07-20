@@ -429,6 +429,9 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			timer--;
 			LivingEntity target = rosalyne.getTarget();
+			//didn't think this case could happen but apparently it can? (and it'd crashes)
+			//in that case the attack should be interrupted in a few ticks anyway
+			if (target == null) return;
 			//Approaching target
 			if (attackPhase == 0) {
 				if (timer <= 0 || rosalyne.distanceToSqr(target) < 2) {
@@ -524,6 +527,9 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			timer--;
 			LivingEntity target = rosalyne.getTarget();
+			//didn't think this case could happen but apparently it can? (and it'd crashes)
+			//in that case the attack should be interrupted in a few ticks anyway
+			if (target == null) return;
 			//Approaching
 			if (attackPhase == 0) {
 				double tx = target.getX() + offset.x;
@@ -650,6 +656,9 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 		public void tick() {
 			timer--;
 			LivingEntity target = rosalyne.getTarget();
+			//didn't think this case could happen but apparently it can? (and it'd crashes)
+			//in that case the attack should be interrupted in a few ticks anyway
+			if (target == null) return;
 			//Approaching
 			if (attackPhase == 0) {
 				//go up slightly as the pose is held for some movement
