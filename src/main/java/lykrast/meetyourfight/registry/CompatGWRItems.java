@@ -16,7 +16,7 @@ public class CompatGWRItems {
 				.fireSound(GWRSounds.sniper)
 				.repair(() -> Ingredient.of(MYFItems.phantoplasm.get())));
 		cocktailShotgun = MYFItems.initItem("cocktail_shotgun",
-				() -> new CocktailShotgun(MYFItems.bossNS().durability(3473), 0, 0.7, 20, 5, 14, () -> MYFConfigValues.COCKTAIL_SHOTGUN_LUCK).projectiles(4)
+				() -> new CocktailShotgun(MYFItems.bossNS().durability(3473), 0, 0.6, 20, 6, 14, () -> MYFConfigValues.COCKTAIL_SHOTGUN_LUCK).projectiles(4)
 				.fireSound(GWRSounds.shotgun)
 				.repair(() -> Ingredient.of(MYFItems.fortunesFavor.get())));
 	}
