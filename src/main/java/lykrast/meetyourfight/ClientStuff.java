@@ -112,12 +112,13 @@ public class ClientStuff {
 
 	@SubscribeEvent
 	public static void clientStuff(final FMLClientSetupEvent event) {
-
 		//Same as Bow
-		ItemProperties.register(MYFItems.depthStar.get(), MeetYourFight.rl("charge"),
-				(stack, world, entity, someint) -> entity == null || entity.getUseItem() != stack ? 0 : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F);
-		ItemProperties.register(MYFItems.depthStar.get(), MeetYourFight.rl("charging"),
-				(stack, world, entity, someint) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0);
+		event.enqueueWork(() -> {
+			ItemProperties.register(MYFItems.depthStar.get(), MeetYourFight.rl("charge"),
+					(stack, world, entity, someint) -> entity == null || entity.getUseItem() != stack ? 0 : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F);
+			ItemProperties.register(MYFItems.depthStar.get(), MeetYourFight.rl("charging"),
+					(stack, world, entity, someint) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0);
+		});
 	}
 
 }
