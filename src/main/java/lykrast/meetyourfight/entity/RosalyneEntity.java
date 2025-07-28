@@ -308,7 +308,7 @@ public class RosalyneEntity extends BossEntity implements PowerableMob {
 	
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-		return MeetYourFight.rl("rosalyne");
+		return MeetYourFight.rl("entities/rosalyne");
 	}
 	
 	private void rollNextAttack(int ignore) {

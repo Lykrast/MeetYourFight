@@ -211,7 +211,7 @@ public class SwampjawEntity extends BossFlyingEntity {
 	
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-		return MeetYourFight.rl("swampjaw");
+		return MeetYourFight.rl("entities/swampjaw");
 	}
 	
 	private void swipeAttack() {

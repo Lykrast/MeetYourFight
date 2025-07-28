@@ -173,7 +173,7 @@ public class BellringerEntity extends BossEntity {
 	
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-		return MeetYourFight.rl("bellringer");
+		return MeetYourFight.rl("entities/bellringer");
 	}
 	
 	//The regular attacks

@@ -481,7 +481,7 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 	
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
-		return MeetYourFight.rl("dame_fortuna");
+		return MeetYourFight.rl("entities/dame_fortuna");
 	}
 	
 	private static class WaitShuffle extends StationaryAttack {
