@@ -44,7 +44,6 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -113,7 +112,7 @@ public class JupiterEntity extends BossEntity {
 				animProg = 0;
 				animDur = 10;
 				if (clientAnim == ANIM_AIM) animDur = 7;
-				else if (clientAnim == ANIM_CHARGE) animDur = 5;
+				else if (clientAnim == ANIM_CHARGE) animDur = 6;
 				else if (clientAnim == ANIM_THROW) animDur = 3;
 
 				if (clientAnim != ANIM_AIM) {
@@ -125,7 +124,7 @@ public class JupiterEntity extends BossEntity {
 			//projectile scale
 			if (clientAnim == ANIM_CHARGE && animProg >= animDur) {
 				prevProjectileScale = projectileScale;
-				if (projectileScale < 5) projectileScale++;
+				if (projectileScale < 10) projectileScale++;
 			}
 		}
 	}
@@ -136,7 +135,7 @@ public class JupiterEntity extends BossEntity {
 
 	public float getProjectileScale(float partial) {
 		if (projectileScale <= 0) return 0;
-		else return Mth.clamp((prevProjectileScale + partial) / 5f, 0, 1);
+		else return Mth.clamp((prevProjectileScale + partial) / 10f, 0, 1);
 	}
 
 	@Override
@@ -252,7 +251,7 @@ public class JupiterEntity extends BossEntity {
 			blockpos = blockpos.below();
 		} while (blockpos.getY() >= Mth.floor(minY) - 1);
 
-		level().addFreshEntity(new EvokerFangs(level(), posX, blockpos.getY() + d0, posZ, rotationRad, delay, this));
+		level().addFreshEntity(new JupiterLightningEntity(level(), posX, blockpos.getY() + d0, posZ, rotationRad, delay, this));
 
 	}
 

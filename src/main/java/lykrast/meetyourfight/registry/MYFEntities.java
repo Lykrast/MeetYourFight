@@ -29,6 +29,7 @@ public class MYFEntities {
 	public static RegistryObject<EntityType<FortunaBombEntity>> FORTUNA_BOMB;
 	public static RegistryObject<EntityType<FortunaCardEntity>> FORTUNA_CARD;
 	public static RegistryObject<EntityType<SwampMineEntity>> SWAMP_MINE;
+	public static RegistryObject<EntityType<JupiterLightningEntity>> JUPITER_LIGHTNING;
 
 	static {
 		BELLRINGER = REG.register("bellringer", () -> EntityType.Builder.<BellringerEntity>of(BellringerEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
@@ -54,6 +55,8 @@ public class MYFEntities {
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMP_MINE = REG.register("swamp_mine", () -> EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+		JUPITER_LIGHTNING = REG.register("jupiter_lightning", () -> EntityType.Builder.<JupiterLightningEntity>of(JupiterLightningEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(2)
+				.setTrackingRange(16).build(""));
 	}
 
 	@SubscribeEvent

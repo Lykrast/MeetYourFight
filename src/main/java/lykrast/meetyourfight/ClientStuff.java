@@ -39,6 +39,7 @@ public class ClientStuff {
     	event.registerEntityRenderer(MYFEntities.FORTUNA_BOMB.get(), (context) -> new FortunaBombRenderer(context));
     	event.registerEntityRenderer(MYFEntities.FORTUNA_CARD.get(), (context) -> new FortunaCardRenderer(context));
 		event.registerEntityRenderer(MYFEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
+		event.registerEntityRenderer(MYFEntities.JUPITER_LIGHTNING.get(), (context) -> new JupiterLightningRenderer(context));
 		
 		event.registerBlockEntityRenderer(MYFBlocks.headType.get(), MYFSkullBlockRenderer::new);
     }
