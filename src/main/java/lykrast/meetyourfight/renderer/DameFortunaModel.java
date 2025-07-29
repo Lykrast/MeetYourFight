@@ -2,6 +2,7 @@ package lykrast.meetyourfight.renderer;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
+import lykrast.meetyourfight.misc.MYFUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -61,18 +62,10 @@ public class DameFortunaModel extends HumanoidModel<DameFortunaEntity> {
 		super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
 		headProgress = entity.getHeadRotationProgress(partialTick);
 		animProgress = entity.getAnimProgress(partialTick);
-		//quadratic ease out
-		animProgress = 1-animProgress;
-		animProgress *= animProgress;
-		animProgress = 1-animProgress;
+		animProgress = MYFUtils.easeOutQuad(animProgress);
 		pose = POSE[entity.clientAnim];
 		prevPose = POSE[entity.prevAnim];
-		//same ease in out as swampjaw https://math.stackexchange.com/questions/121720/ease-in-out-function/121755#121755
-		if (entity.headRegrowTime > 0) {
-			headScale = (10 - entity.headRegrowTime + partialTick) / 10f;
-			float sq = headScale * headScale;
-			headScale = sq / (2 * (sq - headScale)+1);
-		}
+		if (entity.headRegrowTime > 0) headScale = MYFUtils.easeInOut((10 - entity.headRegrowTime + partialTick) / 10f);
 		else headScale = 1;
 	}
 

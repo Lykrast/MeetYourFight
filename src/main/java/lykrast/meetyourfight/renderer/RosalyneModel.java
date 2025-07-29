@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.RosalyneEntity;
+import lykrast.meetyourfight.misc.MYFUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -101,14 +102,7 @@ public class RosalyneModel extends EntityModel<RosalyneEntity> {
 		pose = RARM_POSE[entityIn.clientAnim];
 		prevPose = RARM_POSE[entityIn.prevAnim];
 		animProgress = entityIn.getAnimProgress(partialTick);
-		if (pose.fast) {
-			//Fast initial then slows down
-			//quartic ease out
-			animProgress = 1-animProgress;
-			animProgress *= animProgress;
-			animProgress *= animProgress;
-			animProgress = 1-animProgress;
-		}
+		if (pose.fast) animProgress = MYFUtils.easeOutQuart(animProgress);
 	}
 
 	@Override

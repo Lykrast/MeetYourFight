@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.entity.SwampjawEntity;
+import lykrast.meetyourfight.misc.MYFUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -73,20 +74,9 @@ public class SwampjawModel extends EntityModel<SwampjawEntity> {
 		tailYaw *= Mth.DEG_TO_RAD;
 		tailPitch *= Mth.DEG_TO_RAD;
 		animProgress = entity.getAnimProgress(partialTick);
-		if (entity.clientAnim == SwampjawEntity.ANIM_SWIPE) {
-			//ease in and out https://math.stackexchange.com/questions/121720/ease-in-out-function/121755#121755
-			float sq = animProgress * animProgress;
-			animProgress = sq / (2 * (sq - animProgress)+1);
-		}
-		else if (entity.clientAnim == SwampjawEntity.ANIM_STUN || entity.prevAnim == SwampjawEntity.ANIM_SWOOP) {
-			//quadratic ease out
-			animProgress = 1-animProgress;
-			animProgress = 1-(animProgress*animProgress);
-		}
-		else {
-			//quadratic ease in
-			animProgress *= animProgress;
-		}
+		if (entity.clientAnim == SwampjawEntity.ANIM_SWIPE) animProgress = MYFUtils.easeInOut(animProgress);
+		else if (entity.clientAnim == SwampjawEntity.ANIM_STUN || entity.prevAnim == SwampjawEntity.ANIM_SWOOP) animProgress = MYFUtils.easeOutQuad(animProgress);
+		else animProgress = MYFUtils.easeInQuad(animProgress);
 		//waggle tail when stunned
 		if (entity.clientAnim == SwampjawEntity.ANIM_STUN) {
 			twitchingYaw = Mth.sin((entity.tickCount+partialTick)*Mth.PI/5)*25*Mth.DEG_TO_RAD*animProgress;
