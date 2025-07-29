@@ -71,7 +71,7 @@ public class JupiterModel extends EntityModel<JupiterEntity> {
 		projectileScale = entity.getProjectileScale(partialTick);
 		if (entity.clientAnim == JupiterEntity.ANIM_AIM || entity.clientAnim == JupiterEntity.ANIM_THROW) animProgress = MYFUtils.easeOutQuad(animProgress);
 		else animProgress = MYFUtils.easeInQuad(animProgress);
-		projectileScale = MYFUtils.easeOutQuart(projectileScale);
+		projectileScale = MYFUtils.easeInOut(projectileScale);
 		pose = POSES[entity.clientAnim];
 		prevPose = POSES[entity.prevAnim];
 	}

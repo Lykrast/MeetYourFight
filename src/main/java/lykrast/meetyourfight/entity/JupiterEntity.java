@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import lykrast.meetyourfight.MeetYourFight;
 import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.ai.MoveAroundTarget;
+import lykrast.meetyourfight.entity.ai.StationaryAttack;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
 import lykrast.meetyourfight.entity.movement.VexMovementController;
 import lykrast.meetyourfight.registry.MYFEntities;
@@ -76,7 +77,7 @@ public class JupiterEntity extends BossEntity {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(0, new FloatGoal(this));
-		goalSelector.addGoal(1, new CircleAndBallAttack(this));
+		goalSelector.addGoal(1, new MultishotAttack(this));
 		goalSelector.addGoal(7, new MoveAroundTarget(this, 1));
 		goalSelector.addGoal(8, new VexMoveRandomGoal(this, 0.25));
 		goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -230,8 +231,7 @@ public class JupiterEntity extends BossEntity {
 	}
 
 	//Copied from Evoker
-	private void spawnFang(double posX, double posZ, double minY, double maxY, float rotationRad, int delay) {
-		//TODO remake with lightning strikes
+	private void spawnLightning(double posX, double posZ, double minY, double maxY, float rotationRad, int delay) {
 		BlockPos blockpos = BlockPos.containing(posX, maxY, posZ);
 		double d0 = 0;
 
@@ -255,16 +255,14 @@ public class JupiterEntity extends BossEntity {
 
 	}
 
-	private static class CircleAndBallAttack extends Goal {
-		//Based on Rosalyne's CircleAndDashAttack
+	private static class MultishotAttack extends StationaryAttack {
 		private JupiterEntity jupiter;
-		private int timer, swingsLeft, attackPhase;
-		private boolean direction;
-		private double holdx, holdy, holdz;
-		private Vec3 offset;
-		//attackPhase 0 = approaching, 1 = charge animation, 2 = circling, 3 = preparing to ball, 4 = hold pose
+		private int timer, attacksLeft, lines;
+		//timestamps for animations
+		private static final int HOLD_TIME = 30, AIM_TIME = HOLD_TIME+10, CHARGE_TIME = AIM_TIME+20;
 
-		public CircleAndBallAttack(JupiterEntity jupiter) {
+		public MultishotAttack(JupiterEntity jupiter) {
+			super(jupiter, 0.5);
 			this.jupiter = jupiter;
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 		}
@@ -276,97 +274,55 @@ public class JupiterEntity extends BossEntity {
 
 		@Override
 		public void start() {
-			timer = 100;
-			swingsLeft = 2;
-			startCircling();
-		}
-
-		private void startCircling() {
-			attackPhase = 0;
+			super.start();
+			timer = CHARGE_TIME;
+			attacksLeft = 3;
+			lines = 1;
+			jupiter.setAnimation(ANIM_CHARGE);
 			LivingEntity target = jupiter.getTarget();
-			offset = new Vec3(jupiter.getX() - target.getX(), 1, jupiter.getZ() - target.getZ()).normalize().scale(4);
-			jupiter.moveControl.setWantedPosition(target.getX() + offset.x, target.getY() + offset.y, target.getZ() + offset.z, 4);
-			//jupiter.setAnimation(ANIM_PREPARE_DASH);
+			Vec3 offset = new Vec3(jupiter.getX() - target.getX(), 0, jupiter.getZ() - target.getZ()).normalize().scale(6);
+			jupiter.moveControl.setWantedPosition(target.getX() + offset.x, stationaryY, target.getZ() + offset.z, 1);
 		}
 
 		@Override
 		public void tick() {
+			super.tick();
 			timer--;
 			LivingEntity target = jupiter.getTarget();
 			//didn't think this case could happen but apparently it can? (and it'd crashes)
 			//in that case the attack should be interrupted in a few ticks anyway
 			if (target == null) return;
-			if (attackPhase < 4) jupiter.getLookControl().setLookAt(target.getX(), target.getEyeY(), target.getZ());
-			//Approaching/Charge animation
-			if (attackPhase == 0 || attackPhase == 1) {
-				double tx = target.getX() + offset.x;
-				double ty = target.getY() + offset.y;
-				double tz = target.getZ() + offset.z;
-				if (timer <= 0 || (attackPhase == 0 && jupiter.distanceToSqr(tx, ty, tz) < 2)) {
-					if (attackPhase == 0) {
-						//finished approaching, charge animation
-						attackPhase = 1;
-						timer = 10;
-						jupiter.setAnimation(ANIM_CHARGE);
-					}
-					else {
-						//finished charging, start circling
-						attackPhase = 2;
-						//5° per tick, but also we need to not take too long or it's boring, so right now it's between 90° and 270°
-						timer = 18 + jupiter.random.nextInt(36);
-						direction = jupiter.random.nextBoolean();
-					}
+			if (timer > HOLD_TIME) jupiter.getLookControl().setLookAt(target.getX(), target.getEyeY(), target.getZ());
+			if (timer == AIM_TIME) jupiter.setAnimation(ANIM_AIM);
+			else if (timer == HOLD_TIME) {
+				//firing
+				jupiter.setAnimation(ANIM_THROW);
+				double ty = target.getY();
+				//atan2 gives a rad double, but wrapdegrees takes degrees
+				double angle = Mth.atan2(target.getZ() - jupiter.getZ(), target.getX() - jupiter.getX())*Mth.RAD_TO_DEG;
+				int spread = (lines % 2 == 0) ? 40 : 30;
+				angle -= (lines-1)*(spread/2.0);
+				for (int i = 0; i < lines; i++) {
+					//and then the sin and cos take rad floats, bweeeh
+					sendLineAt((float)(Mth.wrapDegrees(angle+i*spread)*Mth.DEG_TO_RAD), ty);
 				}
-				jupiter.moveControl.setWantedPosition(tx, ty, tz, 4);
+				attacksLeft--;
+				lines++;
 			}
-			//Circling
-			else if (attackPhase == 2) {
-				offset = offset.yRot((direction ? 5 : -5) * Mth.DEG_TO_RAD);
-				double tx = target.getX() + offset.x;
-				double ty = target.getY() + offset.y;
-				double tz = target.getZ() + offset.z;
-				jupiter.moveControl.setWantedPosition(tx, ty, tz, 4);
-				if (timer <= 0) {
-					attackPhase = 3;
-					holdx = tx;
-					holdy = ty;
-					holdz = tz;
-					timer = 20;
-					jupiter.setAnimation(ANIM_AIM);
-				}
-			}
-			//Holding still before the attack
-			else if (attackPhase == 3) {
-				if (timer <= 0) {
-					attackPhase = 4;
-					timer = 10;
-					swingsLeft--;
-					//ball!
-					jupiter.setAnimation(ANIM_THROW);
-					double tx = target.getX();
-					double ty = target.getY();
-					double tz = target.getZ();
-					sendLineAt(tx, ty, tz);
-				}
-				jupiter.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
-			}
-			//Holding still after the ball
-			else if (attackPhase == 4) {
-				if (timer <= 0 && swingsLeft > 0) {
-					startCircling();
-					//jupiter.setAnimation(ANIM_IDLE);
-				}
-				else jupiter.moveControl.setWantedPosition(holdx, holdy, holdz, 4);
+			else if (timer <= 0 && attacksLeft > 0) {
+				timer = CHARGE_TIME;
+				jupiter.setAnimation(ANIM_CHARGE);
+				Vec3 offset = new Vec3(jupiter.getX() - target.getX(), 0, jupiter.getZ() - target.getZ()).normalize().scale(6);
+				jupiter.moveControl.setWantedPosition(target.getX() + offset.x, stationaryY, target.getZ() + offset.z, 1);
 			}
 		}
 
-		private void sendLineAt(double tx, double ty, double tz) {
+		private void sendLineAt(float angle, double ty) {
 			double minY = Math.min(ty, jupiter.getY());
-			double maxY = Math.max(ty, jupiter.getY()) + 1.0D;
-			float angle = (float) Mth.atan2(tz - jupiter.getZ(), tx - jupiter.getX());
+			double maxY = Math.max(ty, jupiter.getY()) + 1;
 			for (int i = 0; i < 12; ++i) {
 				double dist = 1.5 * (i + 1);
-				jupiter.spawnFang(jupiter.getX() + Mth.cos(angle) * dist, jupiter.getZ() + Mth.sin(angle) * dist, minY, maxY, angle, i);
+				jupiter.spawnLightning(jupiter.getX() + Mth.cos(angle) * dist, jupiter.getZ() + Mth.sin(angle) * dist, minY, maxY, angle, i);
 			}
 		}
 
@@ -384,7 +340,7 @@ public class JupiterEntity extends BossEntity {
 
 		@Override
 		public boolean canContinueToUse() {
-			return canUse() && (swingsLeft > 0 || timer > 0);
+			return canUse() && (attacksLeft > 0 || timer > 0);
 		}
 
 	}
