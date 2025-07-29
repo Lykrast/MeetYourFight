@@ -300,7 +300,7 @@ public class JupiterEntity extends BossEntity {
 				double ty = target.getY();
 				//atan2 gives a rad double, but wrapdegrees takes degrees
 				double angle = Mth.atan2(target.getZ() - jupiter.getZ(), target.getX() - jupiter.getX())*Mth.RAD_TO_DEG;
-				int spread = (lines % 2 == 0) ? 40 : 30;
+				int spread = (lines % 2 == 0) ? 40 : 35;
 				angle -= (lines-1)*(spread/2.0);
 				for (int i = 0; i < lines; i++) {
 					//and then the sin and cos take rad floats, bweeeh
