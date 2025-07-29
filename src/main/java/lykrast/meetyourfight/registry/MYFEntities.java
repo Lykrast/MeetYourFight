@@ -19,6 +19,7 @@ public class MYFEntities {
 	public static RegistryObject<EntityType<DameFortunaEntity>> DAME_FORTUNA;
 	public static RegistryObject<EntityType<SwampjawEntity>> SWAMPJAW;
 	public static RegistryObject<EntityType<RosalyneEntity>> ROSALYNE;
+	public static RegistryObject<EntityType<JupiterEntity>> JUPITER;
 	//Summons
 	public static RegistryObject<EntityType<RoseSpiritEntity>> ROSE_SPIRIT;
 	
@@ -40,6 +41,8 @@ public class MYFEntities {
 				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		ROSE_SPIRIT = REG.register("rose_spirit", () -> EntityType.Builder.<RoseSpiritEntity>of(RoseSpiritEntity::new, MobCategory.MONSTER).sized(0.75f, 1.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
+		JUPITER = REG.register("jupiter", () -> EntityType.Builder.<JupiterEntity>of(JupiterEntity::new, MobCategory.MONSTER).sized(1.0f, 2.25f)
+				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 
 		PROJECTILE_LINE = REG.register("projectile_line", () -> EntityType.Builder.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
@@ -60,5 +63,6 @@ public class MYFEntities {
 		event.put(SWAMPJAW.get(), SwampjawEntity.createAttributes().build());
 		event.put(ROSALYNE.get(), RosalyneEntity.createAttributes().build());
 		event.put(ROSE_SPIRIT.get(), RoseSpiritEntity.createAttributes().build());
+		event.put(JUPITER.get(), JupiterEntity.createAttributes().build());
 	}
 }

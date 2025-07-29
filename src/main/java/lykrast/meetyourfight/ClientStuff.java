@@ -5,28 +5,7 @@ import lykrast.meetyourfight.registry.CompatGWRItems;
 import lykrast.meetyourfight.registry.MYFBlocks;
 import lykrast.meetyourfight.registry.MYFEntities;
 import lykrast.meetyourfight.registry.MYFItems;
-import lykrast.meetyourfight.renderer.BellringerModel;
-import lykrast.meetyourfight.renderer.BellringerRenderer;
-import lykrast.meetyourfight.renderer.DameFortunaModel;
-import lykrast.meetyourfight.renderer.DameFortunaRenderer;
-import lykrast.meetyourfight.renderer.FortunaBombModel;
-import lykrast.meetyourfight.renderer.FortunaBombRenderer;
-import lykrast.meetyourfight.renderer.FortunaCardModel;
-import lykrast.meetyourfight.renderer.FortunaCardRenderer;
-import lykrast.meetyourfight.renderer.MYFSkullBlockRenderer;
-import lykrast.meetyourfight.renderer.ProjectileChipsModel;
-import lykrast.meetyourfight.renderer.ProjectileLineModel;
-import lykrast.meetyourfight.renderer.ProjectileLineRenderer;
-import lykrast.meetyourfight.renderer.ProjectileTargetedRenderer;
-import lykrast.meetyourfight.renderer.RosalyneModel;
-import lykrast.meetyourfight.renderer.RosalyneRenderer;
-import lykrast.meetyourfight.renderer.RoseSpiritModel;
-import lykrast.meetyourfight.renderer.RoseSpiritRenderer;
-import lykrast.meetyourfight.renderer.SwampMineModel;
-import lykrast.meetyourfight.renderer.SwampMineRenderer;
-import lykrast.meetyourfight.renderer.SwampjawHeadModel;
-import lykrast.meetyourfight.renderer.SwampjawModel;
-import lykrast.meetyourfight.renderer.SwampjawRenderer;
+import lykrast.meetyourfight.renderer.*;
 import net.minecraft.Util;
 import net.minecraft.client.model.SkullModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -53,6 +32,7 @@ public class ClientStuff {
     	event.registerEntityRenderer(MYFEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
     	event.registerEntityRenderer(MYFEntities.ROSALYNE.get(), (context) -> new RosalyneRenderer(context));
     	event.registerEntityRenderer(MYFEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
+    	event.registerEntityRenderer(MYFEntities.JUPITER.get(), (context) -> new JupiterRenderer(context));
 		
     	event.registerEntityRenderer(MYFEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
     	event.registerEntityRenderer(MYFEntities.PROJECTILE_TARGETED.get(), (context) -> new ProjectileTargetedRenderer(context));
@@ -76,6 +56,8 @@ public class ClientStuff {
     	event.registerLayerDefinition(RosalyneModel.MODEL_ARMOR, () -> RosalyneModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION, false));
     	event.registerLayerDefinition(RosalyneModel.MODEL_HEAD, SkullModel::createHumanoidHeadLayer);
     	event.registerLayerDefinition(RoseSpiritModel.MODEL, RoseSpiritModel::createBodyLayer);
+    	event.registerLayerDefinition(JupiterModel.MODEL, () -> JupiterModel.createBodyLayer(CubeDeformation.NONE));
+    	//TODO jupiter head
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);
     	event.registerLayerDefinition(ProjectileChipsModel.MODEL, ProjectileChipsModel::createBodyLayer);
@@ -94,6 +76,7 @@ public class ClientStuff {
     	event.registerSkullModel(MYFHeads.SWAMPJAW, MYFSkullBlockRenderer.swampjawModel);
     	event.registerSkullModel(MYFHeads.ROSALYNE, new SkullModel(set.bakeLayer(RosalyneModel.MODEL_HEAD)));
     	event.registerSkullModel(MYFHeads.ROSALYNE_CRACKED, new SkullModel(set.bakeLayer(RosalyneModel.MODEL_HEAD)));
+    	//TODO Jupiter head
     	
     	//I don't know when I should do this or if this is the correct way but it works and prevents a crash
     	//TODO get bellringer and fortuna their glow, which won't work through my renderer cause it's only for the block

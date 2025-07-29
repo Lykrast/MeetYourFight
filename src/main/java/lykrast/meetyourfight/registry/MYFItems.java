@@ -31,13 +31,20 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class MYFItems {
 	public static final DeferredRegister<Item> REG = DeferredRegister.create(ForgeRegistries.ITEMS, MeetYourFight.MODID);
+	//swampjaw
 	public static RegistryObject<Item> fossilBait, mossyTooth, boneRaker, depthStar, cagedHeart, marshyDelight;
+	//bellringer
 	public static RegistryObject<Item> hauntedBell, phantoplasm, passagesToll, spectresEye, spectresGrasp, aetherGlazedCupcake;
+	//dame fortuna
 	public static RegistryObject<Item> devilsAnte, fortunesFavor, slicersDice, aceOfIron, cocktailCutlass, velvetFortune;
+	//rosalyne
 	public static RegistryObject<Item> duskKey, violetBloom, twilightsThorn, wiltedIdeals, blossomingMind, tombPlanter, petalCream;
+	//discs
 	public static RegistryObject<Item> discSwampjaw, discBellringer, discFortuna, discRosalyne;
+	//heads
 	public static RegistryObject<Item> headSwampjaw, headBellringer, headFortuna, headRosalyne, headRosalyneCracked;
-	public static RegistryObject<Item> eggSwampjaw, eggBellringer, eggDameFortuna, eggRosalyne;
+	//eggs
+	public static RegistryObject<Item> eggSwampjaw, eggBellringer, eggDameFortuna, eggRosalyne, eggJupiter;
 	
 	private static List<RegistryObject<? extends Item>> orderedItemsCreative = new ArrayList<>();
 	
@@ -102,6 +109,7 @@ public class MYFItems {
 		eggDameFortuna = initItem("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
 		eggRosalyne = initItem("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
 		//initItem("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
+		eggJupiter = initItem("jupiter_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.JUPITER, 0xD67B5B, 0x55C3FE, defP()));
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems();
 	}
