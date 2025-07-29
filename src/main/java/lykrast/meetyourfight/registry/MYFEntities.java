@@ -55,7 +55,7 @@ public class MYFEntities {
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMP_MINE = REG.register("swamp_mine", () -> EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
-		JUPITER_LIGHTNING = REG.register("jupiter_lightning", () -> EntityType.Builder.<JupiterLightningEntity>of(JupiterLightningEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(2)
+		JUPITER_LIGHTNING = REG.register("jupiter_lightning", () -> EntityType.Builder.<JupiterLightningEntity>of(JupiterLightningEntity::new, MobCategory.MISC).sized(2, 32).setUpdateInterval(2)
 				.setTrackingRange(16).build(""));
 	}
 

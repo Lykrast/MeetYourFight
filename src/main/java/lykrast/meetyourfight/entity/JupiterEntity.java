@@ -364,8 +364,8 @@ public class JupiterEntity extends BossEntity {
 			double minY = Math.min(ty, jupiter.getY());
 			double maxY = Math.max(ty, jupiter.getY()) + 1.0D;
 			float angle = (float) Mth.atan2(tz - jupiter.getZ(), tx - jupiter.getX());
-			for (int i = 0; i < 16; ++i) {
-				double dist = 1.25 * (i + 1);
+			for (int i = 0; i < 12; ++i) {
+				double dist = 1.5 * (i + 1);
 				jupiter.spawnFang(jupiter.getX() + Mth.cos(angle) * dist, jupiter.getZ() + Mth.sin(angle) * dist, minY, maxY, angle, i);
 			}
 		}
