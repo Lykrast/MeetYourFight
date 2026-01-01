@@ -32,14 +32,12 @@ public class ClientStuff {
     	event.registerEntityRenderer(MYFEntities.SWAMPJAW.get(), (context) -> new SwampjawRenderer(context));
     	event.registerEntityRenderer(MYFEntities.ROSALYNE.get(), (context) -> new RosalyneRenderer(context));
     	event.registerEntityRenderer(MYFEntities.ROSE_SPIRIT.get(), (context) -> new RoseSpiritRenderer(context));
-    	event.registerEntityRenderer(MYFEntities.JUPITER.get(), (context) -> new JupiterRenderer(context));
 		
     	event.registerEntityRenderer(MYFEntities.PROJECTILE_LINE.get(), (context) -> new ProjectileLineRenderer(context));
     	event.registerEntityRenderer(MYFEntities.PROJECTILE_TARGETED.get(), (context) -> new ProjectileTargetedRenderer(context));
     	event.registerEntityRenderer(MYFEntities.FORTUNA_BOMB.get(), (context) -> new FortunaBombRenderer(context));
     	event.registerEntityRenderer(MYFEntities.FORTUNA_CARD.get(), (context) -> new FortunaCardRenderer(context));
 		event.registerEntityRenderer(MYFEntities.SWAMP_MINE.get(), (context) -> new SwampMineRenderer(context));
-		event.registerEntityRenderer(MYFEntities.JUPITER_LIGHTNING.get(), (context) -> new JupiterLightningRenderer(context));
 		
 		event.registerBlockEntityRenderer(MYFBlocks.headType.get(), MYFSkullBlockRenderer::new);
     }
@@ -57,7 +55,6 @@ public class ClientStuff {
     	event.registerLayerDefinition(RosalyneModel.MODEL_ARMOR, () -> RosalyneModel.createBodyLayer(LayerDefinitions.INNER_ARMOR_DEFORMATION, false));
     	event.registerLayerDefinition(RosalyneModel.MODEL_HEAD, SkullModel::createHumanoidHeadLayer);
     	event.registerLayerDefinition(RoseSpiritModel.MODEL, RoseSpiritModel::createBodyLayer);
-    	event.registerLayerDefinition(JupiterModel.MODEL, () -> JupiterModel.createBodyLayer(CubeDeformation.NONE));
     	//TODO jupiter head
 
     	event.registerLayerDefinition(ProjectileLineModel.MODEL, ProjectileLineModel::createBodyLayer);

@@ -44,7 +44,7 @@ public class MYFItems {
 	//heads
 	public static RegistryObject<Item> headSwampjaw, headBellringer, headFortuna, headRosalyne, headRosalyneCracked;
 	//eggs
-	public static RegistryObject<Item> eggSwampjaw, eggBellringer, eggDameFortuna, eggRosalyne, eggJupiter;
+	public static RegistryObject<Item> eggSwampjaw, eggBellringer, eggDameFortuna, eggRosalyne;
 	
 	private static List<RegistryObject<? extends Item>> orderedItemsCreative = new ArrayList<>();
 	
@@ -109,7 +109,6 @@ public class MYFItems {
 		eggDameFortuna = initItem("dame_fortuna_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.DAME_FORTUNA, 0xFE0000, 0xEEEEEE, defP()));
 		eggRosalyne = initItem("rosalyne_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.ROSALYNE, 0xEBEBEB, 0xD78EFF, defP()));
 		//initItem("rose_spirit_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ROSE_SPIRIT, 0xFF0000, 0xD3ECF1, defP()));
-		eggJupiter = initItem("jupiter_spawn_egg", () -> new ForgeSpawnEggItem(MYFEntities.JUPITER, 0xD67B5B, 0x55C3FE, defP()));
 		
 		if (MeetYourFight.loadedGunsWithoutRoses()) CompatGWRItems.registerItems();
 	}

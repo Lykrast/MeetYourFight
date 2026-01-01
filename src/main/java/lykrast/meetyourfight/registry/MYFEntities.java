@@ -19,7 +19,6 @@ public class MYFEntities {
 	public static RegistryObject<EntityType<DameFortunaEntity>> DAME_FORTUNA;
 	public static RegistryObject<EntityType<SwampjawEntity>> SWAMPJAW;
 	public static RegistryObject<EntityType<RosalyneEntity>> ROSALYNE;
-	public static RegistryObject<EntityType<JupiterEntity>> JUPITER;
 	//Summons
 	public static RegistryObject<EntityType<RoseSpiritEntity>> ROSE_SPIRIT;
 	
@@ -29,7 +28,6 @@ public class MYFEntities {
 	public static RegistryObject<EntityType<FortunaBombEntity>> FORTUNA_BOMB;
 	public static RegistryObject<EntityType<FortunaCardEntity>> FORTUNA_CARD;
 	public static RegistryObject<EntityType<SwampMineEntity>> SWAMP_MINE;
-	public static RegistryObject<EntityType<JupiterLightningEntity>> JUPITER_LIGHTNING;
 
 	static {
 		BELLRINGER = REG.register("bellringer", () -> EntityType.Builder.<BellringerEntity>of(BellringerEntity::new, MobCategory.MONSTER).sized(0.6f, 1.95f)
@@ -42,8 +40,6 @@ public class MYFEntities {
 				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 		ROSE_SPIRIT = REG.register("rose_spirit", () -> EntityType.Builder.<RoseSpiritEntity>of(RoseSpiritEntity::new, MobCategory.MONSTER).sized(0.75f, 1.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
-		JUPITER = REG.register("jupiter", () -> EntityType.Builder.<JupiterEntity>of(JupiterEntity::new, MobCategory.MONSTER).sized(1.0f, 2.25f)
-				.setUpdateInterval(1).setTrackingRange(128).setShouldReceiveVelocityUpdates(true).build(""));
 
 		PROJECTILE_LINE = REG.register("projectile_line", () -> EntityType.Builder.<ProjectileLineEntity>of(ProjectileLineEntity::new, MobCategory.MISC).sized(0.3125f, 0.3125f)
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
@@ -55,8 +51,6 @@ public class MYFEntities {
 				.setUpdateInterval(1).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
 		SWAMP_MINE = REG.register("swamp_mine", () -> EntityType.Builder.<SwampMineEntity>of(SwampMineEntity::new, MobCategory.MISC).sized(1, 1).setUpdateInterval(1)
 				.setTrackingRange(64).setShouldReceiveVelocityUpdates(true).build(""));
-		JUPITER_LIGHTNING = REG.register("jupiter_lightning", () -> EntityType.Builder.<JupiterLightningEntity>of(JupiterLightningEntity::new, MobCategory.MISC).sized(2, 32).setUpdateInterval(2)
-				.setTrackingRange(16).build(""));
 	}
 
 	@SubscribeEvent
@@ -66,6 +60,6 @@ public class MYFEntities {
 		event.put(SWAMPJAW.get(), SwampjawEntity.createAttributes().build());
 		event.put(ROSALYNE.get(), RosalyneEntity.createAttributes().build());
 		event.put(ROSE_SPIRIT.get(), RoseSpiritEntity.createAttributes().build());
-		event.put(JUPITER.get(), JupiterEntity.createAttributes().build());
+		//event.put(JUPITER.get(), JupiterEntity.createAttributes().build());
 	}
 }
