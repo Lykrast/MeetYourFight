@@ -439,17 +439,20 @@ public class SwampjawEntity extends BossFlyingEntity {
 		public void tick() {
 			LivingEntity livingentity = swampjaw.getTarget();
 			swampjaw.orbitOffset = new Vec3(livingentity.getX(), livingentity.getY(0.5D), livingentity.getZ());
-			if (swampjaw.getBoundingBox().intersects(livingentity.getBoundingBox())) {
-				swampjaw.doHurtTarget(livingentity);
-				swampjaw.behavior = CIRCLE;
-				swampjaw.setAnimation(ANIM_NEUTRAL);
-				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
-			}
-			else if (swampjaw.hurtTime > 0) {
+			if (swampjaw.hurtTime > 0) {
+				//prioritize a player hit
 				swampjaw.playSound(MYFSounds.swampjawStun.get(), 10.0F, 0.95F + swampjaw.random.nextFloat() * 0.1F);
 				swampjaw.attackDelay = 50;
 				swampjaw.behavior = STUNNED;
 				swampjaw.setAnimation(ANIM_STUN);
+			}
+			else if (swampjaw.getBoundingBox().intersects(livingentity.getBoundingBox()) && swampjaw.distanceToSqr(livingentity.getX(), swampjaw.getY(), livingentity.getZ()) <= 4) {
+				//also do a horizontal distance check to normalize the bounding box being longer on diagonals
+				//player melee is 3 blocks range
+				swampjaw.doHurtTarget(livingentity);
+				swampjaw.behavior = CIRCLE;
+				swampjaw.setAnimation(ANIM_NEUTRAL);
+				//if (!swampjaw.isSilent()) swampjaw.world.playEvent(1039, swampjaw.getPosition(), 0);
 			}
 
 		}
