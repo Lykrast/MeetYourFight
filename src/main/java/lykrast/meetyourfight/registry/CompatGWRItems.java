@@ -12,7 +12,7 @@ public class CompatGWRItems {
 	
 	public static void registerItems() {
 		dredgedCannonade = MYFItems.initItem("dredged_cannonade",
-				() -> new DredgedCannonade(MYFItems.bossNS().durability(759), 2, 1, 18, 3, 14)
+				() -> new DredgedCannonade(MYFItems.bossNS().durability(759), 2, 1, 20, 3, 14)
 				.fireSound(MYFSounds.dredgedCannonadeShoot)
 				.repair(() -> Ingredient.of(MYFItems.mossyTooth.get())));
 		phantasmalRifle = MYFItems.initItem("phantasmal_rifle",
