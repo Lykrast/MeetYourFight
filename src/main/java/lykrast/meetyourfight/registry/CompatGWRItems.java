@@ -8,9 +8,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.registries.RegistryObject;
 
 public class CompatGWRItems {
-	public static RegistryObject<Item> phantasmalRifle, cocktailShotgun;
+	public static RegistryObject<Item> dredgedCannonade, phantasmalRifle, cocktailShotgun;
 	
 	public static void registerItems() {
+		dredgedCannonade = MYFItems.initItem("dredged_cannonade",
+				() -> new DredgedCannonade(MYFItems.bossNS().durability(759), 2, 1, 18, 3, 14)
+				.fireSound(MYFSounds.dredgedCannonadeShoot)
+				.repair(() -> Ingredient.of(MYFItems.mossyTooth.get())));
 		phantasmalRifle = MYFItems.initItem("phantasmal_rifle",
 				() -> new PhantasmalRifle(MYFItems.bossNS().durability(2376), 0, 1.6, 24, 0, 22).headshotMult(1.5).projectileSpeed(4)
 				.fireSound(GWRSounds.sniper)

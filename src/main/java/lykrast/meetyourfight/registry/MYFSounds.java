@@ -18,6 +18,8 @@ public class MYFSounds {
 	public static RegistryObject<SoundEvent> roseSpiritIdle, roseSpiritHurt, roseSpiritHurtBig, roseSpiritDeath, roseSpiritWarn, roseSpiritShoot;
 	//Items
 	public static RegistryObject<SoundEvent> slicersDiceProc, aceOfIronProc, cagedHeartProc;
+	//GWRItems
+	public static RegistryObject<SoundEvent> dredgedCannonadeShoot;
 	//Music
 	public static RegistryObject<SoundEvent> musicSwampjaw, musicBellringer, musicFortuna, musicRosalyne;
 	
@@ -67,6 +69,10 @@ public class MYFSounds {
 		slicersDiceProc = initSound("item.proc.slicers_dice");
 		aceOfIronProc = initSound("item.proc.ace_of_iron");
 		cagedHeartProc = initSound("item.proc.caged_heart");
+		//GWR
+		if (MeetYourFight.loadedGunsWithoutRoses()) {
+			dredgedCannonadeShoot = initSound("item.dredged_cannonade.shoot");
+		}
 
 		//Music
 		musicSwampjaw = initSound("music.swampjaw");

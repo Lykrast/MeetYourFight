@@ -42,6 +42,8 @@
 	"item.meetyourfight.depth_star.desc2": "Damage increases with attack damage",
 	"item.meetyourfight.caged_heart": "Caged Heart",
 	"item.meetyourfight.caged_heart.desc": "Reduces damage that exceeds %1$d%% of max health by %2$d%%",
+	"item.meetyourfight.dredged_cannonade": "Dredged Cannonade",
+	"item.meetyourfight.dredged_cannonade.desc": "Converts fired Iron Bullets into Explosive Bullets",
 	"item.meetyourfight.marshy_delight": "Marshy Delight",
 	
 	"item.meetyourfight.dusk_key": "Dusk Key",
@@ -126,6 +128,8 @@
 	"subtitles.meetyourfight.item.bonus_damage": "Damage amplified",
 	"subtitles.meetyourfight.item.damage_negated": "Damage negated",
 	"subtitles.meetyourfight.item.damage_reduced": "Damage reduced",
+
+	"subtitles.meetyourfight.item.dredged_cannonade.shoot": "Cannon fired",
 	
 	"advancements.meetyourfight.root.title": "Meet Your Fight",
 	"advancements.meetyourfight.root.description": "Prepare for the coming challenges",

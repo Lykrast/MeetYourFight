@@ -42,6 +42,8 @@
 	"item.meetyourfight.depth_star.desc2": "Les dégâts augmentent avec les dégâts d'attaque",
 	"item.meetyourfight.caged_heart": "Coeur en cage",
 	"item.meetyourfight.caged_heart.desc": "Réduit de %2$d%% les dégâts qui dépassent %1$d%% de la vie max",
+	"item.meetyourfight.dredged_cannonade": "Canonnade draguée",
+	"item.meetyourfight.dredged_cannonade.desc": "Converti les balles en fer tirées en balles explosives",
 	"item.meetyourfight.marshy_delight": "Délice des marais",
 	
 	"item.meetyourfight.dusk_key": "Clé du crépuscule",
@@ -122,6 +124,8 @@
 	"subtitles.meetyourfight.item.bonus_damage": "Dégâts amplifiés",
 	"subtitles.meetyourfight.item.damage_negated": "Dégâts annulés",
 	"subtitles.meetyourfight.item.damage_reduced": "Dégâts réduits",
+
+	"subtitles.meetyourfight.item.dredged_cannonade.shoot": "Tir de canon",
 	
 	"advancements.meetyourfight.root.title": "Meet Your Fight",
 	"advancements.meetyourfight.root.description": "Préparez vous pour les défis à venir.",

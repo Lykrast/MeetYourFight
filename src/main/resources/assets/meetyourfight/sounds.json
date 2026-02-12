@@ -291,6 +291,11 @@
 			{ "name": "mob/skeleton/hurt4", "volume": 0.5, "pitch": 0.6 }
 		]
 	},
+	"item.dredged_cannonade.shoot": {
+		"category": "players",
+		"subtitle": "subtitles.meetyourfight.item.dredged_cannonade.shoot",
+		"sounds": [ { "name": "meetyourfight:gun/dredged_cannonade", "volume": 0.6 } ]
+	},
 	
 	"music.swampjaw": { "sounds": [{"name": "meetyourfight:music/kainvinosec_shadows_falling_in_lush_forests", "stream": true, "volume": 0.2}] },
 	"music.bellringer": { "sounds": [{"name": "meetyourfight:music/monkey_warhol_magnum", "stream": true, "volume": 0.2}] },

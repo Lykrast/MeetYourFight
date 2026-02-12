@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"I  ",
+		"TIF",
+		" BB"
+	],
+	"key": {
+		"B": { "tag": "forge:bones" },
+		"I": { "tag": "forge:ingots/iron" },
+		"T": { "item": "meetyourfight:mossy_tooth" },
+		"F": { "item": "minecraft:flint" }
+	},
+	"result": { "item": "meetyourfight:dredged_cannonade" },
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }, { "type": "forge:not", "value": { "type": "forge:mod_loaded", "modid": "bypowderandsteel" }}]
+}

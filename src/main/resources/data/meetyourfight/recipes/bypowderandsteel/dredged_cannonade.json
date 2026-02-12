@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"  F",
+		"TAB",
+		"  B"
+	],
+	"key": {
+		"A": { "item": "bypowderandsteel:assembly_basic" },
+		"F": { "item": "minecraft:flint" },
+		"T": { "item": "meetyourfight:mossy_tooth" },
+		"B": { "tag": "forge:bones" }
+	},
+	"result": { "item": "meetyourfight:dredged_cannonade" },
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }, { "type": "forge:mod_loaded", "modid": "bypowderandsteel" }]
+}
