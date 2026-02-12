@@ -14,5 +14,5 @@
 		"L": { "tag": "minecraft:logs" }
 	},
 	"result": { "item": "meetyourfight:cocktail_shotgun" },
-	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }]
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }, { "type": "forge:not", "value": { "type": "forge:mod_loaded", "modid": "bypowderandsteel" }}]
 }

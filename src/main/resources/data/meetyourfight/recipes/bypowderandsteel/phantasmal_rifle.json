@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"  F",
+		"IAG",
+		"  G"
+	],
+	"key": {
+		"A": { "item": "bypowderandsteel:assembly_diamond" },
+		"F": { "item": "minecraft:flint" },
+		"I": { "item": "meetyourfight:phantoplasm" },
+		"G": { "tag": "forge:ingots/gold" }
+	},
+	"result": { "item": "meetyourfight:phantasmal_rifle" },
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }, { "type": "forge:mod_loaded", "modid": "bypowderandsteel" }]
+}

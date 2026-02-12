@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"  F",
+		"IAH",
+		"LLH"
+	],
+	"key": {
+		"A": { "item": "bypowderandsteel:assembly_diamond" },
+		"F": { "item": "minecraft:flint" },
+		"I": { "item": "meetyourfight:fortunes_favor" },
+		"H": { "tag": "minecraft:logs" },
+		"L": { "tag": "forge:glass" }
+	},
+	"result": { "item": "meetyourfight:cocktail_shotgun" },
+	"conditions": [{ "type": "forge:mod_loaded", "modid": "gunswithoutroses" }, { "type": "forge:mod_loaded", "modid": "bypowderandsteel" }]
+}
