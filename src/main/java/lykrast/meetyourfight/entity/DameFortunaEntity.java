@@ -361,20 +361,25 @@ public class DameFortunaEntity extends BossEntity implements PowerableMob {
 				}
 			}
 		}
-		else if (phase == PHASE_1 && getHealth() < getMaxHealth()*TRESHOLD_1) {
-			setPhase(SHUFFLE_1);
-			phase = SHUFFLE_1;
-			hasSpawnedShuffle = false;
-		}
-		else if (phase == PHASE_2 && getHealth() < getMaxHealth()*TRESHOLD_2) {
-			setPhase(SHUFFLE_2);
-			phase = SHUFFLE_2;
-			hasSpawnedShuffle = false;
-		}
-		else if (phase == PHASE_3 && getHealth() < getMaxHealth()*TRESHOLD_3) {
-			setPhase(SHUFFLE_3);
-			phase = SHUFFLE_3;
-			hasSpawnedShuffle = false;
+		//So I saw some videos on prodigium reforged where she would inexplicably spawn on shuffle 1
+		//I'm guessing this is with attributefix or something because she is at 4.5x health on here? because high health does not seem to cause that issue on its own
+		//either way just delaying the shuffles to hopefully patch that out
+		else if (tickCount > 10) {
+			if (phase == PHASE_1 && getHealth() < getMaxHealth()*TRESHOLD_1) {
+				setPhase(SHUFFLE_1);
+				phase = SHUFFLE_1;
+				hasSpawnedShuffle = false;
+			}
+			else if (phase == PHASE_2 && getHealth() < getMaxHealth()*TRESHOLD_2) {
+				setPhase(SHUFFLE_2);
+				phase = SHUFFLE_2;
+				hasSpawnedShuffle = false;
+			}
+			else if (phase == PHASE_3 && getHealth() < getMaxHealth()*TRESHOLD_3) {
+				setPhase(SHUFFLE_3);
+				phase = SHUFFLE_3;
+				hasSpawnedShuffle = false;
+			}
 		}
 		super.customServerAiStep();
 	}
