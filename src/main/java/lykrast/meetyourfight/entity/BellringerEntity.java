@@ -42,8 +42,11 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -221,16 +224,19 @@ public class BellringerEntity extends BossEntity {
 			}
 		}
 		
-		@SuppressWarnings("deprecation")
 		private void performAttack() {
 			//BlockPos rounds values so +0.5 for center of block
 			BlockPos tgt = target.blockPosition();
 			double tx = tgt.getX() + 0.5;
 			double tz = tgt.getZ() + 0.5;
-			double ty = tgt.getY() + 0.1;
-			//Prevents lines being unjumpable if an attack is launched mid jump
-			//uuh no clue what I'm supposed to replace the blocksMotion() with
-			if (!target.onGround() && !target.isInWater() && !ringer.level().getBlockState(tgt.below()).blocksMotion()) ty -= 1;
+			double ty = target.getY() + 0.1;
+			if (!target.onGround() && !target.isInWater()) {
+				//Prevents lines being unjumpable if an attack is launched mid jump, finds the ground at most 1 block down
+				Vec3 from = new Vec3(tx,ty,tz);
+				BlockHitResult res = ringer.level().clip(new ClipContext(from, from.add(0, -1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, target));
+				if (res.getType() != HitResult.Type.MISS) ty = res.getLocation().y;
+				else ty -= 1;
+			}
 			switch (chosenAttack) {
 				default:
 				case 0:
