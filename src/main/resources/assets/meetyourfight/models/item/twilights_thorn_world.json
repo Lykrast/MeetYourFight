@@ -1,0 +1,33 @@
+{
+	"parent": "item/generated",
+	"display": {
+		"ground": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 4, 4, 0],
+			"scale":[ 1.0, 1.0, 0.5 ]
+		},
+		"thirdperson_righthand": {
+			"rotation": [ 0, -90, 55 ],
+			"translation": [ 0, 13.0, -0.5 ],
+			"scale": [ 1.7, 1.7, 0.85 ]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [ 0, 90, -55 ],
+			"translation": [ 0, 13.0, -0.5 ],
+			"scale": [ 1.7, 1.7, 0.85 ]
+		},
+		"firstperson_righthand": {
+			"rotation": [ 0, -90, 25 ],
+			"translation": [ 2.25, 9.6, 2.25 ],
+			"scale": [ 1.35, 1.35, 0.68 ]
+		},
+		"firstperson_lefthand": {
+			"rotation": [ 0, 90, -25 ],
+			"translation": [ 2.25, 9.6, 2.25 ],
+			"scale": [ 1.35, 1.35, 0.68 ]
+		}
+	},
+	"textures": {
+		"layer0": "meetyourfight:item/twilights_thorn_32"
+	}
+}
