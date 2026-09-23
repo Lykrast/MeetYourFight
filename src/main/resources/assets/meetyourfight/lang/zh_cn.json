@@ -1,10 +1,11 @@
 {
-    	"item.meetyourfight.summon.use": "召唤时会被消耗",
+	"item.meetyourfight.summon.use": "召唤时会被消耗",
 	"item.meetyourfight.summon.gear": "推荐装备：%s",
+	"item.meetyourfight.summon.configured": "伤害和/或生命值已配置",
 
 	"item.meetyourfight.haunted_bell": "缠魂铃铛",
 	"item.meetyourfight.haunted_bell.desc": "召唤敲钟人",
-    	"item.meetyourfight.haunted_bell.gear": "铁质或钻石质",
+	"item.meetyourfight.haunted_bell.gear": "铁质或钻石质",
 	"item.meetyourfight.phantoplasm": "幽魂质",
 	"item.meetyourfight.passages_toll": "旅人之钟",
 	"item.meetyourfight.passages_toll.desc": "将你传送至最多%1$d格远的任意方块上",
@@ -17,7 +18,7 @@
 	
 	"item.meetyourfight.devils_ante": "恶魔赌注",
 	"item.meetyourfight.devils_ante.desc": "召唤福尔图娜女爵",
-    	"item.meetyourfight.devils_ante.gear": "钻石质",
+	"item.meetyourfight.devils_ante.gear": "钻石质",
 	"item.meetyourfight.fortunes_favor": "命运之眷",
 	"item.meetyourfight.slicers_dice": "切割者之骰",
 	"item.meetyourfight.slicers_dice.desc": "攻击时有%1$d%%概率造成额外%2$d%%的伤害",
@@ -33,7 +34,7 @@
 	
 	"item.meetyourfight.fossil_bait": "化石之饵",
 	"item.meetyourfight.fossil_bait.desc": "召唤沼泽巨颌怪",
-    	"item.meetyourfight.fossil_bait.gear": "石质或铁质",
+	"item.meetyourfight.fossil_bait.gear": "石质或铁质",
 	"item.meetyourfight.mossy_tooth": "藓牙",
 	"item.meetyourfight.bone_raker": "骨质钉耙",
 	"item.meetyourfight.depth_star": "深境之星",
@@ -41,11 +42,13 @@
 	"item.meetyourfight.depth_star.desc2": "其伤害随普通攻击伤害的增加而增加",
 	"item.meetyourfight.caged_heart": "囚笼之心",
 	"item.meetyourfight.caged_heart.desc": "降低%2$d%%超过最大生命值%1$d%%的伤害",
+	"item.meetyourfight.dredged_cannonade": "沉淤火炮",
+	"item.meetyourfight.dredged_cannonade.desc": "发射铁弹丸时转换为爆炸弹丸",
 	"item.meetyourfight.marshy_delight": "湿软泥泞的佳肴",
 	
 	"item.meetyourfight.dusk_key": "黄昏之钥",
 	"item.meetyourfight.dusk_key.desc": "召唤薄暮之锋，罗莎琳",
-    	"item.meetyourfight.dusk_key.gear": "下界合金质",
+	"item.meetyourfight.dusk_key.gear": "下界合金质",
 	"item.meetyourfight.violet_bloom": "暮光紫罗兰",
 	"item.meetyourfight.twilights_thorn": "胧暮荆棘",
 	"item.meetyourfight.wilted_ideals": "未竟之志",
@@ -93,7 +96,7 @@
 	"subtitles.meetyourfight.entity.dame_fortuna.death": "福尔图娜女爵：死亡",
 	"subtitles.meetyourfight.entity.dame_fortuna.attack": "福尔图娜女爵：大笑",
 	"subtitles.meetyourfight.entity.dame_fortuna.shoot": "福尔图娜女爵：射击",
-    	"subtitles.meetyourfight.entity.dame_fortuna.chips.start": "筹码：生成",
+	"subtitles.meetyourfight.entity.dame_fortuna.chips.start": "筹码：生成",
 	"subtitles.meetyourfight.entity.dame_fortuna.chips.fire": "筹码：发射",
 	"subtitles.meetyourfight.entity.dame_fortuna.card.start": "卡牌：翻出",
 	"subtitles.meetyourfight.entity.dame_fortuna.card.right": "猜对了",
@@ -108,7 +111,7 @@
 	"subtitles.meetyourfight.entity.swampjaw.death": "沼泽巨颌怪：死亡",
 	"subtitles.meetyourfight.entity.swampjaw.charge": "沼泽巨颌怪：猛冲",
 	"subtitles.meetyourfight.entity.swampjaw.bomb": "炸弹：被投放",
-    	"subtitles.meetyourfight.entity.swampjaw.stun": "沼泽巨颌怪：尖啸",
+	"subtitles.meetyourfight.entity.swampjaw.stun": "沼泽巨颌怪：尖啸",
 
 	"subtitles.meetyourfight.entity.rosalyne.hurt": "罗莎琳：受伤",
 	"subtitles.meetyourfight.entity.rosalyne.death": "罗莎琳：死亡",
@@ -121,6 +124,8 @@
 	"subtitles.meetyourfight.entity.rosespirit.death": "蔷薇怨灵：死亡",
 	"subtitles.meetyourfight.entity.rosespirit.warn": "蔷薇怨灵：准备射击",
 	"subtitles.meetyourfight.entity.rosespirit.shoot": "蔷薇怨灵：射击",
+
+	"subtitles.meetyourfight.item.dredged_cannonade.shoot": "火炮发射",
 	
 	"subtitles.meetyourfight.item.bonus_damage": "伤害提升",
 	"subtitles.meetyourfight.item.damage_negated": "伤害无效",
